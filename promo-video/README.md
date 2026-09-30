@@ -14,7 +14,7 @@
 | 36–41 s | "YOU ASK. I EDIT.": client chat and delivery |
 | 41–48 s | "ORDER NOW ON fiverr." call to action |
 
-`video-editing-promo-vertical.mp4` is the first (9:16, 27 s) version.
+`video-editing-promo-share.mp4` is a lighter copy (<30 MB) of the same video. `video-editing-promo-vertical.mp4` is the first (9:16, 27 s) version.
 
 ## Using real gameplay / footage
 Every footage slot is an animated stand-in until a real clip is supplied:
