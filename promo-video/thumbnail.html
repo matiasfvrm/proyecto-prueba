@@ -90,7 +90,7 @@ function drawThumb() {
     platformIcon(c, icon, bx, -h / 2 + 6, icon === 'tiktok' ? 50 : 58);
     c.restore();
   };
-  phoneShot(IMG.gamer, 700, 1215, 475, 290, 516, -0.1, 'youtube', 'CLUTCH!', '98K', '@gamerclips');
+  phoneShot(IMG.gamer, 700, 1215, 475, 290, 516, -0.1, 'youtube', 'NO WAY!', '98K', '@gamerclips');
   phoneShot(IMG.skate, 560, 1760, 475, 290, 516, 0.1, 'instagram', 'SO SMOOTH', '64K', '@dailyvibes', true);
   phoneShot(IMG.party, 700, 1495, 440, 330, 587, 0, 'tiktok', 'WAIT FOR IT...', '248K', '@yourbrand');
   // floating stats
@@ -101,8 +101,6 @@ function drawThumb() {
     draw(-w / 2 + 40); text(c, label, -w / 2 + 76, 2, { font: 'Mont', weight: 800, size: 30, align: 'left', color: '#fff' });
     c.restore();
   };
-  pill(1215, 815, -0.05, (x) => { c.fillStyle = '#fff'; c.beginPath(); c.moveTo(x - 16, 12); c.lineTo(x, -14); c.lineTo(x + 16, 12); c.fill(); }, '2.4M VIEWS', C.green);
-  pill(1730, 805, 0.05, (x) => { c.save(); c.translate(x - 16, -15); c.scale(0.32, 0.32); c.fillStyle = '#fff'; c.fill(ICON.heart); c.restore(); }, '+180K LIKES', '#fe2c55');
   // "GO VIRAL" starburst sticker
   c.save(); c.translate(1500, 815); c.rotate(-0.12); c.scale(0.72, 0.72);
   c.fillStyle = C.yellow; c.shadowColor = 'rgba(0,0,0,.5)'; c.shadowBlur = 30;
