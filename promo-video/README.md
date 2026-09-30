@@ -46,3 +46,7 @@ FF=$(python3 -c "import imageio_ffmpeg;print(imageio_ffmpeg.get_ffmpeg_exe())")
 $FF -framerate 30 -i frames/f%05d.jpg -i music.wav -c:v libx264 -preset slow -crf 17 -pix_fmt yuv420p \
     -c:a aac -b:a 256k -shortest -movflags +faststart video-editing-promo.mp4
 ```
+
+## Fiverr thumbnail
+`fiverr-thumbnail.png` (1280x769, Fiverr gig image size) and `fiverr-thumbnail-hd.png` (1920x1154).
+Edit `thumbnail.html`, then `node render-thumbnail.js` and downscale the HD file to 1280x769.
