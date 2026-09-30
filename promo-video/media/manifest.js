@@ -3,7 +3,7 @@ window.MEDIA = {
     "frames": 240
   },
   "br": {
-    "frames": 240
+    "frames": 90
   },
   "fps": {
     "frames": 240

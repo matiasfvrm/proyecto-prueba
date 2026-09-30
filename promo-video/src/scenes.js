@@ -517,12 +517,12 @@ function sFx(c, lt) {
 
 // ============ 36-41s  chat: you ask, I edit
 function bubble(c, s, x, y, me, p) {
-  const size = 32, w = measure(c, s, { font: 'Mont', weight: 600, size }) + 56, h = 80;
+  const size = 38, w = measure(c, s, { font: 'Mont', weight: 800, size }) + 60, h = 92;
   const bx = me ? x - w : x;
   c.save(); c.globalAlpha = clamp(p * 2); const k = E.back(p);
   c.translate(me ? x : x, y); c.scale(k, k); c.translate(-(me ? x : x), -y);
-  c.fillStyle = me ? C.green : '#2a2a40'; rr(c, bx, y - h / 2, w, h, 30); c.fill();
-  text(c, s, bx + 28, y + 2, { font: 'Mont', weight: 600, size, align: 'left' });
+  c.fillStyle = me ? C.green : '#2a2a40'; rr(c, bx, y - h / 2, w, h, 34); c.fill();
+  text(c, s, bx + 30, y + 2, { font: 'Mont', weight: 800, size, align: 'left' });
   c.restore();
 }
 function typing(c, x, y, t) {
@@ -539,7 +539,7 @@ function sChat(c, lt) {
     c.save(); c.globalAlpha = p; c.translate((1 - p) * -80, 0);
     c.fillStyle = C.green; c.beginPath(); c.arc(145, 760 + i * 80, 24, 0, 7); c.fill();
     c.save(); c.translate(125, 740 + i * 80); c.scale(0.4, 0.4); c.strokeStyle = '#fff'; c.lineWidth = 16; c.lineCap = 'round'; c.stroke(ICON.check); c.restore();
-    text(c, s, 190, 762 + i * 80, { font: 'Mont', weight: 600, size: 40, align: 'left' });
+    text(c, s, 190, 762 + i * 80, { font: 'Mont', weight: 800, size: 42, align: 'left' });
     c.restore();
   });
   // chat window
@@ -550,8 +550,8 @@ function sChat(c, lt) {
   c.fillStyle = '#1d1d38'; rr(c, x, y, w, 110, 36); c.fill(); c.fillRect(x, y + 70, w, 40);
   c.fillStyle = C.pink; c.beginPath(); c.arc(x + 70, y + 55, 34, 0, 7); c.fill();
   c.fillStyle = C.green; c.beginPath(); c.arc(x + 96, y + 80, 11, 0, 7); c.fill();
-  text(c, 'New client', x + 125, y + 42, { font: 'Mont', weight: 800, size: 32, align: 'left' });
-  text(c, 'online now', x + 125, y + 78, { font: 'Mont', weight: 600, size: 24, align: 'left', color: C.green });
+  text(c, 'New client', x + 125, y + 42, { font: 'Mont', weight: 800, size: 36, align: 'left' });
+  text(c, 'online now', x + 125, y + 80, { font: 'Mont', weight: 800, size: 26, align: 'left', color: C.green });
   const L = x + 40, R = x + w - 40;
   bubble(c, 'Can you edit my Fortnite montage?', L, y + 200, false, prog(lt, 0.7, 0.3));
   if (lt > 1.2 && lt < 1.8) typing(c, R, y + 310, lt);
@@ -565,10 +565,10 @@ function sChat(c, lt) {
     c.save(); c.globalAlpha = clamp(dp * 2); c.translate(R, y + 700); c.scale(dp, dp);
     c.fillStyle = '#23233f'; rr(c, -560, -95, 560, 190, 24); c.fill();
     slotRect(c, 'br', lt, -540, -75, 270, 150, 14);
-    text(c, 'FINAL_EDIT.mp4', -250, -30, { font: 'Mont', weight: 800, size: 30, align: 'left' });
+    text(c, 'FINAL_EDIT.mp4', -250, -30, { font: 'Mont', weight: 800, size: 34, align: 'left' });
     c.fillStyle = C.green; c.beginPath(); c.arc(-230, 30, 20, 0, 7); c.fill();
     c.save(); c.translate(-247, 13); c.scale(0.34, 0.34); c.strokeStyle = '#fff'; c.lineWidth = 16; c.lineCap = 'round'; c.stroke(ICON.check); c.restore();
-    text(c, 'Delivered', -200, 32, { font: 'Mont', weight: 800, size: 28, align: 'left', color: C.green });
+    text(c, 'Delivered', -200, 32, { font: 'Mont', weight: 800, size: 32, align: 'left', color: C.green });
     c.restore();
   }
   c.restore();
@@ -579,7 +579,7 @@ function sCta(c, lt) {
   // background collage of footage
   c.fillStyle = '#04120b'; c.fillRect(0, 0, W, H);
   const tiles = ['fps', 'dance', 'br', 'skate', 'rpg', 'fashion', 'craft', 'food', 'hk'];
-  c.save(); c.globalAlpha = 0.28;
+  c.save(); c.globalAlpha = 0.2;
   tiles.forEach((id, i) => {
     const col = i % 3, row = Math.floor(i / 3);
     const x = col * 700 - 150 + ((lt * (row % 2 ? 40 : -40)) % 700), y = row * 400 - 60;
@@ -587,7 +587,7 @@ function sCta(c, lt) {
     slotRect(c, id, lt + i, -300, -170, 640, 360, 20); c.restore();
   });
   c.restore();
-  const g = c.createRadialGradient(W / 2, H / 2, 100, W / 2, H / 2, 1100); g.addColorStop(0, 'rgba(4,18,11,.55)'); g.addColorStop(1, 'rgba(4,18,11,.95)');
+  const g = c.createRadialGradient(W / 2, H / 2, 100, W / 2, H / 2, 1100); g.addColorStop(0, 'rgba(4,18,11,.75)'); g.addColorStop(1, 'rgba(4,18,11,.95)');
   c.fillStyle = g; c.fillRect(0, 0, W, H);
   kinetic(c, 'READY TO GO VIRAL?', W / 2, 150, { font: 'Mont', weight: 800, size: 44, ls: 16, color: C.muted }, lt, 0.1, 0.02, 'flip');
   kinetic(c, 'ORDER NOW ON', W / 2, 280, { size: 140, color: '#fff' }, lt, 0.3, 0.03, 'drop');
@@ -626,6 +626,6 @@ function sCta(c, lt) {
   const tp = E.expo(prog(lt, 3.6, 0.5));
   c.save(); c.globalAlpha = tp;
   text(c, 'YOUTUBE  ·  TIKTOK  ·  INSTAGRAM  ·  FACEBOOK', W / 2, 975, { font: 'Mont', weight: 800, size: 38, ls: 6, color: C.cyan });
-  text(c, 'GAMING · VLOGS · ADS · MUSIC · PODCASTS · AND MORE', W / 2, 1035, { font: 'Mont', weight: 800, size: 28, ls: 6, color: C.muted });
+  text(c, 'GAMING · VLOGS · ADS · MUSIC · PODCASTS · AND MORE', W / 2, 1035, { font: 'Mont', weight: 800, size: 32, ls: 6, color: '#c9c9dc' });
   c.restore();
 }

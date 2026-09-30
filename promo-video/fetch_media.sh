@@ -18,7 +18,7 @@ done
 curl -sfL -o br.mkv    https://archive.org/download/youtube-8o4OrKoWMBE/8o4OrKoWMBE.mkv    # Fortnite trailer
 curl -sfL -o fps.mkv   https://archive.org/download/youtube-4HWAzCFg7vo/4HWAzCFg7vo.mkv    # VALORANT Team Deathmatch trailer
 curl -sfL -o craft.webm https://archive.org/download/youtube-3kEobQt_xDk/3kEobQt_xDk.webm  # Minecraft Ender Update trailer
-for p in vlog:2168 music:48509 podcast:2956 city:41161 ad:15954 skate:36498 car:35540 food:49231 dance:33906 fashion:42298 travel:5363 drone:15919; do
+for p in vlog:2168 music:48509 podcast:2956 city:41161 ad:15954 skate:36498 car:35540 food:49231 dance:452 fashion:42298 travel:5363 drone:15919; do
   s=${p%%:*}; i=${p##*:}
   curl -sfL -o "$s.mp4" "https://assets.mixkit.co/videos/$i/$i-1080.mp4" || curl -sfL -o "$s.mp4" "https://assets.mixkit.co/videos/$i/$i-720.mp4"
 done

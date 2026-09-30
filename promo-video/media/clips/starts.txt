@@ -1,5 +1,5 @@
 rpg 19.5
-br 10
+br 10.6 3.0
 fps 146.2
 craft 12
 hk 62

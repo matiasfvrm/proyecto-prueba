@@ -102,13 +102,15 @@ function renderFrame(t) {
   pc.translate(W / 2 + (rnd(fr) - 0.5) * sh, H / 2 + (rnd(fr + 0.5) - 0.5) * sh); pc.scale(z, z); pc.translate(-W / 2, -H / 2);
   pc.drawImage(comp, 0, 0); pc.restore();
   // chromatic aberration + glitch
-  const caAmt = 2 + Math.min(acc, 1.5) * 22;
+  // RGB split only on accents (cuts, slams); otherwise the image stays sharp
+  const caAmt = Math.min(acc, 1.5) * 22;
   if (acc > 0.35 && (t < 2 || cut)) { glitchSlices(cc, post, acc * 60, fr); chroma(octx, comp, caAmt); }
-  else chroma(octx, post, caAmt);
+  else if (caAmt >= 1) chroma(octx, post, caAmt);
+  else octx.drawImage(post, 0, 0);
   // overlays
   lightLeak(octx, t, 0.18);
   vignette(octx, 0.5);
-  grain(octx, t, 0.06);
+  grain(octx, t, 0.025);
   // fade in/out
   const fade = Math.min(prog(t, 0, 0.25), 1 - prog(t, DURATION - 0.6, 0.6));
   if (fade < 1) { octx.fillStyle = `rgba(0,0,0,${1 - fade})`; octx.fillRect(0, 0, W, H); }
