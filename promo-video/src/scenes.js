@@ -355,9 +355,85 @@ function sStyles(c, lt) {
 }
 
 // ============ 30-36s  effects showcase
+const gradeBuf = canvas();
+function colorWheel(c, x, y, r, label, px, py) {
+  const g = c.createConicGradient(0, x, y);
+  ['#ff0000', '#ffff00', '#00ff00', '#00ffff', '#0000ff', '#ff00ff', '#ff0000'].forEach((col, i) => g.addColorStop(i / 6, col));
+  c.fillStyle = g; c.beginPath(); c.arc(x, y, r, 0, 7); c.fill();
+  const rg = c.createRadialGradient(x, y, 0, x, y, r); rg.addColorStop(0, 'rgba(40,40,50,1)'); rg.addColorStop(0.8, 'rgba(40,40,50,.55)'); rg.addColorStop(1, 'rgba(40,40,50,0)');
+  c.fillStyle = rg; c.beginPath(); c.arc(x, y, r, 0, 7); c.fill();
+  c.strokeStyle = 'rgba(255,255,255,.25)'; c.lineWidth = 2; c.beginPath(); c.moveTo(x - r, y); c.lineTo(x + r, y); c.moveTo(x, y - r); c.lineTo(x, y + r); c.stroke();
+  c.fillStyle = '#fff'; c.strokeStyle = '#000'; c.lineWidth = 3; c.beginPath(); c.arc(x + px * r, y + py * r, 13, 0, 7); c.fill(); c.stroke();
+  text(c, label, x, y + r + 34, { font: 'Mont', weight: 800, size: 22, ls: 4, color: C.muted });
+}
+function sGrade(c, l) {
+  // footage rendered once, then drawn through an interpolated grade (fast: filters on a bitmap)
+  const gb = gradeBuf.getContext('2d'); drawSlot(gb, 'vlog', l + 1, W, H);
+  const g = E.inOut(prog(l, 1.0, 0.6)); // 0 = raw, 1 = graded
+  const z = 1.04 + 0.03 * l + 0.05 * hit(l, 1.6, 0.15);
+  c.save(); c.translate(W / 2, H / 2); c.scale(z, z); c.translate(-W / 2, -H / 2);
+  c.filter = `grayscale(${lerp(0.8, 0, g)}) contrast(${lerp(0.7, 1.2, g)}) saturate(${lerp(0.75, 1.55, g)}) brightness(${lerp(0.95, 1.04, g)})`;
+  c.drawImage(gradeBuf, 0, 0); c.filter = 'none';
+  // flat "log" haze before, teal/orange split-tone after
+  c.fillStyle = `rgba(125,135,150,${0.22 * (1 - g)})`; c.fillRect(0, 0, W, H);
+  c.globalCompositeOperation = 'soft-light'; c.globalAlpha = g;
+  const tg = c.createLinearGradient(0, 0, 0, H); tg.addColorStop(0, '#ff9a3c'); tg.addColorStop(0.55, '#ff5e7a'); tg.addColorStop(1, '#00a6a6');
+  c.fillStyle = tg; c.fillRect(0, 0, W, H);
+  c.restore();
+  // sweep of light while grading
+  const sw = prog(l, 1.0, 0.6);
+  if (sw > 0 && sw < 1) {
+    const x = lerp(-300, W + 300, sw);
+    const lg = c.createLinearGradient(x - 250, 0, x + 250, 0); lg.addColorStop(0, 'rgba(255,255,255,0)'); lg.addColorStop(0.5, 'rgba(255,240,200,.45)'); lg.addColorStop(1, 'rgba(255,255,255,0)');
+    c.fillStyle = lg; c.fillRect(0, 0, W, H);
+  }
+  c.fillStyle = `rgba(255,255,255,${hit(l, 1.6, 0.1) * 0.7})`; c.fillRect(0, 0, W, H);
+  tag(c, 'COLOR GRADING', 90, 110, { align: 'left', bg: C.pink });
+  // labels
+  const bIn = E.expo(prog(l, 0.05, 0.4)), bOut = E.in(prog(l, 0.95, 0.25));
+  if (bOut < 1) {
+    c.save(); c.globalAlpha = bIn * (1 - bOut); c.translate(-(1 - bIn) * 400 - bOut * 200, 0);
+    text(c, 'BEFORE', 90, 300, { size: 200, align: 'left', color: '#fff', glow: 'rgba(0,0,0,.6)' });
+    text(c, 'RAW  ·  FLAT  ·  DULL', 96, 420, { font: 'Mont', weight: 800, size: 38, ls: 8, align: 'left', color: '#d8dbe2' });
+    c.restore();
+  }
+  if (l > 1.0 && l < 1.6) {
+    text(c, 'GRADING… ' + Math.round(g * 100) + '%', 90, 300, { font: 'Mont', weight: 800, size: 70, align: 'left', color: '#fff', glow: 'rgba(0,0,0,.7)' });
+  }
+  const aIn = E.back(prog(l, 1.6, 0.4));
+  if (aIn > 0) {
+    c.save(); c.translate(90, 300); c.scale(aIn, aIn);
+    text(c, 'AFTER', 0, 0, { size: 220, align: 'left', color: C.yellow, glow: C.yellow, blur: 40 });
+    c.restore();
+    const sp = E.expo(prog(l, 1.8, 0.4));
+    c.save(); c.globalAlpha = sp; c.translate((1 - sp) * -200, 0);
+    text(c, 'CINEMATIC COLOR GRADE', 96, 430, { font: 'Mont', weight: 800, size: 40, ls: 8, align: 'left', color: '#fff', glow: 'rgba(0,0,0,.7)', blur: 20 });
+    c.restore();
+  }
+  // grading panel: slides up during "before", works during grading, leaves on "after"
+  const pIn = E.expo(prog(l, 0.3, 0.5)), pOut = E.in(prog(l, 1.65, 0.35));
+  const py = H - 300 + (1 - pIn) * 360 + pOut * 360;
+  if (pIn > 0 && pOut < 1) {
+    c.save(); c.fillStyle = 'rgba(12,12,20,.88)'; rr(c, 260, py, W - 520, 270, 26); c.fill();
+    c.strokeStyle = 'rgba(255,255,255,.12)'; c.lineWidth = 2; c.stroke();
+    const k = g;
+    colorWheel(c, 420, py + 115, 80, 'LIFT', lerp(0, -0.45, k), lerp(0, 0.35, k));
+    colorWheel(c, 640, py + 115, 80, 'GAMMA', lerp(0, 0.15, k), lerp(0, -0.1, k));
+    colorWheel(c, 860, py + 115, 80, 'GAIN', lerp(0, 0.5, k), lerp(0, -0.45, k));
+    [['EXPOSURE', 0.5, 0.58], ['CONTRAST', 0.35, 0.8], ['SATURATION', 0.3, 0.9], ['TEMPERATURE', 0.5, 0.72]].forEach(([name, a, b], i) => {
+      const y = py + 52 + i * 56, x0 = 1060, w = 540, v = lerp(a, b, k);
+      text(c, name, x0, y, { font: 'Mont', weight: 800, size: 20, ls: 3, align: 'left', color: C.muted });
+      c.fillStyle = 'rgba(255,255,255,.15)'; rr(c, x0 + 190, y - 4, w - 190, 8, 4); c.fill();
+      c.fillStyle = [C.yellow, C.cyan, C.pink, '#ff9a3c'][i]; rr(c, x0 + 190, y - 4, (w - 190) * v, 8, 4); c.fill();
+      c.fillStyle = '#fff'; c.beginPath(); c.arc(x0 + 190 + (w - 190) * v, y, 12, 0, 7); c.fill();
+    });
+    c.restore();
+  }
+}
 function sFx(c, lt) {
-  if (lt < 2) {
-    c.save(); c.filter = 'brightness(.7)'; const z = 1.05 + lt * 0.03; c.translate(W / 2, H / 2); c.scale(z, z); c.translate(-W / 2, -H / 2); drawSlot(c, 'city', lt, W, H); c.restore();
+  if (lt < 1.7) {
+    const z = 1.05 + lt * 0.03; c.save(); c.translate(W / 2, H / 2); c.scale(z, z); c.translate(-W / 2, -H / 2); drawSlot(c, 'city', lt, W, H); c.restore();
+    c.fillStyle = 'rgba(0,0,0,.3)'; c.fillRect(0, 0, W, H);
     tag(c, 'SUBTITLES & CAPTIONS', 90, 110, { align: 'left', bg: C.pink });
     const words = ['THIS', 'IS', 'HOW', 'YOUR', 'VIDEO', 'SHOULD', 'LOOK'];
     const lines = [[0, 1, 2, 3], [4, 5, 6]];
@@ -365,9 +441,9 @@ function sFx(c, lt) {
       const ws = ln.map((k) => measure(c, words[k], { size: 150 }) + 40);
       let x = W / 2 - ws.reduce((a, b) => a + b, 0) / 2;
       ln.forEach((k, j) => {
-        const a = 0.15 + k * 0.2, p = prog(lt, a, 0.18);
+        const a = 0.1 + k * 0.17, p = prog(lt, a, 0.16);
         if (p > 0) {
-          const s = E.back(p), active = lt >= a && lt < a + 0.2 || (k === 6 && lt > a);
+          const s = E.back(p), active = (lt >= a && lt < a + 0.17) || (k === 6 && lt > a);
           c.save(); c.translate(x + ws[j] / 2, 560 + row * 180); c.scale(s, s);
           text(c, words[k], 0, 0, { size: 150, stroke: 18, color: '#000' });
           text(c, words[k], 0, 0, { size: 150, color: active ? C.yellow : '#fff' });
@@ -378,20 +454,18 @@ function sFx(c, lt) {
     });
     return;
   }
-  if (lt < 4) {
-    const l = lt - 2, split = W * lerp(0.15, 0.75, E.inOut(prog(l, 0.1, 1.6)));
-    c.save(); c.filter = 'saturate(1.6) contrast(1.15) brightness(1.05)'; drawSlot(c, 'vlog', l + 1, W, H); c.restore();
-    c.save(); c.beginPath(); c.rect(0, 0, split, H); c.clip(); c.filter = 'grayscale(.85) contrast(.75) brightness(.9)'; drawSlot(c, 'vlog', l + 1, W, H); c.restore();
-    c.fillStyle = '#fff'; c.fillRect(split - 4, 0, 8, H);
-    c.beginPath(); c.arc(split, H / 2, 46, 0, 7); c.fill();
-    text(c, '‹ ›', split, H / 2 - 4, { font: 'Mont', weight: 800, size: 44, color: '#000' });
-    tag(c, 'BEFORE', 90, H - 110, { align: 'left', bg: 'rgba(0,0,0,.6)' });
-    tag(c, 'AFTER', W - 90, H - 110, { align: 'right', bg: C.yellow, color: '#000' });
-    tag(c, 'COLOR GRADING', 90, 110, { align: 'left', bg: C.pink });
+  if (lt < 4.4) {
+    // quick slice from captions into the grade
+    const l = lt - 1.7;
+    if (l < 0.25) {
+      sFx(c, 1.69);
+      c.save(); c.beginPath(); c.rect(0, 0, W * E.inOut(l / 0.25), H); c.clip(); sGrade(c, l); c.restore();
+      c.fillStyle = C.pink; c.fillRect(W * E.inOut(l / 0.25) - 8, 0, 16, H);
+    } else sGrade(c, l);
     return;
   }
   // VFX + sound design
-  const l = lt - 4;
+  const l = lt - 4.4;
   c.fillStyle = C.bg; c.fillRect(0, 0, W, H);
   c.save(); c.globalCompositeOperation = 'lighter';
   for (let r = 0; r < 5; r++) { c.strokeStyle = [C.pink, C.cyan, C.purple, C.yellow, C.pink][r]; c.lineWidth = 6; c.globalAlpha = 0.7; c.beginPath(); c.arc(W / 2, H / 2 - 60, 180 + r * 90, l * (r % 2 ? 2 : -2) + r, l * (r % 2 ? 2 : -2) + r + 4); c.stroke(); }

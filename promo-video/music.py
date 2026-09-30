@@ -161,8 +161,10 @@ for t in (4, 8, 14, 22, 30, 36, 41):
     add(whoosh(), t - 0.4, 0.55, rev=0.2); add(impact(), t, 0.75, rev=0.3)
 for t in (15, 16, 17, 18):  # game cuts + hype slams
     add(impact(0.6), t, 0.4); add(impact(0.8), t + 0.45, 0.45); add(zap(), t + 0.45, 0.3)
-for t in (8.95, 10.05, 11.35, 12.65, 24.6, 26.4, 28.2, 32.0, 34.0):
+for t in (8.95, 10.05, 11.35, 12.65, 24.6, 26.4, 28.2, 31.7, 34.4):
     add(whoosh(0.35), t - 0.2, 0.45)
+# color grade: rising sweep while grading, hit on the 'after' reveal
+add(riser(0.6), 32.7, 0.55); add(impact(0.8), 33.3, 0.5); add(sparkle(), 33.3, 0.35, rev=0.4)
 add(click(), 44.1, 0.8); add(sparkle(), 44.1, 0.6, rev=0.5); add(impact(0.7), 44.1, 0.4)
 
 # ---------------- mix

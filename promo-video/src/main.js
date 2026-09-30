@@ -76,7 +76,7 @@ function accent(t) {
   let a = 0;
   for (const k of CUTS) a += Math.exp(-Math.abs(t - k.t) / 0.08);
   if (t < 2) a += 0.5 * Math.exp(-((t % 0.25) / 0.05));
-  for (const k of [15.45, 16.45, 17.45, 18.45]) a += Math.exp(-Math.abs(t - k) / 0.06) * 0.6; // game hype slams
+  for (const k of [15.45, 16.45, 17.45, 18.45, 33.3]) a += Math.exp(-Math.abs(t - k) / 0.06) * 0.6; // game hype slams
   return a;
 }
 function beatPunch(t) {
