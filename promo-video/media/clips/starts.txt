@@ -1,0 +1,4 @@
+rpg 19.5
+br 10
+fps 144
+craft 12

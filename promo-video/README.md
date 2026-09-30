@@ -16,17 +16,20 @@
 
 `video-editing-promo-share.mp4` is a lighter copy (<30 MB) of the same video. `video-editing-promo-vertical.mp4` is the first (9:16, 27 s) version.
 
-## Using real gameplay / footage
-Every footage slot is an animated stand-in until a real clip is supplied:
+## Footage
+The video uses real footage (clips are not committed; `./fetch_media.sh` downloads them, then `python3 prep_media.py`):
 
-1. Copy clips into `media/clips/` named by slot: `rpg.mp4` (Undertale), `br.mp4` (Fortnite),
-   `fps.mp4` (Valorant), `craft.mp4` (Minecraft), `vlog.mp4`, `ad.mp4`, `music.mp4`, `podcast.mp4`, `city.mp4`.
-   Optional start offsets go in `media/clips/starts.txt` (one `slot seconds` per line).
-2. `python3 prep_media.py` extracts the frames and writes `media/manifest.js`.
-   Game name tags switch from the genre ("TACTICAL FPS") to the game name ("VALORANT").
-3. Re-render (below).
+| Slot | Source |
+|------|--------|
+| `rpg` | UNDERTALE official trailer (Steam store) |
+| `br` | Fortnite trailer (archive.org mirror of the Epic Games upload) |
+| `fps` | VALORANT Team Deathmatch official trailer (archive.org mirror of the Riot Games upload) |
+| `craft` | Minecraft "Ender Update" trailer (archive.org mirror of the Mojang upload) |
+| `vlog`, `music`, `podcast`, `city`, `ad` | Mixkit stock videos 2168, 48509, 2956, 41161, 15954 ([free license](https://mixkit.co/license/)) |
 
-Use footage you have rights to (your own gameplay recordings, or clients' footage with permission).
+Game trailers belong to their publishers. For paid advertising, your own gameplay recordings are the safest choice:
+replace any file in `media/clips/` (same name), adjust `media/clips/starts.txt`, and re-run `prep_media.py`.
+Without clips, each slot falls back to an animated stand-in.
 
 ## Files
 - `promo.html` + `src/`: the animation (canvas). Open `promo.html` in a browser for a live preview (click to start music).
