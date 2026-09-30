@@ -23,7 +23,10 @@ for p in vlog:2168 music:48509 podcast:2956 city:41161 ad:15954 skate:36498 car:
   curl -sfL -o "$s.mp4" "https://assets.mixkit.co/videos/$i/$i-1080.mp4" || curl -sfL -o "$s.mp4" "https://assets.mixkit.co/videos/$i/$i-720.mp4"
 done
 rm -rf .bin
-# Thumbnail images (Mixkit 42283 = creator with platform signs, 23145 = editor at work)
+# Thumbnail images (Mixkit: 23145 editor at work, 43599 gamer, 42286 neon party, 36498 skate)
 mkdir -p ../thumb && FF=$(python3 -c "import imageio_ffmpeg;print(imageio_ffmpeg.get_ffmpeg_exe())")
-curl -sfL -o /tmp/t1.mp4 https://assets.mixkit.co/videos/42283/42283-1080.mp4 && "$FF" -loglevel error -y -ss 2 -i /tmp/t1.mp4 -frames:v 1 ../thumb/platforms.png
-curl -sfL -o /tmp/t2.mp4 https://assets.mixkit.co/videos/23145/23145-720.mp4 && "$FF" -loglevel error -y -ss 12 -i /tmp/t2.mp4 -frames:v 1 -vf scale=1920:-1 ../thumb/editor.png
+for p in editor:23145:12 gamer:43599:2 party:42286:3 skate:36498:3; do
+  n=${p%%:*}; r=${p#*:}; id=${r%%:*}; t=${r##*:}
+  curl -sfL -o /tmp/$id.mp4 "https://assets.mixkit.co/videos/$id/$id-1080.mp4" || curl -sfL -o /tmp/$id.mp4 "https://assets.mixkit.co/videos/$id/$id-720.mp4"
+  "$FF" -loglevel error -y -ss "$t" -i /tmp/$id.mp4 -frames:v 1 -vf scale=1920:-1:flags=lanczos ../thumb/$n.png
+done
