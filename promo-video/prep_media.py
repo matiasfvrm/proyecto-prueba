@@ -12,7 +12,8 @@ import imageio_ffmpeg
 FF = imageio_ffmpeg.get_ffmpeg_exe()
 HERE = os.path.dirname(os.path.abspath(__file__))
 CLIPS, FRAMES = os.path.join(HERE, 'media/clips'), os.path.join(HERE, 'media/frames')
-SLOTS = ['rpg', 'br', 'fps', 'craft', 'vlog', 'ad', 'music', 'podcast', 'city']
+SLOTS = ['rpg', 'br', 'fps', 'craft', 'hk', 'amongus', 'vlog', 'ad', 'music', 'podcast', 'city',
+         'skate', 'car', 'food', 'dance', 'fashion', 'travel', 'drone']
 SECONDS = 8  # enough for every use in the timeline (clips loop if shorter)
 
 starts = {}

@@ -2,3 +2,5 @@ rpg 19.5
 br 10
 fps 146.2
 craft 12
+hk 62
+amongus 76

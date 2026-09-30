@@ -333,3 +333,14 @@ const SLOTS = {
     },
   },
 };
+Object.assign(SLOTS, {
+  hk: { name: 'HOLLOW KNIGHT', generic: 'METROIDVANIA', draw: (c, t) => SLOTS.rpg.draw(c, t) },
+  amongus: { name: 'AMONG US', generic: 'PARTY GAME', draw: (c, t) => SLOTS.craft.draw(c, t) },
+  skate: { name: 'SPORTS', generic: 'SPORTS', draw: (c, t) => SLOTS.city.draw(c, t) },
+  car: { name: 'CARS', generic: 'CARS', draw: (c, t) => SLOTS.city.draw(c, t) },
+  food: { name: 'FOOD', generic: 'FOOD', draw: (c, t) => SLOTS.ad.draw(c, t) },
+  dance: { name: 'DANCE', generic: 'DANCE', draw: (c, t) => SLOTS.music.draw(c, t) },
+  fashion: { name: 'FASHION', generic: 'FASHION', draw: (c, t) => SLOTS.ad.draw(c, t) },
+  travel: { name: 'TRAVEL', generic: 'TRAVEL', draw: (c, t) => SLOTS.vlog.draw(c, t) },
+  drone: { name: 'DRONE', generic: 'DRONE', draw: (c, t) => SLOTS.vlog.draw(c, t) },
+});

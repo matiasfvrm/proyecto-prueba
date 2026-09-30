@@ -11,6 +11,12 @@ window.MEDIA = {
   "craft": {
     "frames": 240
   },
+  "hk": {
+    "frames": 240
+  },
+  "amongus": {
+    "frames": 240
+  },
   "vlog": {
     "frames": 240
   },
@@ -24,6 +30,27 @@ window.MEDIA = {
     "frames": 240
   },
   "city": {
+    "frames": 240
+  },
+  "skate": {
+    "frames": 240
+  },
+  "car": {
+    "frames": 240
+  },
+  "food": {
+    "frames": 240
+  },
+  "dance": {
+    "frames": 240
+  },
+  "fashion": {
+    "frames": 240
+  },
+  "travel": {
+    "frames": 240
+  },
+  "drone": {
     "frames": 240
   }
 };

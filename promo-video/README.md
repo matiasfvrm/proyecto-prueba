@@ -25,7 +25,8 @@ The video uses real footage (clips are not committed; `./fetch_media.sh` downloa
 | `br` | Fortnite trailer (archive.org mirror of the Epic Games upload) |
 | `fps` | VALORANT Team Deathmatch official trailer (archive.org mirror of the Riot Games upload) |
 | `craft` | Minecraft "Ender Update" trailer (archive.org mirror of the Mojang upload) |
-| `vlog`, `music`, `podcast`, `city`, `ad` | Mixkit stock videos 2168, 48509, 2956, 41161, 15954 ([free license](https://mixkit.co/license/)) |
+| `hk`, `amongus` | Hollow Knight and Among Us trailers (Steam store) |
+| `vlog`, `music`, `podcast`, `city`, `ad`, `skate`, `car`, `food`, `dance`, `fashion`, `travel`, `drone` | Mixkit stock videos 2168, 48509, 2956, 41161, 15954, 36498, 35540, 49231, 33906, 42298, 5363, 15919 ([free license](https://mixkit.co/license/)) |
 
 Game trailers belong to their publishers. For paid advertising, your own gameplay recordings are the safest choice:
 replace any file in `media/clips/` (same name), adjust `media/clips/starts.txt`, and re-run `prep_media.py`.

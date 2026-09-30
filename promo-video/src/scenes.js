@@ -3,7 +3,7 @@
 // ============ 0-4s  cold open: rapid montage + "YOUR VIDEOS / NEXT LEVEL"
 function sOpen(c, lt) {
   if (lt < 2) {
-    const order = ['fps', 'br', 'music', 'rpg', 'vlog', 'craft', 'ad', 'podcast'];
+    const order = ['fps', 'skate', 'music', 'rpg', 'car', 'craft', 'dance', 'food'];
     const words = ['CUT', 'ZOOM', 'SYNC', 'GLITCH', 'COLOR', 'FX', 'SOUND', 'BOOM'];
     const i = clamp(Math.floor(lt / 0.25), 0, 7), local = lt - i * 0.25;
     const z = 1.15 - local * 0.4;
@@ -64,41 +64,41 @@ function sIntro(c, lt) {
   ['#ff5f57', '#febc2e', '#28c840'].forEach((col, i) => { c.fillStyle = col; c.beginPath(); c.arc(px + 36 + i * 30, py + 30, 9, 0, 7); c.fill(); });
   // ---- timeline layout (shared by preview + timeline so the preview always matches the playhead)
   const tx = px + 30, ty = py + 510, tw = pw - 60;
-  const cut = prog(lt, 2.2, 0.3);
-  const CLIPS = [
-    { id: 'fps', a: 0, w: 0.22 },
-    { id: 'br', a: 0.23, w: 0.2 },
-    { id: 'music', a: 0.44, w: 0.18 },
-    { id: 'vlog', a: 0.63, w: 0.17 },
-    { id: 'ad', a: 0.81, w: 0.19 },
-  ].map((k, i) => ({ ...k, x: tx + 10 + k.a * (tw - 20) + (i >= 2 ? E.out(cut) * 14 : 0), cw: k.w * (tw - 20) - 6 }));
-  const phX = tx + 10 + (tw - 20) * clamp((lt - 0.8) / 3.2);
-  const activeIdx = CLIPS.findIndex((k) => phX >= k.x && phX <= k.x + k.cw);
+  // back-to-back clips (no gaps); the preview crossfades with a zoom + flash at each cut
+  const CLIPS = ['amongus', 'skate', 'food', 'car', 'drone'].map((id, i) => ({ id, x: tx + 10 + i * 0.2 * (tw - 20), cw: 0.2 * (tw - 20) }));
+  const tl = clamp((lt - 0.8) / 3.2);                 // playhead position 0..1
+  const phX = tx + 10 + (tw - 20) * tl;
+  const activeIdx = Math.min(4, Math.floor(tl * 5));
   const fxOn = (i) => prog(lt, 0.9 + i * 0.18, 0.2) > 0.5; // same timing as the effects panel
   // ---- preview: the clip under the playhead, with the enabled effects applied
   const vx = px + 30, vy = py + 60, vw = 760, vh = 428;
   c.save(); rr(c, vx, vy, vw, vh, 14); c.clip();
   c.fillStyle = '#000'; c.fillRect(vx, vy, vw, vh);
-  if (activeIdx >= 0) {
-    const k = CLIPS[activeIdx];
-    // real-time playback: seconds since the playhead entered this clip (+ a small start offset)
-    const local = 0.5 + ((phX - k.x) / (tw - 20)) * 3.2;
-    const beat = Math.exp(-((Math.max(0, lt) % 0.5) / 0.1));
-    const zoom = 1 + (fxOn(0) ? 0.08 * beat : 0);     // zoom punch
-    const sh = fxOn(5) ? beat * 10 : 0;               // shake
-    const fr = Math.floor(lt * 30);
+  const beat = Math.exp(-((Math.max(0, lt) % 0.5) / 0.1));
+  const sh = fxOn(5) ? beat * 10 : 0, fr = Math.floor(lt * 30);
+  const grade = fxOn(3) ? 'saturate(1.45) contrast(1.12)' : null;
+  const drawClip = (i, alpha, extraZoom) => {
+    const k = CLIPS[i];
+    const local = 0.5 + (tl - i * 0.2) * 3.2;         // real-time playback inside the clip
+    const zoom = (1 + (fxOn(0) ? 0.08 * beat : 0)) * extraZoom;
+    c.save(); c.globalAlpha = alpha;
     c.translate(vx + vw / 2 + (rnd(fr) - 0.5) * sh, vy + vh / 2 + (rnd(fr + 0.3) - 0.5) * sh); c.scale(zoom, zoom); c.translate(-vw / 2, -vh / 2);
-    const grade = fxOn(3) ? 'saturate(1.45) contrast(1.12)' : null;
     slotRect(c, k.id, local, 0, 0, vw, vh, 0, grade);
     if (fxOn(1) && beat > 0.4) {                      // RGB glitch on the beat
-      c.save(); c.globalCompositeOperation = 'lighter'; c.globalAlpha = 0.35 * beat;
+      c.globalCompositeOperation = 'lighter'; c.globalAlpha = alpha * 0.35 * beat;
       slotRect(c, k.id, local, -12 * beat, 0, vw, vh, 0, 'sepia(1) hue-rotate(300deg) saturate(4)');
       slotRect(c, k.id, local, 12 * beat, 0, vw, vh, 0, 'sepia(1) hue-rotate(140deg) saturate(4)');
-      c.restore();
     }
-  } else {
-    text(c, 'GAP', vx + vw / 2, vy + vh / 2, { font: 'Mont', weight: 800, size: 30, ls: 8, color: '#555' });
-  }
+    c.restore();
+  };
+  // transition window around each cut (fraction of the timeline)
+  const TW = 0.05, nb = Math.round(tl * 5), dist = tl - nb / 5;
+  if (nb >= 1 && nb <= 4 && Math.abs(dist) < TW) {
+    const p = (dist + TW) / (2 * TW);                 // 0..1 across the cut
+    drawClip(nb - 1, 1, 1 + 0.25 * E.in(p));
+    drawClip(nb, E.inOut(p), 1.25 - 0.25 * E.out(p));
+    c.fillStyle = `rgba(255,255,255,${Math.max(0, 1 - Math.abs(p - 0.5) * 3) * 0.6})`; c.fillRect(vx, vy, vw, vh);
+  } else drawClip(activeIdx, 1, 1);
   c.restore();
   // preview HUD: timecode, clip name, speed
   const secs = clamp((lt - 0.8) / 3.2) * 30;
@@ -120,9 +120,9 @@ function sIntro(c, lt) {
     const ap = E.back(prog(lt, 0.6 + i * 0.12, 0.35)); if (ap <= 0) return;
     const col = [C.pink, C.cyan, C.yellow, C.purple, C.green][i], act = i === activeIdx;
     c.save(); c.globalAlpha *= clamp(ap) * (act || activeIdx < 0 ? 1 : 0.6); c.translate(0, (1 - ap) * 40);
-    slotRect(c, k.id, 0.3, k.x, ty + 14, k.cw, 80, 8);
+    slotRect(c, k.id, 0.3, k.x + 2, ty + 14, k.cw - 4, 80, 8);
     if (act) { c.shadowColor = col; c.shadowBlur = 25; }
-    c.strokeStyle = act ? '#fff' : col; c.lineWidth = act ? 6 : 4; rr(c, k.x, ty + 14, k.cw, 80, 8); c.stroke();
+    c.strokeStyle = act ? '#fff' : col; c.lineWidth = act ? 6 : 4; rr(c, k.x + 2, ty + 14, k.cw - 4, 80, 8); c.stroke();
     c.restore();
   });
   // audio waveform track
@@ -133,7 +133,7 @@ function sIntro(c, lt) {
   c.fillStyle = C.yellow; c.shadowColor = C.yellow; c.shadowBlur = 20; c.fillRect(ph2 - 3, ty - 6, 6, 222);
   c.beginPath(); c.moveTo(ph2 - 14, ty - 20); c.lineTo(ph2 + 14, ty - 20); c.lineTo(ph2, ty - 2); c.fill(); c.shadowBlur = 0;
   // razor cursor
-  const cx = lerp(1500, tx + 10 + 0.435 * (tw - 20) + 6, E.inOut(prog(lt, 1.6, 0.6))), cy = lerp(1000, ty + 50, E.inOut(prog(lt, 1.6, 0.6)));
+  const cx = lerp(1500, tx + 10 + 0.6 * (tw - 20), E.inOut(prog(lt, 1.6, 0.6))), cy = lerp(1000, ty + 50, E.inOut(prog(lt, 1.6, 0.6)));
   if (lt > 1.5) {
     c.save(); c.translate(cx, cy); c.scale(0.55, 0.55); c.fillStyle = '#fff'; c.strokeStyle = '#000'; c.lineWidth = 6; c.stroke(ICON.cursor); c.fill(ICON.cursor); c.restore();
     if (lt > 2.2) burst(c, lt - 2.2, cx, cy, 24, 7, { speed: 500, life: 0.6, size: 12, gravity: 600 });
@@ -143,10 +143,10 @@ function sIntro(c, lt) {
 
 // ============ 8-14s  platforms carousel
 const PLAT = [
-  { id: 'youtube', name: 'YouTube', col: '#ff0033', fmt: '16:9', sub: 'Long videos · Shorts · Thumbnails-ready', slot: 'fps' },
-  { id: 'tiktok', name: 'TikTok', col: '#25f4ee', fmt: '9:16', sub: 'Viral edits · Trends · Hooks', slot: 'music' },
-  { id: 'instagram', name: 'Instagram', col: '#e1306c', fmt: '9:16 · 4:5', sub: 'Reels · Stories · Posts', slot: 'vlog' },
-  { id: 'facebook', name: 'Facebook', col: '#1877f2', fmt: '16:9 · 1:1', sub: 'Ads · Videos · Reels', slot: 'ad' },
+  { id: 'youtube', name: 'YouTube', col: '#ff0033', fmt: '16:9', sub: 'Long videos · Shorts · Thumbnails-ready', slot: 'hk' },
+  { id: 'tiktok', name: 'TikTok', col: '#25f4ee', fmt: '9:16', sub: 'Viral edits · Trends · Hooks', slot: 'dance' },
+  { id: 'instagram', name: 'Instagram', col: '#e1306c', fmt: '9:16 · 4:5', sub: 'Reels · Stories · Posts', slot: 'travel' },
+  { id: 'facebook', name: 'Facebook', col: '#1877f2', fmt: '16:9 · 1:1', sub: 'Ads · Videos · Reels', slot: 'fashion' },
 ];
 function phone(c, slot, lt, x, y, w, h, ui) {
   c.save(); c.shadowColor = 'rgba(0,0,0,.6)'; c.shadowBlur = 60; c.fillStyle = '#0d0d0d'; rr(c, x - 16, y - 16, w + 32, h + 32, 56); c.fill(); c.restore();
@@ -162,7 +162,7 @@ function phone(c, slot, lt, x, y, w, h, ui) {
     text(c, n, ax, yy + 50, { font: 'Mont', weight: 800, size: 22 });
   });
   text(c, '@yourchannel', x + 30, y + h - 110, { font: 'Mont', weight: 800, size: 28, align: 'left' });
-  text(c, ui === 'tiktok' ? 'this edit is insane #fyp' : 'Golden hour vibes', x + 30, y + h - 70, { font: 'Mont', weight: 600, size: 24, align: 'left' });
+  text(c, ui === 'tiktok' ? 'this edit is insane #fyp' : 'Paradise found', x + 30, y + h - 70, { font: 'Mont', weight: 600, size: 24, align: 'left' });
   // floating hearts
   for (let i = 0; i < 6; i++) { const l = (lt * 0.9 + i / 6) % 1; c.save(); c.globalAlpha = 1 - l; c.translate(ax - 20 + Math.sin(l * 8 + i) * 30, y + h * 0.45 - l * 380); c.scale(0.35, 0.35); c.fillStyle = [C.pink, '#fff', C.yellow][i % 3]; c.fill(ICON.heart); c.restore(); }
   if (ui === 'instagram') { const gg = c.createLinearGradient(x, y, x + 80, y + 80); gg.addColorStop(0, '#feda75'); gg.addColorStop(1, '#962fbf'); c.strokeStyle = gg; c.lineWidth = 6; c.beginPath(); c.arc(x + 60, y + 60, 30, 0, 7); c.stroke(); text(c, 'Reels', x + 110, y + 62, { font: 'Mont', weight: 800, size: 30, align: 'left' }); }
@@ -178,7 +178,7 @@ function platformMock(c, p, lt) {
     c.beginPath(); c.arc(x + w * (0.3 + lt * 0.05), y + h - 5, 10, 0, 7); c.fill();
     c.fillStyle = '#212121'; c.fillRect(x - 10, y + h, w + 20, 140);
     c.fillStyle = C.purple; c.beginPath(); c.arc(x + 40, y + h + 70, 32, 0, 7); c.fill();
-    text(c, 'INSANE CLUTCH 1v5 — Best Moments', x + 95, y + h + 50, { font: 'Mont', weight: 800, size: 32, align: 'left' });
+    text(c, 'INSANE BOSS FIGHT — No Damage Run', x + 95, y + h + 50, { font: 'Mont', weight: 800, size: 32, align: 'left' });
     text(c, '1.2M views · 2 days ago', x + 95, y + h + 95, { font: 'Mont', weight: 600, size: 24, align: 'left', color: '#aaa' });
     c.fillStyle = '#ff0033'; rr(c, x + w - 210, y + h + 45, 190, 56, 28); c.fill();
     text(c, 'SUBSCRIBE', x + w - 115, y + h + 74, { font: 'Mont', weight: 800, size: 24 });
@@ -188,7 +188,7 @@ function platformMock(c, p, lt) {
     c.fillStyle = '#1877f2'; c.beginPath(); c.arc(x + 60, y + 60, 32, 0, 7); c.fill();
     text(c, 'Your Brand', x + 110, y + 48, { font: 'Mont', weight: 800, size: 30, align: 'left', color: '#111' });
     text(c, 'Sponsored', x + 110, y + 82, { font: 'Mont', weight: 600, size: 22, align: 'left', color: '#777' });
-    text(c, 'Our new drop is here. Watch till the end!', x + 30, y + 140, { font: 'Mont', weight: 600, size: 26, align: 'left', color: '#222' });
+    text(c, 'Our new collection is here. Watch till the end!', x + 30, y + 140, { font: 'Mont', weight: 600, size: 26, align: 'left', color: '#222' });
     slotRect(c, p.slot, lt, x, y + 180, w, 551 * 0.8, 0);
     c.fillStyle = '#f0f2f5'; c.fillRect(x, y + 180 + 441, w, 110);
     text(c, 'yourbrand.com', x + 30, y + 690, { font: 'Mont', weight: 800, size: 26, align: 'left', color: '#111' });
@@ -288,17 +288,19 @@ function sGaming(c, lt) {
   // grid of all games
   const l = lt - 5.0;
   darkBg(c, lt + 14, C.cyan, C.pink);
-  const gw = 900, gh = 470, gap = 30;
-  GAMES.forEach((g, i) => {
-    const p = E.back(prog(l, i * 0.08, 0.45));
-    const cx = W / 2 + (i % 2 ? 1 : -1) * (gw / 2 + gap / 2), cy = H / 2 + (i < 2 ? -1 : 1) * (gh / 2 + gap / 2);
-    const fromX = (i % 2 ? 1 : -1) * 1200, fromY = (i < 2 ? -1 : 1) * 800;
+  const GRID = [...GAMES, { id: 'hk', col: C.purple }, { id: 'amongus', col: C.yellow }];
+  const gw = 590, gh = 332, gap = 24;
+  GRID.forEach((g, i) => {
+    const col = i % 3, row = Math.floor(i / 3);
+    const p = E.back(prog(l, i * 0.07, 0.45));
+    const cx = W / 2 + (col - 1) * (gw + gap), cy = H / 2 + (row ? 1 : -1) * (gh / 2 + gap / 2 + 60);
+    const fromX = (col - 1) * 1400 || (row ? 300 : -300), fromY = (row ? 1 : -1) * 900;
     c.save(); c.translate(cx + fromX * (1 - p), cy + fromY * (1 - p)); c.rotate((1 - p) * 0.3 * (i % 2 ? 1 : -1));
     const bz = 1 + 0.03 * Math.sin(l * 2 + i);
     c.scale(bz, bz);
-    slotRect(c, g.id, l + i, -gw / 2, -gh / 2, gw, gh, 22);
-    c.strokeStyle = g.col; c.lineWidth = 6; rr(c, -gw / 2, -gh / 2, gw, gh, 22); c.stroke();
-    tag(c, slotName(g.id), -gw / 2 + 24, -gh / 2 + 50, { bg: g.col, color: '#000', align: 'left', size: 28 });
+    slotRect(c, g.id, l + i, -gw / 2, -gh / 2, gw, gh, 20);
+    c.strokeStyle = g.col; c.lineWidth = 6; rr(c, -gw / 2, -gh / 2, gw, gh, 20); c.stroke();
+    tag(c, slotName(g.id), -gw / 2 + 20, -gh / 2 + 42, { bg: g.col, color: '#000', align: 'left', size: 24 });
     c.restore();
   });
   const bp = E.back(prog(l, 0.5, 0.4));
@@ -401,7 +403,7 @@ function colorWheel(c, x, y, r, label, px, py) {
 }
 function sGrade(c, l) {
   // footage rendered once, then drawn through an interpolated grade (fast: filters on a bitmap)
-  const gb = gradeBuf.getContext('2d'); drawSlot(gb, 'vlog', l + 1, W, H);
+  const gb = gradeBuf.getContext('2d'); drawSlot(gb, 'travel', l + 1, W, H);
   const g = E.inOut(prog(l, 1.0, 0.6)); // 0 = raw, 1 = graded
   const z = 1.04 + 0.03 * l + 0.05 * hit(l, 1.6, 0.15);
   c.save(); c.translate(W / 2, H / 2); c.scale(z, z); c.translate(-W / 2, -H / 2);
@@ -430,7 +432,7 @@ function sGrade(c, l) {
     text(c, 'RAW  ·  FLAT  ·  DULL', 96, 420, { font: 'Mont', weight: 800, size: 38, ls: 8, align: 'left', color: '#d8dbe2' });
     c.restore();
   }
-  if (l > 1.0 && l < 1.6) {
+  if (l > 1.2 && l < 1.6) {
     text(c, 'GRADING… ' + Math.round(g * 100) + '%', 90, 300, { font: 'Mont', weight: 800, size: 70, align: 'left', color: '#fff', glow: 'rgba(0,0,0,.7)' });
   }
   const aIn = E.back(prog(l, 1.6, 0.4));
@@ -576,7 +578,7 @@ function sChat(c, lt) {
 function sCta(c, lt) {
   // background collage of footage
   c.fillStyle = '#04120b'; c.fillRect(0, 0, W, H);
-  const tiles = ['fps', 'vlog', 'br', 'music', 'rpg', 'ad', 'craft', 'podcast', 'city'];
+  const tiles = ['fps', 'dance', 'br', 'skate', 'rpg', 'fashion', 'craft', 'food', 'hk'];
   c.save(); c.globalAlpha = 0.28;
   tiles.forEach((id, i) => {
     const col = i % 3, row = Math.floor(i / 3);
