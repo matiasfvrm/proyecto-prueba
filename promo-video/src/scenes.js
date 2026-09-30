@@ -66,11 +66,11 @@ function sIntro(c, lt) {
   const tx = px + 30, ty = py + 510, tw = pw - 60;
   const cut = prog(lt, 2.2, 0.3);
   const CLIPS = [
-    { id: 'fps', a: 0, w: 0.22, cap: 'INSANE ACE!' },
-    { id: 'br', a: 0.23, w: 0.2, cap: 'BUILD FIGHT' },
-    { id: 'music', a: 0.44, w: 0.18, cap: 'DROP IT' },
-    { id: 'vlog', a: 0.63, w: 0.17, cap: 'GOLDEN HOUR' },
-    { id: 'ad', a: 0.81, w: 0.19, cap: 'FRESH & NEW' },
+    { id: 'fps', a: 0, w: 0.22 },
+    { id: 'br', a: 0.23, w: 0.2 },
+    { id: 'music', a: 0.44, w: 0.18 },
+    { id: 'vlog', a: 0.63, w: 0.17 },
+    { id: 'ad', a: 0.81, w: 0.19 },
   ].map((k, i) => ({ ...k, x: tx + 10 + k.a * (tw - 20) + (i >= 2 ? E.out(cut) * 14 : 0), cw: k.w * (tw - 20) - 6 }));
   const phX = tx + 10 + (tw - 20) * clamp((lt - 0.8) / 3.2);
   const activeIdx = CLIPS.findIndex((k) => phX >= k.x && phX <= k.x + k.cw);
@@ -81,8 +81,8 @@ function sIntro(c, lt) {
   c.fillStyle = '#000'; c.fillRect(vx, vy, vw, vh);
   if (activeIdx >= 0) {
     const k = CLIPS[activeIdx];
-    let local = ((phX - k.x) / k.cw) * 2.5;          // position inside the clip -> clip time
-    if (fxOn(2)) local *= 1.6;                        // speed ramp
+    // real-time playback: seconds since the playhead entered this clip (+ a small start offset)
+    const local = 0.5 + ((phX - k.x) / (tw - 20)) * 3.2;
     const beat = Math.exp(-((Math.max(0, lt) % 0.5) / 0.1));
     const zoom = 1 + (fxOn(0) ? 0.08 * beat : 0);     // zoom punch
     const sh = fxOn(5) ? beat * 10 : 0;               // shake
@@ -96,12 +96,6 @@ function sIntro(c, lt) {
       slotRect(c, k.id, local, 12 * beat, 0, vw, vh, 0, 'sepia(1) hue-rotate(140deg) saturate(4)');
       c.restore();
     }
-    if (fxOn(4)) {                                    // captions
-      const cp = E.back(clamp(((phX - k.x) / k.cw) * 4));
-      c.save(); c.translate(vw / 2, vh - 70); c.scale(cp, cp);
-      text(c, k.cap, 0, 0, { size: 64, stroke: 12, color: '#000' }); text(c, k.cap, 0, 0, { size: 64, color: C.yellow });
-      c.restore();
-    }
   } else {
     text(c, 'GAP', vx + vw / 2, vy + vh / 2, { font: 'Mont', weight: 800, size: 30, ls: 8, color: '#555' });
   }
@@ -109,12 +103,8 @@ function sIntro(c, lt) {
   // preview HUD: timecode, clip name, speed
   const secs = clamp((lt - 0.8) / 3.2) * 30;
   text(c, '● 00:' + String(Math.floor(secs)).padStart(2, '0') + ':' + String(Math.floor((secs % 1) * 30)).padStart(2, '0'), vx + 30, vy + 30, { font: 'Mont', weight: 800, size: 22, align: 'left', glow: 'rgba(0,0,0,.8)', blur: 8 });
-  if (activeIdx >= 0) {
-    const nm = slotName(CLIPS[activeIdx].id);
-    tag(c, nm + (fxOn(2) ? '  ·  1.6x' : ''), vx + vw - 16, vy + 34, { align: 'right', size: 18, ls: 2, bg: [C.pink, C.cyan, C.yellow, C.purple, C.green][activeIdx], color: activeIdx === 2 ? '#000' : '#fff' });
-  }
   // effects panel
-  const fx = ['Zoom punch', 'RGB glitch', 'Speed ramp', 'Color grade', 'Captions', 'Shake'];
+  const fx = ['Zoom punch', 'RGB glitch', 'Transitions', 'Color grade', 'Sound sync', 'Shake'];
   fx.forEach((s, i) => {
     const on = prog(lt, 0.9 + i * 0.18, 0.2);
     c.save(); c.globalAlpha *= 0.4 + 0.6 * on;
