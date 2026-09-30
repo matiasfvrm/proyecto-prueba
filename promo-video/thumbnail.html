@@ -20,69 +20,116 @@
 <script>
 const TW = 1920, TH = 1154;
 const c = document.getElementById('c').getContext('2d');
+const IMG = {};
+const loadImg = (k, src) => new Promise((res) => { const i = new Image(); i.onload = i.onerror = () => res(); i.src = src; IMG[k] = i; });
+
+function cover(img, x, y, w, h, sx = 0, sy = 0, sw = img.naturalWidth, sh = img.naturalHeight) {
+  const s = Math.max(w / sw, h / sh), cw = w / s, ch = h / s;
+  c.drawImage(img, sx + (sw - cw) / 2, sy + (sh - ch) / 2, cw, ch, x, y, w, h);
+}
 
 function drawThumb() {
-  // background: dark gradient + soft color blobs + grid
+  // ---------- background: the editor at work, darkened toward the text side
   c.fillStyle = '#07070d'; c.fillRect(0, 0, TW, TH);
+  if (IMG.editor.naturalWidth) {
+    c.save(); c.filter = 'saturate(1.25) contrast(1.05) brightness(.6)';
+    c.save(); c.translate(TW, 0); c.scale(-1, 1); cover(IMG.editor, 0, 0, TW, TH); c.restore(); // mirrored: editor faces the text
+    c.restore();
+  }
+  const lg = c.createLinearGradient(0, 0, TW, 0);
+  lg.addColorStop(0, 'rgba(7,7,13,.97)'); lg.addColorStop(0.45, 'rgba(7,7,13,.9)'); lg.addColorStop(0.75, 'rgba(7,7,13,.45)'); lg.addColorStop(1, 'rgba(7,7,13,.35)');
+  c.fillStyle = lg; c.fillRect(0, 0, TW, TH);
   c.save(); c.globalCompositeOperation = 'screen';
-  for (const [col, x, y, r] of [[C.pink, 250, 150, 900], [C.purple, 1500, 300, 900], [C.cyan, 1300, 1150, 800]]) {
-    const g = c.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, col + '55'); g.addColorStop(1, col + '00');
+  for (const [col, x, y, r] of [[C.pink, 150, 120, 750], [C.purple, 1500, 150, 800], [C.cyan, 1650, 1100, 700]]) {
+    const g = c.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, col + '50'); g.addColorStop(1, col + '00');
     c.fillStyle = g; c.fillRect(0, 0, TW, TH);
   }
   c.restore();
-  c.strokeStyle = 'rgba(255,255,255,.04)'; c.lineWidth = 1;
-  for (let x = 0; x < TW; x += 80) { c.beginPath(); c.moveTo(x, 0); c.lineTo(x, TH); c.stroke(); }
-  for (let y = 0; y < TH; y += 80) { c.beginPath(); c.moveTo(0, y); c.lineTo(TW, y); c.stroke(); }
 
-  // ---- right side: a landscape YouTube video behind three tilted phones
-  const card = (id, t, x, y, w, h, rot, r, border) => {
-    c.save(); c.translate(x, y); c.rotate(rot);
-    c.shadowColor = 'rgba(0,0,0,.7)'; c.shadowBlur = 60; c.fillStyle = '#0d0d0d'; rr(c, -w / 2 - 14, -h / 2 - 14, w + 28, h + 28, r + 12); c.fill(); c.shadowBlur = 0;
-    slotRect(c, id, t, -w / 2, -h / 2, w, h, r);
-    if (border) { c.strokeStyle = border; c.lineWidth = 6; rr(c, -w / 2 - 14, -h / 2 - 14, w + 28, h + 28, r + 12); c.stroke(); }
+  // ---------- right: three platform cards (YouTube / Instagram / TikTok)
+  const P = IMG.platforms;
+  const panels = [
+    { sx: 40, col: '#ff0033', x: 1225, y: 455, rot: -0.09, w: 330, h: 500 },
+    { sx: 1244, col: '#25f4ee', x: 1765, y: 455, rot: 0.09, w: 330, h: 500 },
+    { sx: 636, col: '#e1306c', x: 1495, y: 425, rot: 0, w: 370, h: 560 },
+  ];
+  for (const p of panels) {
+    c.save(); c.translate(p.x, p.y); c.rotate(p.rot);
+    c.shadowColor = p.col; c.shadowBlur = 50; c.fillStyle = p.col; rr(c, -p.w / 2 - 8, -p.h / 2 - 8, p.w + 16, p.h + 16, 34); c.fill(); c.shadowBlur = 0;
+    c.save(); rr(c, -p.w / 2, -p.h / 2, p.w, p.h, 28); c.clip();
+    if (P.naturalWidth) cover(P, -p.w / 2, -p.h / 2, p.w, p.h, p.sx, 20, 600, 900);
     c.restore();
-  };
-  // landscape "YouTube" frame
-  c.save(); c.translate(1500, 320); c.rotate(0.04);
-  c.shadowColor = 'rgba(0,0,0,.7)'; c.shadowBlur = 60; c.fillStyle = '#0d0d0d'; rr(c, -430, -250, 860, 500, 26); c.fill(); c.shadowBlur = 0;
-  slotRect(c, 'skate', 1.5, -410, -230, 820, 460, 16);
-  c.fillStyle = 'rgba(255,255,255,.35)'; c.fillRect(-410, 222, 820, 8); c.fillStyle = '#ff0033'; c.fillRect(-410, 222, 520, 8);
+    c.restore();
+  }
+  // "GO VIRAL" starburst sticker
+  c.save(); c.translate(1790, 150); c.rotate(0.18);
+  c.fillStyle = C.yellow; c.shadowColor = 'rgba(0,0,0,.5)'; c.shadowBlur = 30;
+  c.beginPath(); for (let i = 0; i < 32; i++) { const r = i % 2 ? 105 : 128, a = (i * Math.PI) / 16; c.lineTo(Math.cos(a) * r, Math.sin(a) * r); } c.fill(); c.shadowBlur = 0;
+  text(c, 'GO', 0, -26, { size: 62, color: '#111' }); text(c, 'VIRAL!', 0, 30, { size: 62, color: C.pink });
   c.restore();
-  
-  // phones
-  card('dance', 2.0, 1180, 720, 290, 520, -0.12, 34, null);
-  card('travel', 1.0, 1505, 770, 310, 560, 0.02, 36, null);
-  card('food', 2.5, 1810, 720, 290, 520, 0.12, 34, null);
-  platformIcon(c, 'youtube', 1860, 110, 120);
-  platformIcon(c, 'tiktok', 1090, 480, 110);
-  platformIcon(c, 'instagram', 1505, 1010, 110);
-  platformIcon(c, 'facebook', 1860, 470, 100);
-  // hearts / likes on the middle phone
-  c.save(); c.translate(1600, 830); c.scale(0.5, 0.5); c.fillStyle = C.pink; c.fill(ICON.heart); c.restore();
-  text(c, '248K', 1625, 900, { font: 'Mont', weight: 800, size: 26, glow: 'rgba(0,0,0,.8)', blur: 10 });
 
-  // ---- left side: the message
+  // ---------- left: the message
   const L = 90;
-  tag(c, 'PROFESSIONAL EDITOR', L, 140, { align: 'left', bg: C.pink, size: 30, ls: 5 });
-  text(c, 'SOCIAL MEDIA', L, 300, { size: 150, align: 'left', color: '#fff' });
-  const g = c.createLinearGradient(L, 0, L + 800, 0); g.addColorStop(0, C.yellow); g.addColorStop(1, '#ff9a3c');
-  text(c, 'VIDEO EDITING', L, 455, { size: 150, align: 'left', color: g, glow: 'rgba(255,190,60,.45)', blur: 40 });
-  text(c, 'Reels · TikToks · Shorts · YouTube', L + 4, 580, { font: 'Mont', weight: 800, size: 42, align: 'left', color: '#fff' });
-  // feature checklist
+  tag(c, 'PROFESSIONAL VIDEO EDITOR', L, 118, { align: 'left', bg: C.pink, size: 30, ls: 5 });
+  // title with a 3D extrusion
+  const title = (s, y, fill, depthCol) => {
+    for (let d = 10; d > 0; d--) text(c, s, L + d * 1.2, y + d * 1.6, { size: 172, align: 'left', color: depthCol });
+    text(c, s, L, y, { size: 172, align: 'left', color: fill });
+  };
+  title('SOCIAL MEDIA', 272, '#ffffff', '#2a1640');
+  const g = c.createLinearGradient(0, 360, 0, 520); g.addColorStop(0, '#ffe45c'); g.addColorStop(1, '#ff8a1f');
+  title('VIDEO EDITING', 452, g, '#7a2a0a');
+  // platform chips
+  let x = L;
+  for (const [icon, label] of [['youtube', 'YouTube'], ['tiktok', 'TikTok'], ['instagram', 'Reels'], ['youtube', 'Shorts']]) {
+    const w = measure(c, label, { font: 'Mont', weight: 800, size: 30 }) + 100;
+    c.fillStyle = 'rgba(255,255,255,.1)'; rr(c, x, 580, w, 76, 38); c.fill();
+    c.strokeStyle = 'rgba(255,255,255,.22)'; c.lineWidth = 2; c.stroke();
+    if (icon === 'tiktok') { c.fillStyle = '#000'; c.beginPath(); c.arc(x + 42, 618, 27, 0, 7); c.fill(); }
+    platformIcon(c, icon, x + 42, 618, icon === 'tiktok' ? 40 : 50);
+    text(c, label, x + 78, 620, { font: 'Mont', weight: 800, size: 30, align: 'left' });
+    x += w + 12;
+  }
+  // checklist
   ['Captions & subtitles', 'Transitions & effects', 'Color grading & music', 'Fast delivery'].forEach((s, i) => {
-    const x = L + (i % 2) * 450, y = 700 + Math.floor(i / 2) * 80;
-    c.fillStyle = C.green; c.beginPath(); c.arc(x + 24, y, 24, 0, 7); c.fill();
-    c.save(); c.translate(x + 4, y - 20); c.scale(0.4, 0.4); c.strokeStyle = '#fff'; c.lineWidth = 16; c.lineCap = 'round'; c.stroke(ICON.check); c.restore();
-    text(c, s, x + 64, y + 2, { font: 'Mont', weight: 800, size: 30, align: 'left' });
+    const cx = L + (i % 2) * 460, cy = 722 + Math.floor(i / 2) * 70;
+    c.fillStyle = C.green; c.beginPath(); c.arc(cx + 22, cy, 22, 0, 7); c.fill();
+    c.save(); c.translate(cx + 3, cy - 19); c.scale(0.38, 0.38); c.strokeStyle = '#fff'; c.lineWidth = 17; c.lineCap = 'round'; c.stroke(ICON.check); c.restore();
+    text(c, s, cx + 60, cy + 2, { font: 'Mont', weight: 800, size: 32, align: 'left' });
   });
-  // bottom strip: niches
-  c.fillStyle = 'rgba(255,255,255,.08)'; rr(c, L, 900, 860, 100, 24); c.fill();
-  c.strokeStyle = 'rgba(255,255,255,.15)'; c.lineWidth = 2; c.stroke();
-  text(c, 'GAMING · VLOGS · ADS · PODCASTS · MUSIC', L + 430, 952, { font: 'Mont', weight: 800, size: 28, ls: 2, color: C.cyan });
+
+  // ---------- bottom: an editing timeline across the whole image
+  const bx = 60, by = 880, bw = TW - 120, bh = 230;
+  c.save(); c.shadowColor = 'rgba(0,0,0,.6)'; c.shadowBlur = 40;
+  c.fillStyle = 'rgba(14,14,26,.88)'; rr(c, bx, by, bw, bh, 26); c.fill(); c.restore();
+  c.strokeStyle = 'rgba(255,255,255,.14)'; c.lineWidth = 2; rr(c, bx, by, bw, bh, 26); c.stroke();
+  ['#ff5f57', '#febc2e', '#28c840'].forEach((col, i) => { c.fillStyle = col; c.beginPath(); c.arc(bx + 34 + i * 28, by + 30, 9, 0, 7); c.fill(); });
+  text(c, '00:00:14:22', bx + 150, by + 32, { font: 'Mont', weight: 800, size: 24, align: 'left', color: C.muted });
+  // ruler
+  c.fillStyle = 'rgba(255,255,255,.25)';
+  for (let i = 0; i <= 60; i++) c.fillRect(bx + 120 + i * ((bw - 150) / 60), by + 52, 2, i % 5 ? 8 : 16);
+  text(c, 'V1', bx + 40, by + 115, { font: 'Mont', weight: 800, size: 22, align: 'left', color: C.muted });
+  text(c, 'A1', bx + 40, by + 190, { font: 'Mont', weight: 800, size: 22, align: 'left', color: C.muted });
+  const clips = ['dance', 'fps', 'travel', 'skate', 'food', 'music', 'car'];
+  const cols = [C.pink, C.cyan, C.yellow, C.purple, C.green, C.pink, C.cyan];
+  const tx0 = bx + 120, tw0 = bw - 150, cw = tw0 / clips.length;
+  clips.forEach((id, i) => {
+    slotRect(c, id, 2, tx0 + i * cw + 3, by + 80, cw - 6, 72, 10);
+    c.strokeStyle = cols[i]; c.lineWidth = 4; rr(c, tx0 + i * cw + 3, by + 80, cw - 6, 72, 10); c.stroke();
+  });
+  c.fillStyle = 'rgba(8,217,214,.14)'; rr(c, tx0, by + 166, tw0, 48, 8); c.fill();
+  for (let i = 0; i < 200; i++) { const hh = 6 + Math.abs(Math.sin(i * 1.7) * Math.cos(i * 0.45)) * 36; c.fillStyle = C.cyan; c.fillRect(tx0 + 6 + i * (tw0 - 12) / 200, by + 190 - hh / 2, 4, hh); }
+  const ph = tx0 + tw0 * 0.58;
+  c.fillStyle = C.yellow; c.shadowColor = C.yellow; c.shadowBlur = 18; c.fillRect(ph - 3, by + 50, 6, 170);
+  c.beginPath(); c.moveTo(ph - 15, by + 46); c.lineTo(ph + 15, by + 46); c.lineTo(ph, by + 66); c.fill(); c.shadowBlur = 0;
 }
 
-window.renderThumb = async () => { drawThumb(); await loadPending(); drawThumb(); return document.getElementById('c').toDataURL('image/png'); };
-if (!navigator.webdriver) document.fonts.ready.then(async () => { drawThumb(); await loadPending(); drawThumb(); });
+window.renderThumb = async () => {
+  await Promise.all([loadImg('editor', 'media/thumb/editor.png'), loadImg('platforms', 'media/thumb/platforms.png')]);
+  drawThumb(); await loadPending(); drawThumb();
+  return document.getElementById('c').toDataURL('image/png');
+};
+if (!navigator.webdriver) document.fonts.ready.then(() => window.renderThumb());
 </script>
 </body>
 </html>
