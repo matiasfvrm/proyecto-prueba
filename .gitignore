@@ -1,0 +1,4 @@
+video/voices/
+video/audio/line_*.wav
+video/audio/sil_*.wav
+video/audio/concat.txt
