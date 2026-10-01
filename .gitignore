@@ -3,7 +3,13 @@ video/audio/line_*.wav
 video/audio/sil_*.wav
 video/audio/concat.txt
 video/audio/*.wav
+video/audio/test_*
 video/media/raw/
+video/media/raw2/
+video/media/music/
+video/media/sfx/
 video/output/video_silent.mp4
+video/output/v2_*
+video/output/parts.txt
 video/output/preview.mp4
 __pycache__/
