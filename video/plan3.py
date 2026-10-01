@@ -21,6 +21,8 @@ IP_BEATS = [140.69, 141.25, 141.8, 142.38, 142.94, 143.5, 144.06, 144.61, 145.19
             154.39, 154.95, 155.53, 156.06, 156.62, 157.18, 157.76, 158.31, 158.8, 159.27, 159.82, 160.38,
             160.96, 161.52, 162.08]
 IP_FINAL_CHORD = 190.57
+# beats of the final section (source time) used to lock the rewind recap
+REWIND_BEATS = [181.553, 182.133, 182.691, 183.248, 183.828, 184.386, 184.92, 185.5, 186.057, 186.615, 187.195]
 M0 = L(10)
 BEATS = [M0 + (b - IP_CLIMAX) for b in IP_BEATS]
 def snap(t): return min(BEATS, key=lambda b: abs(b - t))
@@ -199,20 +201,26 @@ def build_plan():
     ov(L(21) - 0.1, L(23) - 0.1, "dust", amt=0.35)
     shot(L(23) - 0.1, L(24) - 0.1, portrait, z=(1.08, 1.2), focus=(0.5, 0.33), look="warm", par=1.2)
     tr(L(23) - 0.1, "leak", 0.7, v=2); fx(L(23) - 0.1, "impact_whoosh_deep", 0.4)
-    # the journey: rewind-style recap, accelerating, ends on the pose
+    # the journey: tape-rewind recap, cuts locked to the score (beats, then half-beats), reverse chronology
     fx(L(24) - 0.15, "tape_rewind", 0.4, at="start")
-    recap = [ohio_air, tiger, heisman, superdome, BG(13), hurt[2], sofi_sunset, action1, OSU(13), lsu_crowd,
-             BG(12), hurt[7], pbs_sb, action3]
     t, end = L(24) - 0.1, L(25) - 0.1
-    durs = [0.55 * (0.88 ** k) + 0.16 for k in range(len(recap))]
-    sc = (end - 1.2 - t) / sum(durs); durs = [d * sc for d in durs]
-    for k, src in enumerate(recap):
-        shot(t, t + durs[k], src, z=(1.0, 1.05), look="bw" if k % 3 else "teal", par=0.7)
-        if k: fx(t, "shutter_nikon", 0.14, pan=0.3 * (-1) ** k)
-        t += durs[k]
+    src0 = IP_FINAL_CHORD - (E(25) + 0.6 - t)
+    RB = [t + (b - src0) for b in REWIND_BEATS]           # score beats in video time
+    cuts = [t] + RB[:5] + [x for i in range(4, 9) for x in (RB[i] + (RB[i + 1] - RB[i]) / 2, RB[i + 1])]
+    recap = [(pbs_sb, "2022"), (sofi_sunset, "2022"), (sb_fly, "2022"), (hurt[7], "2020"), (hurt[2], "2020"),
+             (helmet_ball, "2020"), (superdome, "2020"), (lsu_crowd, "2019"), (heisman, "2019"),
+             (lsu_crowd2, "2019"), (tiger, "2018"), (lsu_band, "2018"), (OSU(13), "2017"), (OSU(2), "2016"),
+             (ohio_air, "2015")]
+    for k, (src, yr) in enumerate(recap):
+        a_, b_ = cuts[k], cuts[k + 1]
+        shot(a_, b_, src, z=(1.08, 1.0), look="bw" if k % 2 else "teal", par=0.6)
+        if k: fx(a_, "shutter_nikon", 0.16, pan=0.3 * (-1) ** k)
+        ov(a_, b_, "rewind_year", year=yr, first=(k == 0))
+    ov(cuts[0], cuts[-1], "vhs")
+    t = cuts[-1]
     shot(t, end, qb_pose, z=(1.0, 1.05), focus=(0.5, 0.35), look="warm", par=1.0)
     tr(t, "zoom", 0.45); fx(t, "impact_epic", 0.5)
-    ov(WS(24, -3), end - 0.05, "title", text="EXTRAORDINARY", size=160, mode="diff", y=0.45, track=10)
+    ov(t, end - 0.05, "title", text="EXTRAORDINARY", size=160, mode="diff", y=0.45, track=10, hide_subs=True)
     shot(end, E(25) + 0.6, portrait2, z=(1.04, 1.14), focus=(0.5, 0.33), look="cold", par=1.0)
     tr(end, "cross", 0.7)
     tail = E(25) + 0.6

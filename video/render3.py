@@ -191,6 +191,8 @@ def env_alpha(lt, dur, fin=0.25, fout=0.25):
 
 # ------------------------------------------------------------------ overlays
 def draw_subs(a, t):
+    """Words build on as they are spoken: each rises in and settles; the live word is orange with a
+    growing underline; keywords open a negative capsule with a left-to-right wipe; the phrase lifts out."""
     if any(o.get("hide_subs") and o["t0"] <= t < o["t1"] for o in OVL): return a
     for ch in SUBS:
         if not (ch["t0"] <= t < ch["t1"]): continue
@@ -198,34 +200,39 @@ def draw_subs(a, t):
         boxes = [fnt.getbbox(w["w"]) for w in words]
         widths = [b[2] - b[0] + (34 * S if w.get("key") else 0) for b, w in zip(boxes, words)]
         x = W / 2 - (sum(widths) + gap * (len(words) - 1)) / 2
-        lt = t - ch["t0"]
-        y = H * ch.get("y", 0.79) + (1 - ease_out(lt / 0.18)) * 18 * S
-        k_all = ease(lt / 0.12) * (1 - ease((t - ch["t1"] + 0.08) / 0.08))
-        base_m, act_m, box_m = Image.new("L", (W, H), 0), Image.new("L", (W, H), 0), Image.new("L", (W, H), 0)
-        key_on, key_k = False, 0.0
+        k_out = 1 - ease((t - (ch["t1"] - 0.14)) / 0.14)
+        y0 = H * ch.get("y", 0.79) - (1 - k_out) * 14 * S
+        layers = []                                   # (mask, color, alpha, kind)
+        shadow_m = Image.new("L", (W, H), 0)
         for w, wd in zip(words, widths):
-            cx = x + wd / 2
-            on = w["t0"] <= t < w["t1"] + 0.06
+            cx = x + wd / 2; x += wd + gap
+            lt = t - w["t0"]
+            if lt < 0: continue                        # not spoken yet: hidden
+            k_in = ease_out(lt / 0.16)
+            sc = 1.0 + 0.14 * (1 - ease_out(lt / 0.2))
+            y = y0 + (1 - k_in) * 24 * S
             m = text_mask(w["w"], fnt)
-            if on:
-                pop = 1.0 + 0.07 * (1 - ease_out((t - w["t0"]) / 0.16))
-                if w.get("key"):
-                    key_on, key_k = True, ease((t - w["t0"]) / 0.08)
-                    pad = 15 * S; bw_, bh_ = m.width * pop + 2 * pad, m.height * pop + pad
-                    ImageDraw.Draw(box_m).rounded_rectangle([cx - bw_ / 2, y - bh_ / 2, cx + bw_ / 2, y + bh_ / 2],
-                                                            radius=8 * S, fill=255)
-                paste_mask(act_m, m, cx, y, pop)
-            else:
-                paste_mask(base_m, m if t >= w["t0"] else m.point(lambda v: int(v * 0.55)), cx, y)
-            x += wd + gap
-        allm = Image.fromarray(np.maximum(np.asarray(base_m), np.asarray(act_m)))
-        a = shadow(a, allm, 0.7 * k_all, 8, (0, 4))
-        a = fill(a, base_m, "solid", (1, 1, 1), k_all)
-        if key_on:
-            a = fill(a, box_m, "neg", alpha=key_k * k_all)
-            a = fill(a, act_m, "solid", tuple(ORANGE), k_all)
-        else:
-            a = fill(a, act_m, "solid", tuple(np.clip(ORANGE * 1.15, 0, 1)), k_all)
+            wm = Image.new("L", (W, H), 0); x0_, y0_, mw, mh = paste_mask(wm, m, cx, y, sc)
+            paste_mask(shadow_m, m, cx, y, sc)
+            live = t < w["t1"] + 0.05
+            settle = ease((t - w["t1"] - 0.05) / 0.25)          # orange -> white after the word ends
+            col = tuple(np.clip(ORANGE * 1.15 * (1 - settle) + np.ones(3) * settle, 0, 1))
+            if w.get("key") and (live or settle < 1):
+                wipe = ease_out(lt / 0.14) * (1 - settle)
+                pad = 15 * S; bw_, bh_ = mw + 2 * pad, mh + pad
+                bm = Image.new("L", (W, H), 0)
+                ImageDraw.Draw(bm).rounded_rectangle([cx - bw_ / 2, y - bh_ / 2, cx - bw_ / 2 + bw_ * max(0.02, wipe),
+                                                      y + bh_ / 2], radius=8 * S, fill=255)
+                layers.append((bm, None, k_in * k_out, "neg"))
+            elif live:
+                ul = Image.new("L", (W, H), 0); grow = ease_out(lt / max(0.12, w["t1"] - w["t0"]))
+                ImageDraw.Draw(ul).rectangle([cx - mw / 2, y + mh / 2 + 4 * S, cx - mw / 2 + mw * grow,
+                                              y + mh / 2 + 9 * S], fill=255)
+                layers.append((ul, tuple(ORANGE), k_in * k_out, "solid"))
+            layers.append((wm, col, k_in * k_out, "solid"))
+        a = shadow(a, shadow_m, 0.7 * k_out, 8, (0, 4))
+        for m, col, al, kind in layers:
+            a = fill(a, m, kind, col or (1, 1, 1), al)
     return a
 
 def ov_title(a, o, t):
@@ -357,8 +364,40 @@ def ov_dust(a, o, t):
     m = np.asarray(can, np.float32)[..., None] / 255 * o.get("amt", 0.45)
     return a * (1 - m) + 0.85 * m
 
+def ov_vhs(a, o, t):
+    """Tape-rewind look: rolling tracking band, scanlines, slight chroma offset and lift."""
+    lt = t - o["t0"]
+    a = a.copy()
+    sh = max(1, int(5 * S)); a[..., 0] = np.roll(a[..., 0], sh, 1); a[..., 2] = np.roll(a[..., 2], -sh, 1)
+    band_y = int((1 - (lt * 0.9) % 1) * H); bh = int(46 * S)
+    y0, y1 = max(0, band_y - bh), min(H, band_y + bh)
+    if y1 > y0:
+        a[y0:y1] = np.roll(a[y0:y1], int(28 * S), 1) * 0.8 + 0.12
+    a[::3] *= 0.9
+    return a
+
+def ov_rewind_year(a, o, t):
+    """Big year that steps backwards on every cut, with a REWIND badge and running timecode."""
+    lt = t - o["t0"]
+    can = Image.new("L", (W, H), 0); d = ImageDraw.Draw(can)
+    x0, y0 = W - 120 * S, BAR + 34 * S
+    pop = 1 + 0.12 * (1 - ease_out(lt / 0.12))
+    m = text_mask(o["year"], ANTON(120))
+    paste_mask(can, m, x0 - m.width / 2, y0 + m.height / 2 + 30 * S, pop)
+    d.text((x0, y0), "<< REWIND", font=INTERX(26), fill=255, anchor="ra")
+    a = shadow(a, can, 0.6, 8, (0, 4))
+    a = fill(a, can, "solid", (1, 1, 1), 0.95)
+    dot = Image.new("L", (W, H), 0)
+    if int(t * 4) % 2 == 0: ImageDraw.Draw(dot).ellipse([120 * S, BAR + 40 * S, 138 * S, BAR + 58 * S], fill=255)
+    a = fill(a, dot, "solid", (0.95, 0.15, 0.12), 0.9)
+    tc = Image.new("L", (W, H), 0); f = t * 30
+    ImageDraw.Draw(tc).text((150 * S, BAR + 36 * S), "PLAY  %02d:%02d:%02d" % (int(f // 1800) % 60, int(f // 30) % 60, int(f) % 30),
+                            font=INTERB(22), fill=255)
+    return fill(a, tc, "solid", (1, 1, 1), 0.85)
+
 OVF = {"title": ov_title, "text": ov_text, "tag": ov_tag, "timeline": ov_timeline, "counter": ov_counter,
-       "score": ov_score, "stamp": ov_stamp, "leak": ov_leak, "dust": ov_dust}
+       "score": ov_score, "stamp": ov_stamp, "leak": ov_leak, "dust": ov_dust, "vhs": ov_vhs,
+       "rewind_year": ov_rewind_year}
 
 # ------------------------------------------------------------------ shots & transitions
 def shot_frame(sh, t):
@@ -436,7 +475,7 @@ def compose(t):
             sh = int(8 * S * k) + 1; src[..., 0] = np.roll(src[..., 0], sh, 1); src[..., 2] = np.roll(src[..., 2], -sh, 1)
             a = src
     for o in OVL:
-        if o["t0"] <= t < o["t1"] and o["type"] in ("leak", "dust"): a = OVF[o["type"]](a, o, t)
+        if o["t0"] <= t < o["t1"] and o["type"] in ("leak", "dust", "vhs"): a = OVF[o["type"]](a, o, t)
     a = bloom(np.clip(a, 0, 1))
     a = a * VIG
     for ac in ACC:                                  # story accents
@@ -446,7 +485,7 @@ def compose(t):
             elif ac["type"] == "neg": a = 1 - np.clip(a, 0, 1)
     a[:BAR] = 0.0; a[H - BAR:] = 0.0                # letterbox (graphics may draw on it)
     for o in OVL:
-        if o["t0"] <= t < o["t1"] and o["type"] not in ("leak", "dust"): a = OVF[o["type"]](a, o, t)
+        if o["t0"] <= t < o["t1"] and o["type"] not in ("leak", "dust", "vhs"): a = OVF[o["type"]](a, o, t)
     a = draw_subs(a, t)
     g = GRAIN[int(t * 24) % len(GRAIN)]
     a = a + cv2.resize(g, (W, H), interpolation=cv2.INTER_NEAREST)[..., None]
