@@ -2,3 +2,8 @@ video/voices/
 video/audio/line_*.wav
 video/audio/sil_*.wav
 video/audio/concat.txt
+video/audio/*.wav
+video/media/raw/
+video/output/video_silent.mp4
+video/output/preview.mp4
+__pycache__/
