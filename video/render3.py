@@ -141,9 +141,12 @@ GRAIN = [_rng.normal(0, 0.018, (H // 2, W // 2, 1)).astype(np.float32) for _ in 
 def bloom(a, amt=0.22):
     small = cv2.resize(a, (W // 6, H // 6), interpolation=cv2.INTER_AREA)
     hi = np.clip((small @ LUM - 0.72) / 0.28, 0, 1)[..., None] * small
+    streak = cv2.blur(np.clip((small @ LUM - 0.8) / 0.2, 0, 1)[..., None] * small, (max(3, int(W / 6 * 0.5)) | 1, 1))
     hi = cv2.GaussianBlur(hi, (0, 0), 6 * S + 1)
     hi = cv2.resize(hi, (W, H), interpolation=cv2.INTER_LINEAR)
-    return 1 - (1 - a) * (1 - hi * amt * np.array([1.0, 0.85, 0.7], np.float32))
+    st = cv2.resize(streak, (W, H), interpolation=cv2.INTER_LINEAR)
+    a = 1 - (1 - a) * (1 - hi * amt * np.array([1.0, 0.85, 0.7], np.float32))
+    return 1 - (1 - a) * (1 - st * 0.8 * np.array([0.55, 0.75, 1.0], np.float32))     # anamorphic streak
 
 def _leak(seed):
     r = np.random.default_rng(seed); lw, lh = 64, 36
@@ -264,7 +267,15 @@ def ov_title(a, o, t):
         ImageDraw.Draw(ln).rectangle([cx - half, cy + m.height / 2 + 14 * S, cx + half, cy + m.height / 2 + 18 * S], fill=255)
         a = fill(a, ln, "solid", tuple(ORANGE), k)
     a = shadow(a, canvas, 0.5 * k, 18, (0, 8))
-    return fill(a, canvas, o.get("mode", "solid"), o.get("color", (1, 1, 1)), k)
+    a = fill(a, canvas, o.get("mode", "solid"), o.get("color", (1, 1, 1)), k)
+    gl = (lt - 0.25) / 0.7                               # light glint sweeping across the letters
+    if 0 < gl < 1 and o.get("mode", "solid") == "solid":
+        xs = np.arange(W, dtype=np.float32)[None, :] + np.arange(H, dtype=np.float32)[:, None] * 0.4
+        cxg = (cx - m.width / 2 - 100 * S) + (m.width + 200 * S) * ease_io(gl)
+        band = np.exp(-((xs - cxg) / (38 * S)) ** 2).astype(np.float32)
+        gm = np.asarray(canvas, np.float32) / 255 * band * 0.85 * k
+        a = a + gm[..., None] * np.array([1.0, 0.9, 0.75], np.float32)
+    return a
 
 def ov_text(a, o, t):
     lt, dur = t - o["t0"], o["t1"] - o["t0"]
@@ -324,6 +335,9 @@ def ov_counter(a, o, t):
     can = Image.new("L", (W, H), 0)
     paste_mask(can, text_mask(o["fmt"].format(v), ANTON(o.get("size", 180))), W / 2, H * 0.45)
     a = shadow(a, can, 0.55 * k, 14, (0, 8)); a = fill(a, can, "solid", (1, 1, 1), k * ease(lt / 0.2))
+    bar = Image.new("L", (W, H), 0); prog = ease_out(clamp(lt / o.get("count", 1.4)))
+    bw_ = 520 * S; ImageDraw.Draw(bar).rectangle([W / 2 - bw_ / 2, H * 0.535, W / 2 - bw_ / 2 + bw_ * prog, H * 0.535 + 4 * S], fill=255)
+    a = fill(a, bar, "solid", tuple(ORANGE), k)
     sub = Image.new("L", (W, H), 0)
     paste_mask(sub, text_mask(o["sub"], INTERX(28), int(5 * S)), W / 2, H * 0.6)
     return fill(a, sub, "solid", tuple(np.clip(ORANGE * 1.3, 0, 1)), k * ease((lt - 0.3) / 0.5))
@@ -420,6 +434,10 @@ def shot_frame(sh, t):
             x = i * (pw + gap)
             a[:, x:x + pw] = a[:, x:x + pw] * (1 - k) + img * k          # fade up, no sliding
         return a
+    if sh.get("blur"):
+        small = photo_frame(dict(sh, par=0), p, W // 4, H // 4)
+        img = cv2.resize(cv2.GaussianBlur(small, (0, 0), 6), (W, H), interpolation=cv2.INTER_CUBIC)
+        return grade(img, sh.get("look", "muted")) * sh.get("dark", 0.32)
     img = photo_frame(sh, p) if kind == "photo" else clip_frame(sh, t)
     img = grade(img, sh.get("look", "teal"))
     lt = t - sh["t0"]
@@ -460,6 +478,12 @@ def compose(t):
         elif ty == "leak":
             a = fa * (1 - ease_io(q)) + fb * ease_io(q)
             a = 1 - (1 - a) * (1 - leak_layer(tr.get("v", 0), math.sin(math.pi * q) * 0.9, q))
+        elif ty == "burn":
+            k = math.sin(math.pi * q)
+            a = fa * (1 - ease_io(q)) + fb * ease_io(q)
+            lk = leak_layer(tr.get("v", 1), 1.0, q) * 0.5
+            a = 1 - (1 - a) * (1 - np.clip(lk * k, 0, 1))
+            a = a + (k ** 4) * 0.12 * np.array([1.0, 0.7, 0.4], np.float32)
         elif ty == "dip":
             a = (fa if q < 0.5 else fb) * abs(q - 0.5) * 2
         elif ty == "flash":

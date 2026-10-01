@@ -142,18 +142,24 @@ def build_plan():
     fx(L(9) + 0.2, "heartbeat_impact", 0.5); fx(L(9) + 1.2, "heartbeat_impact", 0.45)
 
     # ================= CHAPTER CARDS =================
+    CARD_BG = {1: X("athens_02"), 2: ohio_air, 3: tiger, 4: lsu_crowd, 5: X("cincy_06"), 6: locker,
+               7: sofi_sunset, 8: X("arrowhead_09"), 9: pbs_night}
     NUM = ["", "CHAPTER ONE", "CHAPTER TWO", "CHAPTER THREE", "CHAPTER FOUR", "CHAPTER FIVE", "CHAPTER SIX",
            "CHAPTER SEVEN", "CHAPTER EIGHT", ""]
     for n in range(1, len(CH)):
         a, b = card_span(n)
         title = CH[n]["title"].split("·")[-1].strip()
-        if n != 1: shot(a, b, None, kind="black"); tr(a, "dip", 0.5)
-        else: shot(E(9) + 0.35, b, None, kind="black")
+        bg = CARD_BG[n]
+        if n != 1: shot(a, b, bg, blur=True, dark=0.3, z=(1.04, 1.14), par=0, look="muted"); tr(a, "dip", 0.5)
+        else: shot(E(9) + 0.35, b, bg, blur=True, dark=0.3, z=(1.04, 1.14), par=0, look="muted"); tr(E(9) + 0.35, "dip", 0.6)
+        fx(a - 0.05, "riser_trailer", 0.3); fx(a + 0.12, "page_turn_big", 0.3); fx(a + 0.3, "bass_power_transition", 0.3)
         if NUM[n]: ov(a + 0.1, b - 0.05, "text", text=NUM[n], size=24, y=0.40, track=12, weight="x",
                        color=(1.0, 0.45, 0.2))
         ov(a + 0.25, b - 0.05, "title", text=title, size=118, y=0.51, line=True, track=8)
         fx(a + 0.3, "drum_deep", 0.5); fx(a + 0.3, "rumble_bass", 0.25); fx(a, "whoosh_tunnel", 0.16, at="start")
-    def first_tr(i, ty="dip", d=0.5): tr(L(i) - 0.1, ty, d)
+    def first_tr(i, ty="burn", d=0.7):
+        tr(L(i) - 0.1, ty, d, v=i % 3)
+        fx(L(i) - 0.1, {"burn": "whoosh_wind_cine", "leak": "whoosh_wind", "flash": "sweep_air", "zoom": "whoosh_cine_fast"}.get(ty, "whoosh_air"), 0.22)
 
     # ================= CH1 · ATHENS =================
     first_tr(10)
@@ -372,6 +378,34 @@ def build_plan():
     fx(TAIL, "impact_trailer_epic", 0.75); fx(TAIL, "glitch_cine", 0.25)
     ov(TAIL, DUR - 0.2, "title", text="WHAT COMES NEXT?", size=160, style="slam", y=0.46)
     ov(TAIL + 0.9, DUR - 0.2, "text", text="JOE BURROW", size=30, y=0.6, track=16, weight="x")
+
+    # ---------------- extra sound design: scene ambiences, foley-style details, transition whooshes
+    txt = "IT'S WHAT YOU DO AFTER YOU LOSE."
+    for k, ch in enumerate(txt):
+        if ch != " ": fx(L(9) - 0.1 + 1.0 * k / len(txt), "type_click", 0.16, at="start", pan=((k % 5) - 2) * 0.1)
+    for o in list(ovl):
+        if o["type"] == "counter": fx(o["t0"], "counter_tick", 0.14, at="start", dur=o.get("count", 1.4) + 0.1)
+        if o["type"] == "score": fx(o["t0"] + 0.05, "ui_click", 0.3)
+        if o["type"] == "tag": fx(o["t0"] + 0.08, "ui_click", 0.14, pan=-0.4)
+    fx(L(18) - 0.1, "clock_tick", 0.24, at="start", dur=E(18) - L(18) + 0.7)
+    fx(L(53) - 0.1, "clock_tick", 0.2, at="start", dur=3.0)
+    fx(L(56) - 0.1, "clock_tick", 0.18, at="start", dur=2.8)
+    for i, d in ((38, 7), (47, 3), (51, 5), (59, 6)): fx(L(i) - 0.2, "city_night", 0.14, at="start", dur=d)
+    fx(L(49) - 0.1, "stadium_drums_chants", 0.18, at="start", dur=6)
+    fx(L(57) - 0.1, "stadium_drums_chants", 0.14, at="start", dur=9)
+    fx(L(13) - 0.1, "stadium_whistle", 0.1, at="start", dur=8)
+    fx(L(26), "stadium_applause", 0.14, at="start", dur=3.5)
+    fx(WS(41, 1), "thunder_impact", 0.4); fx(WS(60, 4), "thunder_impact", 0.35)
+    fx(L(52) - 0.2, "bass_pulse", 0.22, at="start", dur=5.5)
+    starts = [e["t"] for e in sfx]
+    WH = {"zoom": "whoosh_cine_fast", "flash": "sweep_air", "leak": "whoosh_wind", "burn": "whoosh_wind_cine",
+          "cross": "whoosh_air", "dip": "whoosh_air_deep"}
+    for k, x in enumerate(sorted(trans, key=lambda x: x["t"])):
+        name = WH.get(x["type"])
+        if not name: continue
+        hit = x["t"] - HIT.get(name, 0)
+        if any(abs(s - hit) < 0.35 for s in starts): continue
+        fx(x["t"], name, 0.09 if x["type"] == "cross" else 0.16, pan=0.35 * (-1) ** k)
 
     shots.sort(key=lambda s: s["t0"])
     for x in trans:
