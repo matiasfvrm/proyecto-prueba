@@ -4,15 +4,17 @@
 Synthetic voice: Kokoro-82M (Apache 2.0), blend of voices `am_michael` and `am_fenrir`. Word timings: Whisper large-v3 (Groq).
 
 ## Music
-Kevin MacLeod (incompetech.com), licensed under Creative Commons: By Attribution 4.0 (http://creativecommons.org/licenses/by/4.0/):
-- "Lightless Dawn"
-- "Heroic Age"
+"Impact Prelude" by Kevin MacLeod (incompetech.com), licensed under Creative Commons: By Attribution 4.0 (http://creativecommons.org/licenses/by/4.0/).
+"Epical Drums 06" from Mixkit (mixkit.co), Mixkit Stock Music Free License.
 
 ## Sound effects
-BigSoundBank.com (royalty-free): whooshes, impacts, booms, camera shutters, heartbeat, stadium crowd, reverse swells, film projector.
+Mixkit (mixkit.co), Mixkit Sound Effects Free License: cinematic whooshes, trailer impacts, risers, heartbeat, stadium crowds, reporters and camera flashes, tape rewind.
 
 ## Fonts
 Anton, Inter (SIL Open Font License).
+
+## Depth for 2.5D parallax
+Depth Anything V2 Small (Apache 2.0).
 
 ## Images and video (Wikimedia Commons)
 
@@ -28,12 +30,9 @@ Anton, Inter (SIL Open Font License).
 - [2021 NFL Draft (51173334206).webm](https://commons.wikimedia.org/wiki/File:2021_NFL_Draft_(51173334206).webm) by Erik Drost, CC BY 2.0
 - [University of Notre Dame Football entering the stadium.webm](https://commons.wikimedia.org/wiki/File:University_of_Notre_Dame_Football_entering_the_stadium.webm) by tomarjugolin, CC BY 3.0
 - [Football supporters.webm](https://commons.wikimedia.org/wiki/File:Football_supporters.webm) by Alper Çuğun, CC BY 2.0
-- [Cincinnati Bengals vs. Washington Football Team (3985).jpg](https://commons.wikimedia.org/wiki/File:Cincinnati_Bengals_vs._Washington_Football_Team_(3985).jpg) by AlexanderJonesi, CC BY-SA 2.0
-- [Randy Bullock Browns vs Bengals DEC2019.jpg](https://commons.wikimedia.org/wiki/File:Randy_Bullock_Browns_vs_Bengals_DEC2019.jpg) by Erik Drost, CC BY 2.0
 - [Ravens vs Bengals OCT2021 (cropped).jpg](https://commons.wikimedia.org/wiki/File:Ravens_vs_Bengals_OCT2021_(cropped).jpg) by Maryland GovPics, CC BY 2.0
 - [Commanders vs. Bengals - 54751463087.jpg](https://commons.wikimedia.org/wiki/File:Commanders_vs._Bengals_-_54751463087.jpg) by All-Pro Reels, CC BY-SA 4.0
 - [Vinnytsia Wolves helmet 2016 G2.jpg](https://commons.wikimedia.org/wiki/File:Vinnytsia_Wolves_helmet_2016_G2.jpg) by George Chernilevsky, CC BY-SA 4.0
-- [Joe Burrow 2020 (50677887567).jpg](https://commons.wikimedia.org/wiki/File:Joe_Burrow_2020_(50677887567).jpg) by All-Pro Reels, CC BY-SA 2.0
 - [Joe Burrow Bengals.jpg](https://commons.wikimedia.org/wiki/File:Joe_Burrow_Bengals.jpg) by AlexanderJonesi, CC BY-SA 2.0
 - [Joe Burrow 2020 (50677063863) (1).jpg](https://commons.wikimedia.org/wiki/File:Joe_Burrow_2020_(50677063863)_(1).jpg) by All-Pro Reels, CC BY-SA 2.0
 - [Joe Burrow after injury (2020) (1).jpg](https://commons.wikimedia.org/wiki/File:Joe_Burrow_after_injury_(2020)_(1).jpg) by All-Pro Reels, CC BY-SA 2.0

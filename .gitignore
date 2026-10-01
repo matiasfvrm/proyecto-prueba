@@ -13,3 +13,7 @@ video/output/v2_*
 video/output/parts.txt
 video/output/preview.mp4
 __pycache__/
+video/media/sfx2/
+video/media/depth/
+video/output/v3_*
+video/output/parts3.txt
