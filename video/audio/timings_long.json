@@ -1,0 +1,557 @@
+{
+ "lines": [
+  {
+   "i": 0,
+   "text": "He has signed a massive NFL contract.",
+   "chapter": "COLD OPEN",
+   "start": 0.6,
+   "end": 2.991
+  },
+  {
+   "i": 1,
+   "text": "But he has also experienced the other side of professional sports.",
+   "chapter": "COLD OPEN",
+   "start": 3.411,
+   "end": 7.164
+  },
+  {
+   "i": 2,
+   "text": "He has been overlooked.",
+   "chapter": "COLD OPEN",
+   "start": 7.584,
+   "end": 8.799
+  },
+  {
+   "i": 3,
+   "text": "He has lost the biggest game of his career.",
+   "chapter": "COLD OPEN",
+   "start": 9.549,
+   "end": 11.796
+  },
+  {
+   "i": 4,
+   "text": "He has suffered multiple serious injuries.",
+   "chapter": "COLD OPEN",
+   "start": 12.216,
+   "end": 14.722
+  },
+  {
+   "i": 5,
+   "text": "And he has had to repeatedly prove that he belongs at the highest level.",
+   "chapter": "COLD OPEN",
+   "start": 15.142,
+   "end": 19.289
+  },
+  {
+   "i": 6,
+   "text": "That's why Joe Burrow's story isn't simply the story of a football superstar.",
+   "chapter": "COLD OPEN",
+   "start": 19.709,
+   "end": 24.757
+  },
+  {
+   "i": 7,
+   "text": "It's the story of what happens when success doesn't come easily.",
+   "chapter": "COLD OPEN",
+   "start": 25.177,
+   "end": 28.953
+  },
+  {
+   "i": 8,
+   "text": "Because sometimes the biggest part of a career isn't how many times you win.",
+   "chapter": "COLD OPEN",
+   "start": 29.373,
+   "end": 33.969
+  },
+  {
+   "i": 9,
+   "text": "It's what you do after you lose.",
+   "chapter": "COLD OPEN",
+   "start": 34.389,
+   "end": 36.229
+  },
+  {
+   "i": 10,
+   "text": "The story begins in Athens, a small college town in southeast Ohio.",
+   "chapter": "CHAPTER ONE \u00b7 ATHENS, OHIO",
+   "start": 38.879,
+   "end": 43.754
+  },
+  {
+   "i": 11,
+   "text": "Joe grew up around football. His father, Jim, spent decades as a coach.",
+   "chapter": "CHAPTER ONE \u00b7 ATHENS, OHIO",
+   "start": 44.174,
+   "end": 48.769
+  },
+  {
+   "i": 12,
+   "text": "Football wasn't just a game in that house. It was a way of life.",
+   "chapter": "CHAPTER ONE \u00b7 ATHENS, OHIO",
+   "start": 49.189,
+   "end": 53.138
+  },
+  {
+   "i": 13,
+   "text": "At Athens High School, Joe became the best player in the state.",
+   "chapter": "CHAPTER ONE \u00b7 ATHENS, OHIO",
+   "start": 53.558,
+   "end": 57.394
+  },
+  {
+   "i": 14,
+   "text": "In 2014, he was named Ohio's Mister Football.",
+   "chapter": "CHAPTER ONE \u00b7 ATHENS, OHIO",
+   "start": 57.814,
+   "end": 61.823
+  },
+  {
+   "i": 15,
+   "text": "And his dream was simple. To play for Ohio State.",
+   "chapter": "CHAPTER ONE \u00b7 ATHENS, OHIO",
+   "start": 62.243,
+   "end": 65.327
+  },
+  {
+   "i": 16,
+   "text": "He got his wish. But the dream came with a waiting room.",
+   "chapter": "CHAPTER TWO \u00b7 THE BACKUP",
+   "start": 67.647,
+   "end": 70.958
+  },
+  {
+   "i": 17,
+   "text": "In Columbus, Joe sat behind J.T. Barrett, one of the most productive quarterbacks in school history.",
+   "chapter": "CHAPTER TWO \u00b7 THE BACKUP",
+   "start": 71.378,
+   "end": 78.087
+  },
+  {
+   "i": 18,
+   "text": "One season passed. Then another.",
+   "chapter": "CHAPTER TWO \u00b7 THE BACKUP",
+   "start": 78.507,
+   "end": 80.679
+  },
+  {
+   "i": 19,
+   "text": "In 2017, he broke a bone in his throwing hand.",
+   "chapter": "CHAPTER TWO \u00b7 THE BACKUP",
+   "start": 81.429,
+   "end": 85.387
+  },
+  {
+   "i": 20,
+   "text": "And when the starting job finally opened up, it went to someone else.",
+   "chapter": "CHAPTER TWO \u00b7 THE BACKUP",
+   "start": 85.807,
+   "end": 90.023
+  },
+  {
+   "i": 21,
+   "text": "Three years. Zero starts.",
+   "chapter": "CHAPTER TWO \u00b7 THE BACKUP",
+   "start": 90.443,
+   "end": 92.241
+  },
+  {
+   "i": 22,
+   "text": "Most players would have been crushed. Joe did something different.",
+   "chapter": "CHAPTER TWO \u00b7 THE BACKUP",
+   "start": 92.991,
+   "end": 96.512
+  },
+  {
+   "i": 23,
+   "text": "He graduated early. And he left.",
+   "chapter": "CHAPTER TWO \u00b7 THE BACKUP",
+   "start": 96.932,
+   "end": 99.091
+  },
+  {
+   "i": 24,
+   "text": "In 2018, he transferred to LSU.",
+   "chapter": "CHAPTER THREE \u00b7 BATON ROUGE",
+   "start": 101.411,
+   "end": 104.534
+  },
+  {
+   "i": 25,
+   "text": "A new team. A new city. A new chance to prove he was good enough.",
+   "chapter": "CHAPTER THREE \u00b7 BATON ROUGE",
+   "start": 104.954,
+   "end": 108.889
+  },
+  {
+   "i": 26,
+   "text": "He won the starting job, and LSU won ten games.",
+   "chapter": "CHAPTER THREE \u00b7 BATON ROUGE",
+   "start": 109.309,
+   "end": 112.576
+  },
+  {
+   "i": 27,
+   "text": "But nobody was ready for what happened next.",
+   "chapter": "CHAPTER THREE \u00b7 BATON ROUGE",
+   "start": 112.996,
+   "end": 115.511
+  },
+  {
+   "i": 28,
+   "text": "In 2019, LSU rebuilt its offense, and Joe Burrow became unstoppable.",
+   "chapter": "CHAPTER FOUR \u00b7 THE PERFECT SEASON",
+   "start": 117.831,
+   "end": 123.858
+  },
+  {
+   "i": 29,
+   "text": "Five thousand six hundred and seventy-one yards.",
+   "chapter": "CHAPTER FOUR \u00b7 THE PERFECT SEASON",
+   "start": 124.278,
+   "end": 127.588
+  },
+  {
+   "i": 30,
+   "text": "Sixty touchdown passes. Only six interceptions.",
+   "chapter": "CHAPTER FOUR \u00b7 THE PERFECT SEASON",
+   "start": 128.338,
+   "end": 131.92
+  },
+  {
+   "i": 31,
+   "text": "He won the Heisman Trophy by one of the largest margins in history.",
+   "chapter": "CHAPTER FOUR \u00b7 THE PERFECT SEASON",
+   "start": 132.67,
+   "end": 137.01
+  },
+  {
+   "i": 32,
+   "text": "And in his speech, he didn't talk about himself.",
+   "chapter": "CHAPTER FOUR \u00b7 THE PERFECT SEASON",
+   "start": 137.43,
+   "end": 139.973
+  },
+  {
+   "i": 33,
+   "text": "He talked about the kids back home in Athens who go to bed hungry.",
+   "chapter": "CHAPTER FOUR \u00b7 THE PERFECT SEASON",
+   "start": 140.393,
+   "end": 144.367
+  },
+  {
+   "i": 34,
+   "text": "Within days, people had donated hundreds of thousands of dollars to his hometown.",
+   "chapter": "CHAPTER FOUR \u00b7 THE PERFECT SEASON",
+   "start": 144.787,
+   "end": 149.797
+  },
+  {
+   "i": 35,
+   "text": "A few weeks later, LSU beat Clemson for the national championship.",
+   "chapter": "CHAPTER FOUR \u00b7 THE PERFECT SEASON",
+   "start": 150.217,
+   "end": 154.458
+  },
+  {
+   "i": 36,
+   "text": "Fifteen wins. Zero losses.",
+   "chapter": "CHAPTER FOUR \u00b7 THE PERFECT SEASON",
+   "start": 154.878,
+   "end": 156.927
+  },
+  {
+   "i": 37,
+   "text": "The backup from Ohio State had just played one of the greatest seasons college football had ever seen.",
+   "chapter": "CHAPTER FOUR \u00b7 THE PERFECT SEASON",
+   "start": 157.677,
+   "end": 163.973
+  },
+  {
+   "i": 38,
+   "text": "In April 2020, the Cincinnati Bengals made him the first overall pick in the NFL Draft.",
+   "chapter": "CHAPTER FIVE \u00b7 NUMBER ONE",
+   "start": 166.293,
+   "end": 173.463
+  },
+  {
+   "i": 39,
+   "text": "A team that hadn't won a playoff game in almost thirty years now had its franchise quarterback.",
+   "chapter": "CHAPTER FIVE \u00b7 NUMBER ONE",
+   "start": 173.883,
+   "end": 179.52
+  },
+  {
+   "i": 40,
+   "text": "Then, in his tenth game, everything stopped.",
+   "chapter": "CHAPTER FIVE \u00b7 NUMBER ONE",
+   "start": 179.94,
+   "end": 182.278
+  },
+  {
+   "i": 41,
+   "text": "His knee collapsed. A torn ACL. A torn MCL.",
+   "chapter": "CHAPTER FIVE \u00b7 NUMBER ONE",
+   "start": 182.698,
+   "end": 186.539
+  },
+  {
+   "i": 42,
+   "text": "The rookie season was over.",
+   "chapter": "CHAPTER FIVE \u00b7 NUMBER ONE",
+   "start": 186.959,
+   "end": 188.435
+  },
+  {
+   "i": 43,
+   "text": "And once again, people began to wonder.",
+   "chapter": "CHAPTER FIVE \u00b7 NUMBER ONE",
+   "start": 189.185,
+   "end": 191.434
+  },
+  {
+   "i": 44,
+   "text": "Joe Burrow didn't wonder.",
+   "chapter": "CHAPTER SIX \u00b7 THE COMEBACK",
+   "start": 193.754,
+   "end": 195.244
+  },
+  {
+   "i": 45,
+   "text": "He came back the next season and played like he had never left.",
+   "chapter": "CHAPTER SIX \u00b7 THE COMEBACK",
+   "start": 195.994,
+   "end": 199.594
+  },
+  {
+   "i": 46,
+   "text": "He was sacked more than any quarterback in the league, and he kept getting up.",
+   "chapter": "CHAPTER SIX \u00b7 THE COMEBACK",
+   "start": 200.014,
+   "end": 203.979
+  },
+  {
+   "i": 47,
+   "text": "The Bengals won their division.",
+   "chapter": "CHAPTER SIX \u00b7 THE COMEBACK",
+   "start": 204.399,
+   "end": 206.13
+  },
+  {
+   "i": 48,
+   "text": "They won their first playoff game in thirty-one years.",
+   "chapter": "CHAPTER SIX \u00b7 THE COMEBACK",
+   "start": 206.55,
+   "end": 209.394
+  },
+  {
+   "i": 49,
+   "text": "In Kansas City, they came back from eighteen points down to beat the Chiefs in overtime.",
+   "chapter": "CHAPTER SIX \u00b7 THE COMEBACK",
+   "start": 209.814,
+   "end": 215.254
+  },
+  {
+   "i": 50,
+   "text": "And Joe Burrow was named Comeback Player of the Year.",
+   "chapter": "CHAPTER SIX \u00b7 THE COMEBACK",
+   "start": 215.674,
+   "end": 218.474
+  },
+  {
+   "i": 51,
+   "text": "On February thirteenth, 2022, the Bengals played in the Super Bowl.",
+   "chapter": "CHAPTER SEVEN \u00b7 SO CLOSE",
+   "start": 220.794,
+   "end": 225.991
+  },
+  {
+   "i": 52,
+   "text": "Late in the fourth quarter, they were ahead.",
+   "chapter": "CHAPTER SEVEN \u00b7 SO CLOSE",
+   "start": 226.411,
+   "end": 228.526
+  },
+  {
+   "i": 53,
+   "text": "But the Rams scored with a minute and a half left.",
+   "chapter": "CHAPTER SEVEN \u00b7 SO CLOSE",
+   "start": 228.946,
+   "end": 231.479
+  },
+  {
+   "i": 54,
+   "text": "Twenty-three to twenty.",
+   "chapter": "CHAPTER SEVEN \u00b7 SO CLOSE",
+   "start": 231.899,
+   "end": 233.348
+  },
+  {
+   "i": 55,
+   "text": "Joe had been sacked seven times that night.",
+   "chapter": "CHAPTER SEVEN \u00b7 SO CLOSE",
+   "start": 234.098,
+   "end": 236.302
+  },
+  {
+   "i": 56,
+   "text": "He had come within minutes of a championship.",
+   "chapter": "CHAPTER SEVEN \u00b7 SO CLOSE",
+   "start": 236.722,
+   "end": 239.146
+  },
+  {
+   "i": 57,
+   "text": "The next year, the Bengals returned to the AFC Championship Game.",
+   "chapter": "CHAPTER EIGHT \u00b7 AGAIN",
+   "start": 241.466,
+   "end": 245.61
+  },
+  {
+   "i": 58,
+   "text": "This time, Kansas City won. Twenty-three to twenty. Another three-point loss.",
+   "chapter": "CHAPTER EIGHT \u00b7 AGAIN",
+   "start": 246.03,
+   "end": 250.915
+  },
+  {
+   "i": 59,
+   "text": "In 2023, he signed the richest contract in NFL history at the time.",
+   "chapter": "CHAPTER EIGHT \u00b7 AGAIN",
+   "start": 251.335,
+   "end": 257.049
+  },
+  {
+   "i": 60,
+   "text": "Two months later, he tore a ligament in his throwing wrist.",
+   "chapter": "CHAPTER EIGHT \u00b7 AGAIN",
+   "start": 257.469,
+   "end": 260.715
+  },
+  {
+   "i": 61,
+   "text": "Another season, cut short.",
+   "chapter": "CHAPTER EIGHT \u00b7 AGAIN",
+   "start": 261.135,
+   "end": 262.712
+  },
+  {
+   "i": 62,
+   "text": "So he rebuilt again.",
+   "chapter": "CHAPTER EIGHT \u00b7 AGAIN",
+   "start": 263.462,
+   "end": 264.791
+  },
+  {
+   "i": 63,
+   "text": "In 2024, he led the entire league in passing yards and touchdown passes, and he was named Comeback Player of the Year for the second time.",
+   "chapter": "CHAPTER EIGHT \u00b7 AGAIN",
+   "start": 265.541,
+   "end": 275.214
+  },
+  {
+   "i": 64,
+   "text": "And then back into the fight once again.",
+   "chapter": "EPILOGUE",
+   "start": 277.534,
+   "end": 279.565
+  },
+  {
+   "i": 65,
+   "text": "His story isn't finished yet.",
+   "chapter": "EPILOGUE",
+   "start": 279.985,
+   "end": 281.543
+  },
+  {
+   "i": 66,
+   "text": "And perhaps that's what makes it so interesting.",
+   "chapter": "EPILOGUE",
+   "start": 281.963,
+   "end": 284.399
+  },
+  {
+   "i": 67,
+   "text": "Because Joe Burrow still has something left to prove.",
+   "chapter": "EPILOGUE",
+   "start": 284.819,
+   "end": 287.616
+  },
+  {
+   "i": 68,
+   "text": "Not to the people who doubted him.",
+   "chapter": "EPILOGUE",
+   "start": 288.036,
+   "end": 289.733
+  },
+  {
+   "i": 69,
+   "text": "Not to the people who questioned his injuries.",
+   "chapter": "EPILOGUE",
+   "start": 290.153,
+   "end": 292.661
+  },
+  {
+   "i": 70,
+   "text": "But to himself.",
+   "chapter": "EPILOGUE",
+   "start": 293.081,
+   "end": 294.166
+  },
+  {
+   "i": 71,
+   "text": "The journey from being overlooked to becoming an NFL superstar was already extraordinary.",
+   "chapter": "EPILOGUE",
+   "start": 294.916,
+   "end": 300.699
+  },
+  {
+   "i": 72,
+   "text": "Now, the question is what comes next.",
+   "chapter": "EPILOGUE",
+   "start": 301.119,
+   "end": 303.226
+  }
+ ],
+ "chapters": [
+  {
+   "title": "COLD OPEN",
+   "t": 0.0
+  },
+  {
+   "title": "CHAPTER ONE \u00b7 ATHENS, OHIO",
+   "t": 37.279
+  },
+  {
+   "title": "CHAPTER TWO \u00b7 THE BACKUP",
+   "t": 66.047
+  },
+  {
+   "title": "CHAPTER THREE \u00b7 BATON ROUGE",
+   "t": 99.811
+  },
+  {
+   "title": "CHAPTER FOUR \u00b7 THE PERFECT SEASON",
+   "t": 116.231
+  },
+  {
+   "title": "CHAPTER FIVE \u00b7 NUMBER ONE",
+   "t": 164.693
+  },
+  {
+   "title": "CHAPTER SIX \u00b7 THE COMEBACK",
+   "t": 192.154
+  },
+  {
+   "title": "CHAPTER SEVEN \u00b7 SO CLOSE",
+   "t": 219.194
+  },
+  {
+   "title": "CHAPTER EIGHT \u00b7 AGAIN",
+   "t": 239.866
+  },
+  {
+   "title": "EPILOGUE",
+   "t": 275.934
+  }
+ ]
+}

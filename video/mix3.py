@@ -2,7 +2,11 @@
 import subprocess, sys, tempfile, os
 import numpy as np, soundfile as sf, librosa
 from scipy.signal import butter, sosfilt
-from plan3 import build_plan, music_plan, OFF, DUR
+import importlib
+_plan = importlib.import_module(os.environ.get("PLAN", "plan3"))
+build_plan, music_plan, OFF, DUR = _plan.build_plan, _plan.music_plan, _plan.OFF, _plan.DUR
+TAG = os.environ.get("TAG", "v3")
+VO = getattr(_plan, "VO_FILE", "audio/voiceover.wav")
 
 SR = 44100
 N = int(DUR * SR)
@@ -48,7 +52,7 @@ for e in plan["sfx"]:
     place(sfx, y, e["t"], e["gain"], e.get("pan", 0.0))
 sfx = hp(sfx, 30)
 
-vo, _ = librosa.load("audio/voiceover.wav", sr=SR, mono=True)
+vo, _ = librosa.load(VO, sr=SR, mono=True)
 voice = np.zeros((2, N), np.float32); place(voice, np.stack([vo, vo]), OFF, 0.95)
 
 # smooth voice-keyed ducking (attack 60 ms, release 600 ms), only what is needed for clarity
@@ -68,9 +72,9 @@ music = mus_low * (0.35 + 0.65 * duck)[None] + mus_rest * duck[None]
 
 mix = voice + music * 0.7 + sfx * 0.85
 peak = np.abs(mix).max(); mix = mix / max(1.0, peak / 0.97)
-sf.write("audio/mix_v3.wav", mix.T, SR)
-sf.write("audio/music_v3.wav", (music / max(1e-6, np.abs(music).max())).T, SR)
-sf.write("audio/sfx_v3.wav", (sfx / max(1e-6, np.abs(sfx).max())).T, SR)
+sf.write(f"audio/mix_{TAG}.wav", mix.T, SR)
+sf.write(f"audio/music_{TAG}.wav", (music / max(1e-6, np.abs(music).max())).T, SR)
+sf.write(f"audio/sfx_{TAG}.wav", (sfx / max(1e-6, np.abs(sfx).max())).T, SR)
 print("mixed")
 if "--mux" in sys.argv:
     subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", "output/v3_silent.mp4", "-i", "audio/mix_v3.wav",

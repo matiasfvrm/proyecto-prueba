@@ -17,3 +17,5 @@ video/media/sfx2/
 video/media/depth/
 video/output/v3_*
 video/output/parts3.txt
+video/output/long_*
+video/output/parts_long.txt

@@ -12,7 +12,10 @@ import math, os, subprocess, sys
 import numpy as np, cv2
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
-from plan3 import build_plan, DUR
+import importlib
+_plan = importlib.import_module(os.environ.get("PLAN", "plan3"))
+build_plan, DUR = _plan.build_plan, _plan.DUR
+TAG = os.environ.get("TAG", "v3")
 from depth import depth as depth_map
 
 ARGS = sys.argv[1:]
@@ -52,6 +55,8 @@ def base(path, w, h):
         a = np.asarray(im, np.float32) / 255
         d = cv2.resize(depth_map(path), (a.shape[1], a.shape[0]), interpolation=cv2.INTER_LINEAR)
         _img[k] = (a, d)
+        while len(_img) > 14:                       # keep memory bounded on long timelines
+            _img.pop(next(iter(_img)))
     return _img[k]
 
 _grid = {}
@@ -504,8 +509,10 @@ def main():
     part, nparts = 0, 1
     if "--part" in ARGS: part, nparts = map(int, ARGS[ARGS.index("--part") + 1].split("/"))
     n = int(DUR * FPS); a0, a1 = n * part // nparts, n * (part + 1) // nparts
+    if "--range" in ARGS: a0, a1 = map(int, ARGS[ARGS.index("--range") + 1].split(":"))
     os.makedirs("output", exist_ok=True)
-    out = f"output/v3_part{part}.mp4" if not PREVIEW else f"output/v3_preview{part}.mp4"
+    out = f"output/{TAG}_part{part}.mp4" if not PREVIEW else f"output/{TAG}_preview{part}.mp4"
+    if "--out" in ARGS: out = ARGS[ARGS.index("--out") + 1]
     ff = subprocess.Popen(["ffmpeg", "-y", "-v", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}",
                            "-r", str(FPS), "-i", "-", "-c:v", "libx264", "-preset", "medium", "-crf", "16",
                            "-pix_fmt", "yuv420p", out], stdin=subprocess.PIPE)
