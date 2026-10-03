@@ -89,26 +89,31 @@ def photo_frame(sh, p, w=W, h=H):
     return cv2.remap(a, xs, ys, cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT)
 
 class Clip:
-    def __init__(self, path, ss, speed, w, h, cz=1.1, cy=0.5):
+    """Streams a source clip. Frames are addressed by timeline time, so a clip that is hidden for a while
+    (under a cutaway) stays in sync with its audio when it comes back."""
+    def __init__(self, path, ss, speed, w, h, cz=1.1, cy=0.5, t_start=0.0):
         vf = (f"setpts={1/speed}*PTS,fps={FPS},scale={int(w*cz)}:{int(h*cz)}:force_original_aspect_ratio=increase,"
               f"crop={w}:{h}:(iw-{w})/2:(ih-{h})*{cy}")
         self.w, self.h = w, h
         self.p = subprocess.Popen(["ffmpeg", "-v", "quiet", "-ss", f"{ss:.3f}", "-i", path, "-an", "-vf", vf,
                                    "-f", "rawvideo", "-pix_fmt", "rgb24", "-"], stdout=subprocess.PIPE)
-        self.last, self.t = np.zeros((h, w, 3), np.float32), None
+        self.last, self.t0, self.n = np.zeros((h, w, 3), np.float32), t_start, 0
     def read(self, t):
-        if self.t is not None and abs(t - self.t) < 1e-6: return self.last
-        b = self.p.stdout.read(self.w * self.h * 3)
-        if len(b) == self.w * self.h * 3:
-            self.last = np.frombuffer(b, np.uint8).reshape(self.h, self.w, 3).astype(np.float32) / 255
-        self.t = t
+        k = int(round((t - self.t0) * FPS))
+        while self.n <= k:
+            b = self.p.stdout.read(self.w * self.h * 3)
+            self.n += 1
+            if len(b) == self.w * self.h * 3:
+                if self.n > k: self.last = np.frombuffer(b, np.uint8).reshape(self.h, self.w, 3).astype(np.float32) / 255
+            else:
+                self.n = k + 1; break
         return self.last
 _clips = {}
 def clip_frame(sh, t, w=W, h=H):
     key = (sh["id"], w)
     if key not in _clips:
-        _clips[key] = Clip(sh["src"], sh.get("ss", 0) + (t - sh["t0"]) * sh.get("speed", 1.0),
-                           sh.get("speed", 1.0), w, h, sh.get("cz", 1.1), sh.get("cy", 0.5))
+        _clips[key] = Clip(sh["src"], max(0.0, sh.get("ss", 0) + (t - sh["t0"]) * sh.get("speed", 1.0)),
+                           sh.get("speed", 1.0), w, h, sh.get("cz", 1.1), sh.get("cy", 0.5), t_start=t)
     return _clips[key].read(t)
 
 # ------------------------------------------------------------------ look

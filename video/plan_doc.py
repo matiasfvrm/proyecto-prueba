@@ -86,8 +86,14 @@ def build():
             tb = pts[k + 1][0] if k + 1 < len(pts) else t1
             s = item_shot(ta, tb, it, k)
             tt = (it.get("tr") if isinstance(it, dict) else None) or (ttype if k else None)
-            if tt and tt != "cut": tr(ta, tt, td)
+            if tt and tt != "cut":
+                tr(ta, tt, {"whip": 0.28, "zoom": 0.34, "leak": 0.6}.get(tt, td))
+                if tt == "whip": fx(ta, "whoosh_cine_fast", 0.16, pan=0.4 * (-1) ** k)
+                elif tt == "zoom": fx(ta, "whoosh_air_deep", 0.2); fx(ta, "sub_knock", 0.18)
+                elif tt == "leak": fx(ta, "sweep_air", 0.12)
+                else: fx(ta, "whoosh_air", 0.06, pan=0.3 * (-1) ** k)
             elif k: fx(ta, "whoosh_air", 0.05, pan=0.3 * (-1) ** k)
+            if isinstance(it, dict) and it.get("kick"): fx(ta, "bass_hit_short", 0.22)
         return pts
 
     def vo(key, first, anchors=(), pre=0.12, post=0.3, ttype="cut"):
@@ -193,7 +199,7 @@ def build():
     a0, a1, at = real(LQ, [(254.10, 255.85), (257.05, 259.65)], credit=False,
                       cover=[(255.2, 258.6, {"src": X("kidsfb_02"), "look": "teal", "z": (1.1, 1.0)})])
     s0, s1, A = vo("v02", {"src": X("hsfb_00"), "look": "teal"},
-                   [("Mr", {"src": helmet_solo, "look": "warm", "z": (1.05, 1.14)}), ("Ohio", 1, OSU(13))])
+                   [("Mr", {"src": helmet_solo, "look": "warm", "z": (1.05, 1.14), "kick": 7, "tr": "zoom"}), ("Ohio", 1, {"src": OSU(13), "tr": "whip"})])
     ov(A["Mr"], A["Ohio"], "title", text="MR. FOOTBALL", size=160, y=0.44, line=True, dim=0.35)
     ov(A["Mr"], A["Ohio"], "tag", year="2014", label="OHIO'S BEST HIGH SCHOOL PLAYER", stat=None)
     fx(A["Mr"], "impact_epic", 0.4)
@@ -202,8 +208,8 @@ def build():
 
     # ================= 2 · THE BACKUP =================
     sp["ch2"] = T[0]
-    s0, s1, A = vo("v03", {"src": ohio_air, "look": "bw"}, [("Barrett", {"src": X("jtb_00"), "look": "muted", "z": (1.05, 1.15)}),
-                                                            ("Year", 1, {"src": OSU(10), "look": "bw"})])
+    s0, s1, A = vo("v03", {"src": R2 + "vstadium_08.webm", "ss": 4, "speed": 1.0, "cz": 1.08, "look": "bw"}, [("Barrett", {"src": X("jtb_00"), "look": "muted", "z": (1.05, 1.15)}),
+                                                            ("Year", 1, {"src": OSU(10), "look": "bw", "tr": "whip"})])
     ov(A["Barrett"], A["Barrett"] + 2.0, "tag", year="J.T. BARRETT", label="OHIO STATE STARTER", stat=None)
     a0, a1, at = real(WOSN, [(46.55, 49.92)], cz=1.12, cy=0.4,
                       lower=dict(name="JOE BURROW", role="Redshirt freshman  ·  Ohio State", date="SPRING GAME  ·  APRIL 16, 2016"))
@@ -212,8 +218,8 @@ def build():
     tr(a0, "cut", 0.1)
     a0, a1, at = real(WOSN, [(73.30, 78.80)], cz=1.3, cy=0.38, cover=[(75.6, 78.6, {"src": X("osu2_03"), "look": "muted"})])
     s0, s1, A = vo("v04", {"src": OSU(14), "look": "bw"},
-                   [("broke", {"src": X("xrayhand_00"), "look": "cold", "z": (1.0, 1.12)}),
-                    ("someone", {"src": X("haskins_00"), "look": "muted", "z": (1.05, 1.14)})])
+                   [("broke", {"src": X("xrayhand_00"), "look": "cold", "z": (1.0, 1.12), "kick": 6}),
+                    ("someone", {"src": X("haskins_00"), "look": "muted", "z": (1.05, 1.14), "tr": "whip"})])
     ov(A["broke"] + 0.3, A["someone"], "stamp", text="BROKEN HAND · 2017", size=86, x=0.6, y=0.42)
     ov(A["someone"], s1, "tag", year="2018", label="DWAYNE HASKINS WINS THE JOB", stat=None)
     fx(A["broke"] + 0.3, "slowmo_impact", 0.4)
@@ -228,12 +234,12 @@ def build():
 
     # ================= 3 · THE RISE =================
     sp["ch3"] = T[0]
-    vo("v05b", {"src": tiger, "look": "teal"}, [("chance", {"src": X("miketiger_02"), "look": "warm"})])
-    s0, s1, A = vo("v06", {"src": X("lsufb_00"), "look": "teal"}, [("2019", {"src": lsu_band, "look": "teal"}),
-                                                                    ("nobody", {"src": X("lsufb_01"), "look": "teal"})])
+    vo("v05b", {"src": tiger, "look": "teal"}, [("Ohio", {"src": X("lsufb_00"), "look": "teal", "tr": "whip"}), ("chance", {"src": X("miketiger_02"), "look": "warm", "tr": "leak"})])
+    s0, s1, A = vo("v06", {"src": X("lsufb_12"), "look": "teal"}, [("2019", {"src": lsu_band, "look": "teal", "tr": "whip"}),
+                                                                    ("nobody", {"src": X("lsufb_01"), "look": "teal", "tr": "zoom"})])
     ov(A["2019"], s1, "tag", year="2019", label="LSU TIGERS", stat=None)
-    s0, s1, A = vo("v07", {"src": X("lsufb_08"), "look": "teal"},
-                   [("^60", {"src": lsu_crowd2, "look": "teal"}), ("Heisman", {"src": heisman, "look": "warm", "focus": (0.62, 0.35)})])
+    s0, s1, A = vo("v07", {"src": X("lsu19_12"), "look": "teal", "focus": (0.35, 0.5)},
+                   [("^60", {"src": lsu_crowd2, "look": "teal", "tr": "whip"}), ("Heisman", {"src": heisman, "look": "warm", "focus": (0.62, 0.35), "kick": 7, "tr": "zoom"})])
     ov(s0, A["^60"], "counter", value=5671, fmt="{:,} YDS", sub="PASSING YARDS  ·  2019", size=200, count=2.0)
     ov(A["^60"], A["Heisman"], "counter", value=60, fmt="{} TD", sub="TOUCHDOWN PASSES", size=220, count=0.7)
     ov(A["Heisman"], s1 + 0.3, "title", text="HEISMAN TROPHY", size=170, y=0.45, line=True, dim=0.3)
@@ -248,7 +254,7 @@ def build():
     ov(A["days"], s1, "tag", year="DEC 2019", label="ATHENS COUNTY FOOD PANTRY", stat="HUNDREDS OF THOUSANDS DONATED")
     fx(A["days"], "ui_click", 0.25)
     s0, s1, A = vo("v08", {"src": superdome, "look": "teal"},
-                   [("^15", {"src": lsu_helmet, "look": "warm", "focus": (0.34, 0.44), "z": (1.5, 1.42)}),
+                   [("^15", {"src": lsu_helmet, "look": "warm", "focus": (0.34, 0.44), "z": (1.5, 1.42), "kick": 7, "tr": "zoom"}),
                     ("National", {"src": X("cfp_01"), "look": "warm", "focus": (0.62, 0.62), "z": (1.25, 1.18)})])
     ov(s0 + 0.4, A["^15"], "score", a="LSU", sa=42, b="CLEMSON", sb=25, sub="CFP NATIONAL CHAMPIONSHIP  ·  JAN 13, 2020")
     ov(A["^15"], A["National"], "title", text="15 – 0", size=300, y=0.44, dim=0.35)
@@ -263,35 +269,36 @@ def build():
 
     # ================= 4 · NUMBER ONE =================
     sp["ch4"] = T[0]
-    s0, s1, A = vo("v09", {"src": v_draft, "ss": 8, "speed": 0.8, "cz": 1.1}, [("first", {"src": X("cincy_06"), "look": "teal"})])
+    s0, s1, A = vo("v09", {"src": X("cincy_00"), "look": "teal", "z": (1.0, 1.1)}, [("first", {"src": X("cincy_06"), "look": "teal", "kick": 7, "tr": "zoom"})])
     ov(A["first"], s1, "title", text="#1", size=400, y=0.43, mode="diff", dim=0.2)
     ov(A["first"], s1, "tag", year="APR 2020", label="FIRST OVERALL PICK", stat="CINCINNATI BENGALS")
     fx(A["first"], "impact_epic", 0.5); fx(s0, "reporters_flashes", 0.2, at="start", dur=3)
     a0, a1, at = real(LN, [(54.50, 62.98)], titles=[(54.6, 58.0, dict(type="title", text="“JOEY FRANCHISE”", size=120, y=0.3, line=True))],
                       cover=[(60.4, 62.9, {"src": locker, "look": "warm"})])
     tr(a0, "cross", 0.35)
-    s0, s1, A = vo("v09b", {"src": X("pbs_00"), "look": "bw"}, [("franchise", {"src": qb_pose, "look": "warm", "z": (1.0, 1.08)})])
+    s0, s1, A = vo("v09b", {"src": X("pbs_00"), "look": "bw"}, [("franchise", {"src": qb_pose, "look": "warm", "z": (1.0, 1.08), "tr": "leak"})])
 
     # ================= 5 · THE SETBACKS =================
     sp["ch5"] = T[0]
     s0, s1, A = vo("v10", {"src": action1, "look": "teal"},
-                   [("knee", {"src": hurt[0], "look": "bw"}), ("torn", 0, {"src": X("acl_02"), "look": "cold", "z": (1.0, 1.1)}),
+                   [("knee", {"src": hurt[0], "look": "bw", "kick": 8}), ("torn", 0, {"src": X("acl_02"), "look": "cold", "z": (1.0, 1.1)}),
                     ("torn", 1, {"src": hurt[1], "look": "duo"})])
     ov(s0 + 0.3, A["knee"], "tag", year="NOV 22, 2020", label="GAME 10  ·  vs WASHINGTON", stat=None)
     ov(A["torn"] + 0.1, s1, "stamp", text="ACL + MCL", size=110, x=0.62, y=0.4, rot=-6)
     fx(A["knee"], "thunder_impact", 0.4); fx(A["knee"], "heartbeat_ambience", 0.35, at="start")
     gap(1.6, {"src": on_cart, "look": "cold", "z": (1.06, 1.12), "focus": (0.5, 0.36)}); tr(T[0] - 1.6, "cross", 0.4)
-    s0, s1, A = vo("v11", {"src": locker, "look": "warm"}, [("sacked", {"src": action2, "look": "teal", "kick": 6}),
-                                                            ("kept", {"src": action3, "look": "teal"})])
+    s0, s1, A = vo("v11", {"src": locker, "look": "warm"}, [("sacked", {"src": action2, "look": "teal", "kick": 6, "tr": "whip"}),
+                                                            ("league", {"src": JB(1), "look": "teal", "tr": "whip"}),
+                                                            ("kept", {"src": action3, "look": "teal", "tr": "zoom"})])
     ov(A["sacked"], A["kept"] + 0.4, "counter", value=51, fmt="{} SACKS", sub="MOST IN THE NFL  ·  2021", size=190, count=0.9)
     fx(A["sacked"], "impact_cool", 0.35)
     s0, s1, A = vo("v11b", {"src": pbs_sb, "look": "warm"},
-                   [("Kansas", {"src": v_arrow, "ss": 3, "speed": 0.75}), ("^18", {"src": X("arrowhead_08"), "look": "teal"}),
-                    ("Super", {"src": X("lombardi_02"), "look": "warm", "z": (1.05, 1.15)})])
+                   [("Kansas", {"src": v_arrow, "ss": 3, "speed": 0.75, "tr": "whip"}), ("^18", {"src": X("arrowhead_08"), "look": "teal", "tr": "whip"}),
+                    ("Super", {"src": X("lombardi_02"), "look": "warm", "z": (1.05, 1.15), "kick": 7, "tr": "zoom"})])
     ov(s0, A["Kansas"], "tag", year="JAN 2022", label="FIRST PLAYOFF WIN IN 31 YEARS", stat=None)
     ov(A["^18"], A["Super"], "score", a="BENGALS", sa=27, b="CHIEFS", sb=24, sub="AFC CHAMPIONSHIP  ·  OT  ·  JAN 30, 2022")
     fx(A["Kansas"], "stadium_drums_chants", 0.16, at="start", dur=6); fx(A["Super"], "impact_epic", 0.4)
-    s0, s1, A = vo("v12a", {"src": sofi_sunset, "look": "warm"}, [("Rams", {"src": X("clock_02"), "look": "cold", "z": (1.1, 1.25)})])
+    s0, s1, A = vo("v12a", {"src": sofi_sunset, "look": "warm"}, [("Rams", {"src": sofi_in, "look": "cold", "z": (1.1, 1.25)})])
     ov(s0 + 0.3, A["Rams"], "score", a="BENGALS", sa=20, b="RAMS", sb=16, sub="SUPER BOWL LVI  ·  4TH QUARTER")
     ov(A["Rams"] + 0.6, s1, "title", text="1:25", size=300, y=0.44, mode="diff", dim=0.3)
     fx(s0, "bass_pulse", 0.22, at="start", dur=5); fx(A["Rams"], "clock_tick", 0.24, at="start", dur=3)
@@ -299,12 +306,13 @@ def build():
     ov(s0, s1, "score", a="RAMS", sa=23, b="BENGALS", sb=20, sub="FINAL  ·  SUPER BOWL LVI  ·  FEB 13, 2022")
     fx(s0, "heartbeat_impact", 0.5); sp["silence"] = (s0 - 0.25, s1)
     s0, s1, A = vo("v13", {"src": X("contract_00"), "look": "warm"},
-                   [("months", {"src": X("wristbrace_01"), "look": "cold"}), ("Another", {"src": hurt[7], "look": "bw"})])
+                   [("months", {"src": X("wristbrace_01"), "look": "cold"}), ("Another", {"src": BG(14), "look": "bw", "z": (1.12, 1.0)})])
     ov(s0 + 0.2, A["months"], "counter", value=275_000_000, fmt="${:,}", sub="5 YEARS  ·  SEPT 2023", size=160, count=1.3)
     ov(A["Another"], s1, "stamp", text="SEASON OVER", size=100, x=0.6, y=0.42)
     fx(A["months"], "thunder_impact", 0.3); fx(s0 + 0.2, "impact_intro", 0.3)
-    s0, s1, A = vo("v14", {"src": v_nfl, "ss": 3, "speed": 0.7},
-                   [("touchdowns", {"src": action1, "look": "teal"}), ("Comeback", {"src": qb_pose, "look": "warm", "focus": (0.5, 0.33)})])
+    s0, s1, A = vo("v14", {"src": JB(7), "look": "teal", "z": (1.0, 1.1)},
+                   [("league", {"src": JB(35), "look": "teal", "tr": "whip"}), ("touchdowns", {"src": JB(8), "look": "teal", "tr": "whip"}),
+                    ("Comeback", {"src": qb_pose, "look": "warm", "focus": (0.5, 0.33), "kick": 7, "tr": "zoom"})])
     ov(s0 + 0.3, A["touchdowns"], "counter", value=4918, fmt="{:,} YDS", sub="#1 IN THE NFL  ·  2024", size=190, count=1.2)
     ov(A["touchdowns"], A["Comeback"], "counter", value=43, fmt="{} TD", sub="#1 IN THE NFL  ·  2024", size=220, count=0.7)
     ov(A["Comeback"], s1 + 0.3, "title", text="COMEBACK PLAYER OF THE YEAR", size=104, y=0.42, line=True, dim=0.3)
@@ -396,7 +404,7 @@ def write_dialogue():
             last = s["t"]
             sw = SRCW[s["src"]]
             for i, w in enumerate(sw):
-                lead = (i and re.search(r"[.?!]$", sw[i - 1]["word"]) and w["start"] >= s["a"] - 0.6
+                lead = (i and re.search(r"[.?!]$", sw[i - 1]["word"]) and s["a"] - 0.6 <= w["start"] < s["a"] - 0.15
                         and w["end"] > s["a"] + 0.1)   # sentence start Whisper placed slightly early
                 if lead or s["a"] - 0.15 <= w["start"] < s["b"] - 0.2:
                     st = max(last, s["t"] + max(0.0, w["start"] - s["a"]))   # keep source word order monotonic
