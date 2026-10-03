@@ -49,6 +49,7 @@ Anton, Inter — SIL Open Font License.
 - [Dwayne Haskins (31124904497).jpg](https://commons.wikimedia.org/wiki/File:Dwayne_Haskins_(31124904497).jpg) by Maize &amp; Blue Nation, CC BY 2.0
 - [Vinnytsia Wolves helmet 2016 G1.jpg](https://commons.wikimedia.org/wiki/File:Vinnytsia_Wolves_helmet_2016_G1.jpg) by George Chernilevsky, CC BY-SA 4.0
 - [Celina High School, Friday Night Football.jpg](https://commons.wikimedia.org/wiki/File:Celina_High_School,_Friday_Night_Football.jpg) by Heidi Knapp, CC BY-SA 4.0
+- [Ratliff stadium.JPG](https://commons.wikimedia.org/wiki/File:Ratliff_stadium.JPG) by Zorin09, CC BY 3.0
 - [Joe Burrow 2020 (50677887567).jpg](https://commons.wikimedia.org/wiki/File:Joe_Burrow_2020_(50677887567).jpg) by All-Pro Reels, CC BY-SA 2.0
 - [Joe Burrow Bengals.jpg](https://commons.wikimedia.org/wiki/File:Joe_Burrow_Bengals.jpg) by AlexanderJonesi, CC BY-SA 2.0
 - [Joe Burrow (50677060553).jpg](https://commons.wikimedia.org/wiki/File:Joe_Burrow_(50677060553).jpg) by All-Pro Reels from District of Columbia, USA, CC BY-SA 2.0
@@ -62,7 +63,6 @@ Anton, Inter — SIL Open Font License.
 - [Joe Burrow Montez Sweat (50677806896).jpg](https://commons.wikimedia.org/wiki/File:Joe_Burrow_Montez_Sweat_(50677806896).jpg) by All-Pro Reels from District of Columbia, USA, CC BY-SA 2.0
 - [Joe Burrow Montez Sweat (50677060083).jpg](https://commons.wikimedia.org/wiki/File:Joe_Burrow_Montez_Sweat_(50677060083).jpg) by All-Pro Reels from District of Columbia, USA, CC BY-SA 2.0
 - [J. T. Barrett 2017.jpg](https://commons.wikimedia.org/wiki/File:J._T._Barrett_2017.jpg) by Paula  R. Lively from Zanesville, CC BY 2.0
-- [Monarch for Marines hosts youth football camp DVIDS433283.jpg](https://commons.wikimedia.org/wiki/File:Monarch_for_Marines_hosts_youth_football_camp_DVIDS433283.jpg) by U.S. Marine Corps photo by Pfc. Timothy J. Lenzo, Public domain
 - [Pendleton children play with the pros at free football camp DVIDS439417.jpg](https://commons.wikimedia.org/wiki/File:Pendleton_children_play_with_the_pros_at_free_football_camp_DVIDS439417.jpg) by Lance Cpl. Michelle Brinn, Public domain
 - [Vince Lombardi Trophy Visits the Pennsylvania Capitol (41844569054).jpg](https://commons.wikimedia.org/wiki/File:Vince_Lombardi_Trophy_Visits_the_Pennsylvania_Capitol_(41844569054).jpg) by Governor Tom Wolf from Harrisburg, PA, CC BY 2.0
 - [LSU Football at the White House (49400532786).jpg](https://commons.wikimedia.org/wiki/File:LSU_Football_at_the_White_House_(49400532786).jpg) by The White House from Washington, DC, Public domain

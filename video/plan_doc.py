@@ -193,11 +193,11 @@ def build():
        [("small", {"src": X("athens_05"), "look": "warm"}), ("father", {"src": X("peden_05"), "look": "teal"}),
         ("decades", {"src": X("peden_03"), "look": "teal"})], ttype="cross")
     a0, a1, at = real(LQ, [(230.85, 244.70)],
-                      cover=[(232.05, 235.85, {"src": X("kidsfb_04"), "look": "warm"}), (239.4, 241.9, {"src": X("kidsfb_02"), "look": "warm"})],
+                      cover=[(232.05, 235.85, {"src": X("kidsfb_04"), "look": "warm"})],
                       lower=dict(name="JOE BURROW", role="On becoming a quarterback", date="LORDSTOWN MOTORS INTERVIEW  ·  2022"))
     tr(a0, "cross", 0.4)
     a0, a1, at = real(LQ, [(254.10, 255.85), (257.05, 259.65)], credit=False,
-                      cover=[(255.2, 258.6, {"src": X("kidsfb_02"), "look": "teal", "z": (1.1, 1.0)})])
+                      cover=[(255.2, 258.6, {"src": X("hsfb_02"), "look": "warm", "z": (1.1, 1.0)})])
     s0, s1, A = vo("v02", {"src": X("hsfb_00"), "look": "teal"},
                    [("Mr", {"src": helmet_solo, "look": "warm", "z": (1.05, 1.14), "kick": 7, "tr": "zoom"}), ("Ohio", 1, {"src": OSU(13), "tr": "whip"})])
     ov(A["Mr"], A["Ohio"], "title", text="MR. FOOTBALL", size=160, y=0.44, line=True, dim=0.35)
@@ -346,7 +346,6 @@ def build():
     tr(t0, "dip", 0.6)
     ov(t0 + 0.2, t1 - 0.2, "title", text="JOE BURROW", size=150, y=0.36, line=True)
     for k, line_ in enumerate(["INTERVIEW FOOTAGE  ·  WOSN (2016), LORDSTOWN MOTORS (2022)  ·  CC BY 3.0",
-                               "PHOTOS & CLIPS  ·  WIKIMEDIA COMMONS CONTRIBUTORS (SEE DESCRIPTION)",
                                "MUSIC  ·  KEVIN MACLEOD (INCOMPETECH.COM)  ·  CC BY 4.0"]):
         ov(t0 + 0.8 + 0.2 * k, t1 - 0.2, "text", text=line_, size=19, y=0.56 + 0.045 * k, track=3)
     fx(t0, "impact_trailer_epic", 0.6)
@@ -362,25 +361,17 @@ def build():
     trans[:] = [x for x in trans if x["type"] != "cut"]
     return dict(shots=shots, trans=trans, overlays=ovl, accents=acc, sfx=sfx, segs=segs, dur=dur, sections=sp)
 
-def snap_to_source_cuts(shots, tol=0.45):
-    """Avoid micro-shots: if a clip shot begins/ends within `tol` of one of the source video's own cuts,
-    move that boundary onto the source cut (keeping lip-sync by shifting ss) and stretch the neighbour."""
-    clips = [s for s in shots if s["kind"] == "clip" and s["src"] in SRC_CUTS]
-    for s in clips:
-        cuts = SRC_CUTS[s["src"]]
-        src_t = lambda t: s["ss"] + (t - s["t0"]) * s.get("speed", 1.0)
-        for c in cuts:
-            tl = s["t0"] + (c - s["ss"]) / s.get("speed", 1.0)          # timeline time of the source cut
-            if s["t0"] < tl < s["t0"] + tol and s["t1"] - s["t0"] > tol + 0.3:
-                nb = [o for o in shots if abs(o["t1"] - s["t0"]) < 1e-3 and not o.get("cover")]
-                for o in nb: o["t1"] = tl
-                s["ss"] += (tl - s["t0"]) * s.get("speed", 1.0); s["t0"] = tl
-            elif s["t1"] - tol < tl < s["t1"] and s["t1"] - s["t0"] > tol + 0.3:
-                nb = [o for o in shots if abs(o["t0"] - s["t1"]) < 1e-3 and not o.get("cover")]
-                for o in nb:
-                    if o["kind"] == "clip": o["ss"] -= (o["t0"] - tl) * o.get("speed", 1.0)
-                    o["t0"] = tl
-                s["t1"] = tl
+SRC_CUT_EXACT = {k: v["cuts"] for k, v in json.load(open("doc/src_cuts.json")).items()}   # as seen by ffmpeg -ss
+
+def snap_to_source_cuts(shots, tol=0.5):
+    """Never let a camera change of the source video leak in for a split second at the edge of a shot:
+    if a source cut falls within `tol` of a shot edge, hold the nearest clean frame instead (src_lo / src_hi)."""
+    for s in shots:
+        if s["kind"] != "clip" or s["src"] not in SRC_CUT_EXACT: continue
+        sp_ = s.get("speed", 1.0); a = s["ss"]; b = s["ss"] + (s["t1"] - s["t0"]) * sp_
+        for c in SRC_CUT_EXACT[s["src"]]:
+            if a - 0.05 < c < a + tol: s["src_lo"] = max(s.get("src_lo", 0), c + 0.08)
+            elif b - tol < c < b + 0.05: s["src_hi"] = min(s.get("src_hi", 1e9), c - 0.1)
 
 _B = build()
 DUR = round(_B["dur"], 2)

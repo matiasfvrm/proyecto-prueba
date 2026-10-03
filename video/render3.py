@@ -110,6 +110,9 @@ class Clip:
         return self.last
 _clips = {}
 def clip_frame(sh, t, w=W, h=H):
+    sp_ = sh.get("speed", 1.0)          # hold a clean frame instead of crossing a source camera cut at the edges
+    if "src_lo" in sh: t = max(t, sh["t0"] + (sh["src_lo"] - sh.get("ss", 0)) / sp_)
+    if "src_hi" in sh: t = min(t, sh["t0"] + (sh["src_hi"] - sh.get("ss", 0)) / sp_)
     key = (sh["id"], w)
     if key not in _clips:
         _clips[key] = Clip(sh["src"], max(0.0, sh.get("ss", 0) + (t - sh["t0"]) * sh.get("speed", 1.0)),
