@@ -9,20 +9,25 @@ LINES = {
  "v03": "In Columbus, he waited. Behind J.T. Barrett. Year after year.",
  "v04": "He never started a game there. In 2017, he broke his throwing hand. In 2018, the job went to someone else.",
  "v05": "So he graduated early. And he left.",
- "v06": "At LSU, he won the job. Then, in 2019, he had a season nobody saw coming.",
+ "v05b": "LSU gave him something Ohio State never could. A chance.",
+ "v06": "He won the job. Then, in 2019, he had a season nobody saw coming.",
  "v07": "Five thousand, six hundred and seventy-one yards. Sixty touchdowns. The Heisman Trophy.",
- "v08": "And a perfect season. Fifteen and oh. National champions.",
+ "v07b": "And in his Heisman speech, he didn't talk about himself. He talked about the kids back home in Athens who go to bed hungry. Within days, people had donated hundreds of thousands of dollars.",
+ "v08": "A few weeks later, a perfect season. Fifteen and oh. National champions.",
  "v09": "In April 2020, Cincinnati made him the first pick in the draft.",
+ "v09b": "A team that hadn't won a playoff game in almost thirty years now had its franchise quarterback.",
  "v10": "Ten games into his rookie season, his knee gave out. A torn ACL. A torn MCL.",
- "v11": "He came back the next year, and took the Bengals all the way to the Super Bowl.",
+ "v11": "He came back the next year. He was sacked more than any quarterback in the league. And he kept getting up.",
+ "v11b": "The Bengals won their first playoff game in thirty-one years. In Kansas City, they came back from eighteen points down. And they were going to the Super Bowl.",
+ "v12a": "Late in the fourth quarter, they were ahead. The Rams scored with a minute and a half left.",
  "v12": "They lost by three. Twenty-three to twenty.",
- "v13": "Then, in 2023, his throwing wrist. Another season, cut short.",
+ "v13": "In 2023, he signed the richest contract in NFL history at the time. Two months later, he tore a ligament in his throwing wrist. Another season, cut short.",
  "v14": "In 2024, he led the entire league in passing yards and touchdowns. Comeback Player of the Year. Again.",
  "v15": "Off the field, he's always been a little different.",
  "v16": "The kid who just wanted the ball. The backup who never started. The quarterback who keeps getting back up.",
  "v17": "His story isn't finished yet.",
 }
-SLOW = {"v05", "v12", "v17", "v16"}
+SLOW = {"v05", "v12", "v17", "v16", "v05b"}
 meta = {}
 for key, text in LINES.items():
     a, sr = k.create(text, voice=voice, speed=0.88 if key in SLOW else 0.94, lang="en-us")

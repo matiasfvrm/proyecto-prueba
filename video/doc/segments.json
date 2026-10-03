@@ -1,0 +1,275 @@
+[
+{
+"kind": "real",
+"t": 2.05,
+"dur": 4.82,
+"key": null,
+"src": "media/real/wosn_2016.mp4"
+},
+{
+"kind": "vo",
+"t": 16.62,
+"dur": 6.176,
+"key": "v01",
+"src": null
+},
+{
+"kind": "real",
+"t": 23.246,
+"dur": 13.85,
+"key": null,
+"src": "media/real/lordstown_questions.mp4"
+},
+{
+"kind": "real",
+"t": 37.596,
+"dur": 1.75,
+"key": null,
+"src": "media/real/lordstown_questions.mp4"
+},
+{
+"kind": "real",
+"t": 39.396,
+"dur": 2.6,
+"key": null,
+"src": "media/real/lordstown_questions.mp4"
+},
+{
+"kind": "vo",
+"t": 42.546,
+"dur": 7.142,
+"key": "v02",
+"src": null
+},
+{
+"kind": "vo",
+"t": 53.188,
+"dur": 4.305,
+"key": "v03",
+"src": null
+},
+{
+"kind": "real",
+"t": 57.943,
+"dur": 3.37,
+"key": null,
+"src": "media/real/wosn_2016.mp4"
+},
+{
+"kind": "real",
+"t": 61.813,
+"dur": 6.4,
+"key": null,
+"src": "media/real/wosn_2016.mp4"
+},
+{
+"kind": "real",
+"t": 68.713,
+"dur": 5.286,
+"key": null,
+"src": "media/real/wosn_2016.mp4"
+},
+{
+"kind": "vo",
+"t": 74.763,
+"dur": 9.007,
+"key": "v04",
+"src": null
+},
+{
+"kind": "vo",
+"t": 86.67,
+"dur": 2.552,
+"key": "v05",
+"src": null
+},
+{
+"kind": "vo",
+"t": 92.923,
+"dur": 4.335,
+"key": "v05b",
+"src": null
+},
+{
+"kind": "vo",
+"t": 97.757,
+"dur": 5.55,
+"key": "v06",
+"src": null
+},
+{
+"kind": "vo",
+"t": 103.807,
+"dur": 6.197,
+"key": "v07",
+"src": null
+},
+{
+"kind": "real",
+"t": 110.454,
+"dur": 8.0,
+"key": null,
+"src": "media/real/lordstown_questions.mp4"
+},
+{
+"kind": "real",
+"t": 118.504,
+"dur": 3.33,
+"key": null,
+"src": "media/real/lordstown_questions.mp4"
+},
+{
+"kind": "vo",
+"t": 122.384,
+"dur": 12.426,
+"key": "v07b",
+"src": null
+},
+{
+"kind": "vo",
+"t": 135.31,
+"dur": 5.081,
+"key": "v08",
+"src": null
+},
+{
+"kind": "real",
+"t": 140.841,
+"dur": 10.65,
+"key": null,
+"src": "media/real/lordstown_nicknames.mp4"
+},
+{
+"kind": "vo",
+"t": 155.041,
+"dur": 5.034,
+"key": "v09",
+"src": null
+},
+{
+"kind": "real",
+"t": 160.525,
+"dur": 8.48,
+"key": null,
+"src": "media/real/lordstown_nicknames.mp4"
+},
+{
+"kind": "vo",
+"t": 169.555,
+"dur": 5.734,
+"key": "v09b",
+"src": null
+},
+{
+"kind": "vo",
+"t": 175.789,
+"dur": 6.522,
+"key": "v10",
+"src": null
+},
+{
+"kind": "vo",
+"t": 184.611,
+"dur": 5.958,
+"key": "v11",
+"src": null
+},
+{
+"kind": "vo",
+"t": 191.069,
+"dur": 10.331,
+"key": "v11b",
+"src": null
+},
+{
+"kind": "vo",
+"t": 201.9,
+"dur": 5.264,
+"key": "v12a",
+"src": null
+},
+{
+"kind": "vo",
+"t": 207.664,
+"dur": 2.956,
+"key": "v12",
+"src": null
+},
+{
+"kind": "vo",
+"t": 211.119,
+"dur": 11.831,
+"key": "v13",
+"src": null
+},
+{
+"kind": "vo",
+"t": 223.45,
+"dur": 8.275,
+"key": "v14",
+"src": null
+},
+{
+"kind": "vo",
+"t": 232.225,
+"dur": 2.691,
+"key": "v15",
+"src": null
+},
+{
+"kind": "real",
+"t": 235.366,
+"dur": 4.65,
+"key": null,
+"src": "media/real/lordstown_nicknames.mp4"
+},
+{
+"kind": "real",
+"t": 240.516,
+"dur": 10.7,
+"key": null,
+"src": "media/real/lordstown_nicknames.mp4"
+},
+{
+"kind": "real",
+"t": 251.716,
+"dur": 4.81,
+"key": null,
+"src": "media/real/lordstown_nicknames.mp4"
+},
+{
+"kind": "real",
+"t": 257.026,
+"dur": 7.56,
+"key": null,
+"src": "media/real/lordstown_questions.mp4"
+},
+{
+"kind": "real",
+"t": 265.086,
+"dur": 8.32,
+"key": null,
+"src": "media/real/lordstown_questions.mp4"
+},
+{
+"kind": "vo",
+"t": 273.956,
+"dur": 6.666,
+"key": "v16",
+"src": null
+},
+{
+"kind": "real",
+"t": 281.272,
+"dur": 1.72,
+"key": null,
+"src": "media/real/wosn_2016.mp4"
+},
+{
+"kind": "vo",
+"t": 283.792,
+"dur": 1.815,
+"key": "v17",
+"src": null
+}
+]

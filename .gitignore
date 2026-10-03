@@ -22,3 +22,8 @@ video/output/parts_long.txt
 video/doc/map/package/
 video/doc/map/*.tgz
 video/doc/vo/*_raw.wav
+video/output/doc_*
+video/output/parts_doc.txt
+video/media/real/*.mp4
+video/media/real/*.whisper.json
+video/doc/bites/

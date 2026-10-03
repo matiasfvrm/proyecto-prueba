@@ -414,14 +414,90 @@ def ov_rewind_year(a, o, t):
                             font=INTERB(22), fill=255)
     return fill(a, tc, "solid", (1, 1, 1), 0.85)
 
+def ov_lower(a, o, t):
+    """Documentary lower third: accent bar wipes in, name + descriptor slide up from a mask."""
+    lt, dur = t - o["t0"], o["t1"] - o["t0"]
+    k = ease_out(lt / 0.5); out = 1 - ease((lt - dur + 0.35) / 0.35)
+    x0, y0 = 120 * S, H - BAR - 210 * S
+    grad = np.clip((np.linspace(0, 1, W) - 0.0) / 0.55, 0, 1)[None, :, None].astype(np.float32)
+    vg = np.clip((np.linspace(0, 1, H) - 0.62) / 0.3, 0, 1)[:, None, None].astype(np.float32)
+    a = a * (1 - 0.55 * (1 - grad) * vg * k * out)
+    bar = Image.new("L", (W, H), 0)
+    ImageDraw.Draw(bar).rectangle([x0, y0 + 8 * S, x0 + 6 * S, y0 + 8 * S + 118 * S * k], fill=255)
+    a = fill(a, bar, "solid", tuple(ORANGE), out)
+    for txt, fnt, dy, col, delay in ((o["name"], ANTON(64), 0, (1, 1, 1), 0.1), (o["role"], INTERB(26), 78, (0.85, 0.85, 0.85), 0.25),
+                                      (o.get("date", ""), INTERX(20), 116, tuple(np.clip(ORANGE * 1.3, 0, 1)), 0.4)):
+        if not txt: continue
+        kk = ease_out((lt - delay) / 0.45)
+        can = Image.new("L", (W, H), 0)
+        ImageDraw.Draw(can).text((x0 + 26 * S, y0 + dy * S + (1 - kk) * 30 * S), txt, font=fnt, fill=255)
+        clipm = Image.new("L", (W, H), 0); ImageDraw.Draw(clipm).rectangle([0, y0 + dy * S - 6 * S, W, y0 + dy * S + 80 * S], fill=255)
+        can = Image.fromarray(np.minimum(np.asarray(can), np.asarray(clipm)))
+        a = shadow(a, can, 0.4 * kk * out, 5, (0, 3)); a = fill(a, can, "solid", col, kk * out)
+    return a
+
+def ov_credit(a, o, t):
+    """Small source credit (attribution for CC BY material)."""
+    lt, dur = t - o["t0"], o["t1"] - o["t0"]
+    k = env_alpha(lt, dur, 0.4, 0.4) * 0.8
+    can = Image.new("L", (W, H), 0)
+    ImageDraw.Draw(can).text((W - 60 * S, BAR + 26 * S), o["text"], font=INTERB(17), fill=255, anchor="ra")
+    return fill(a, can, "solid", (1, 1, 1), k)
+
 OVF = {"title": ov_title, "text": ov_text, "tag": ov_tag, "timeline": ov_timeline, "counter": ov_counter,
        "score": ov_score, "stamp": ov_stamp, "leak": ov_leak, "dust": ov_dust, "vhs": ov_vhs,
-       "rewind_year": ov_rewind_year}
+       "rewind_year": ov_rewind_year, "lower": ov_lower, "credit": ov_credit}
 
 # ------------------------------------------------------------------ shots & transitions
+_map = {}
+def map_frame(sh, t, p):
+    """Animated journey map. sh: legs=[(cityA, cityB)], views=[(x0,y0,x1,y1) start, end], labels."""
+    import mapgen
+    v0, v1 = sh["views"]; q = ease_io(p)
+    view = tuple(v0[i] + (v1[i] - v0[i]) * q for i in range(4))
+    key = tuple(round(x, 1) for x in view)
+    if key not in _map:
+        if len(_map) > 40: _map.clear()
+        _map[key] = mapgen.base_map(W, H, view)
+    base, m = _map[key]
+    a = base.copy()
+    can = Image.new("L", (W, H), 0); glow = Image.new("L", (W, H), 0)
+    d, dg = ImageDraw.Draw(can), ImageDraw.Draw(glow)
+    lt = t - sh["t0"]
+    shown = set(sh.get("cities_on", []))
+    for i, (ca, cb) in enumerate(sh.get("legs", [])):
+        t_start, t_len = sh.get("leg_t", 0.4) + i * sh.get("leg_gap", 1.2), sh.get("leg_len", 1.1)
+        f = clamp((lt - t_start) / t_len)
+        if f <= 0: continue
+        pa, pb = m(mapgen.albers_usa(*mapgen.CITIES[ca])), m(mapgen.albers_usa(*mapgen.CITIES[cb]))
+        mx, my = (pa[0] + pb[0]) / 2, (pa[1] + pb[1]) / 2 - abs(pb[0] - pa[0]) * 0.18 - 30 * S
+        n = 40; pts = []
+        for j in range(int(n * ease_io(f)) + 1):
+            u = j / n; pts.append(((1 - u) ** 2 * pa[0] + 2 * u * (1 - u) * mx + u * u * pb[0], (1 - u) ** 2 * pa[1] + 2 * u * (1 - u) * my + u * u * pb[1]))
+        if len(pts) > 1:
+            d.line(pts, fill=255, width=max(2, int(4 * S))); dg.line(pts, fill=255, width=max(4, int(14 * S)))
+        shown.add(ca)
+        if f >= 1: shown.add(cb)
+    gm = np.asarray(glow.filter(ImageFilter.GaussianBlur(10 * S)), np.float32)[..., None] / 255
+    a = 1 - (1 - a) * (1 - gm * 0.7 * ORANGE)
+    a = fill(a, can, "solid", tuple(ORANGE))
+    labs = Image.new("L", (W, H), 0); dl = ImageDraw.Draw(labs); dots = Image.new("L", (W, H), 0); dd = ImageDraw.Draw(dots)
+    for c in shown:
+        x, y = m(mapgen.albers_usa(*mapgen.CITIES[c]))
+        pulse = 0.5 + 0.5 * math.sin(lt * 4)
+        r_ = (8 + 3 * pulse) * S
+        dd.ellipse([x - r_, y - r_, x + r_, y + r_], fill=255)
+        yr = sh.get("years", {}).get(c, "")
+        dl.text((x + 22 * S, y - 36 * S), c, font=INTERX(32), fill=255)
+        if yr: dl.text((x + 22 * S, y + 2 * S), yr, font=ANTON(38), fill=255)
+    a = fill(a, dots, "solid", (1, 1, 1))
+    a = shadow(a, labs, 0.6, 5, (0, 3))
+    return fill(a, labs, "solid", (1, 1, 1))
+
 def shot_frame(sh, t):
     p = clamp((t - sh["t0"]) / max(1e-6, sh["t1"] - sh["t0"]))
     kind = sh["kind"]
+    if kind == "map": return map_frame(sh, t, p)
     if kind == "black": return np.zeros((H, W, 3), np.float32) + 0.015
     if kind == "split":
         a = np.zeros((H, W, 3), np.float32) + 0.015
