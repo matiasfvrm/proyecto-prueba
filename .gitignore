@@ -19,3 +19,6 @@ video/output/v3_*
 video/output/parts3.txt
 video/output/long_*
 video/output/parts_long.txt
+video/doc/map/package/
+video/doc/map/*.tgz
+video/doc/vo/*_raw.wav
