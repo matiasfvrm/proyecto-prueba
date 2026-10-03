@@ -7,6 +7,7 @@ _plan = importlib.import_module(os.environ.get("PLAN", "plan3"))
 build_plan, music_plan, OFF, DUR = _plan.build_plan, _plan.music_plan, _plan.OFF, _plan.DUR
 TAG = os.environ.get("TAG", "v3")
 VO = getattr(_plan, "VO_FILE", "audio/voiceover.wav")
+MUSIC_RMS = getattr(_plan, "MUSIC_RMS", None)
 
 SR = 44100
 N = int(DUR * SR)
@@ -41,7 +42,10 @@ music = np.zeros((2, N), np.float32)
 for seg in music_plan():
     dur = seg["dst1"] - seg["dst0"] + seg.get("fout", 0)
     y = load(seg["file"], seg["src"], dur, seg.get("tempo"))
-    place(music, fade(y, seg.get("fin", 0), seg.get("fout", 0)), seg["dst0"], seg.get("gain", 1.0))
+    g = seg.get("gain", 1.0)
+    if MUSIC_RMS:   # level-match every cue first, so "gain" is only a relative tweak (dB-consistent score)
+        g *= 10 ** (MUSIC_RMS / 20) / (np.sqrt(np.mean(y ** 2)) + 1e-9)
+    place(music, fade(y, seg.get("fin", 0), seg.get("fout", 0)), seg["dst0"], g)
 
 sfx = np.zeros((2, N), np.float32)
 cache = {}

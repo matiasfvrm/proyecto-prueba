@@ -67,3 +67,21 @@ if __name__ == "__main__":
         print(c, [round(v, 1) for v in p], "inside", name, inside)
     a, m = base_map(1920, 1080, (430, 180, 900, 560))
     Image.fromarray(np.uint8(a * 255)).save("/tmp/claude-0/-home-user-proyecto-prueba/1107b7b9-3ce4-5542-b88b-85fbda77bfa7/scratchpad/map_test.jpg")
+
+def fit_view(cities, W, H, box=(0.28, 0.28, 0.72, 0.63), min_span=70.0):
+    """Albers-px view (x0,y0,x1,y1) so the given cities fill the central safe box of the frame
+    (inside the letterbox, above the subtitle zone)."""
+    pts = [albers_usa(*CITIES[c]) for c in cities]
+    xs, ys = [p[0] for p in pts], [p[1] for p in pts]
+    dx, dy = max(max(xs) - min(xs), min_span), max(max(ys) - min(ys), min_span * 0.6)
+    bw, bh = (box[2] - box[0]) * W, (box[3] - box[1]) * H
+    s = min(bw / dx, bh / dy)
+    cx, cy = (max(xs) + min(xs)) / 2, (max(ys) + min(ys)) / 2
+    fx, fy = (box[0] + box[2]) / 2, (box[1] + box[3]) / 2
+    x0, y0 = cx - fx * W / s, cy - fy * H / s
+    return (x0, y0, x0 + W / s, y0 + H / s)
+
+STATE_LABELS = {"Ohio": (-82.8, 40.35), "Louisiana": (-92.3, 31.0), "Kentucky": (-85.3, 37.5), "Indiana": (-86.3, 39.9),
+                "Mississippi": (-89.7, 32.7), "Tennessee": (-86.4, 35.8), "Arkansas": (-92.4, 34.8), "West Virginia": (-80.6, 38.6),
+                "Pennsylvania": (-77.6, 40.9), "Alabama": (-86.8, 32.8), "Illinois": (-89.2, 40.0), "Missouri": (-92.5, 38.4),
+                "Michigan": (-84.6, 43.6)}

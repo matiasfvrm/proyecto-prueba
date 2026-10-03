@@ -453,12 +453,20 @@ _map = {}
 def map_frame(sh, t, p):
     """Animated journey map. sh: legs=[(cityA, cityB)], views=[(x0,y0,x1,y1) start, end], labels."""
     import mapgen
-    v0, v1 = sh["views"]; q = ease_io(p)
+    v0, v1 = sh["views"]
+    legs = sh.get("legs", [])
+    if legs:   # camera travels together with the route so the drawing head never leaves the frame
+        cam = sh.get("leg_t", 0.4) + (len(legs) - 1) * sh.get("leg_gap", 1.2) + sh.get("leg_len", 1.1)
+        q = ease_io(clamp((t - sh["t0"]) / cam))
+    else:
+        q = ease_io(p)
     view = tuple(v0[i] + (v1[i] - v0[i]) * q for i in range(4))
-    key = tuple(round(x, 1) for x in view)
+    st_name = {"OH": "Ohio", "LA": "Louisiana"}
+    hi = tuple(sorted({st_name[c.split(", ")[1]] for c in list(sh.get("cities_on", [])) + [x for l in legs for x in l]}))
+    key = tuple(round(x, 1) for x in view) + hi
     if key not in _map:
         if len(_map) > 40: _map.clear()
-        _map[key] = mapgen.base_map(W, H, view)
+        _map[key] = mapgen.base_map(W, H, view, hi=hi)
     base, m = _map[key]
     a = base.copy()
     can = Image.new("L", (W, H), 0); glow = Image.new("L", (W, H), 0)
@@ -475,24 +483,46 @@ def map_frame(sh, t, p):
         for j in range(int(n * ease_io(f)) + 1):
             u = j / n; pts.append(((1 - u) ** 2 * pa[0] + 2 * u * (1 - u) * mx + u * u * pb[0], (1 - u) ** 2 * pa[1] + 2 * u * (1 - u) * my + u * u * pb[1]))
         if len(pts) > 1:
-            d.line(pts, fill=255, width=max(2, int(4 * S))); dg.line(pts, fill=255, width=max(4, int(14 * S)))
+            d.line(pts, fill=255, width=max(2, int(6 * S))); dg.line(pts, fill=255, width=max(4, int(20 * S)))
+            hx, hy = pts[-1]; dg.ellipse([hx - 16 * S, hy - 16 * S, hx + 16 * S, hy + 16 * S], fill=255)
         shown.add(ca)
         if f >= 1: shown.add(cb)
     gm = np.asarray(glow.filter(ImageFilter.GaussianBlur(10 * S)), np.float32)[..., None] / 255
     a = 1 - (1 - a) * (1 - gm * 0.7 * ORANGE)
     a = fill(a, can, "solid", tuple(ORANGE))
+    st = Image.new("L", (W, H), 0); ds = ImageDraw.Draw(st)
+    for name, (lo, la) in mapgen.STATE_LABELS.items():
+        x, y = m(mapgen.albers_usa(lo, la))
+        if 0 < x < W and BAR < y < H - BAR:
+            ds.text((x, y), name.upper(), font=INTERX(int(22 if name in ("Ohio", "Louisiana") else 15)), fill=255, anchor="mm")
+    a = fill(a, st, "solid", (1, 1, 1), 0.16)
     labs = Image.new("L", (W, H), 0); dl = ImageDraw.Draw(labs); dots = Image.new("L", (W, H), 0); dd = ImageDraw.Draw(dots)
-    for c in shown:
+    pills = Image.new("L", (W, H), 0); dp = ImageDraw.Draw(pills); rings = Image.new("L", (W, H), 0); dr_ = ImageDraw.Draw(rings)
+    order = sorted(shown, key=lambda c: (c not in sh.get("years", {}), c == "ATHENS, OH"))
+    placed = []
+    for c in order:
         x, y = m(mapgen.albers_usa(*mapgen.CITIES[c]))
+        crowded = any(math.hypot(x - px, y - py) < 70 * S for px, py in placed)
+        placed.append((x, y))
         pulse = 0.5 + 0.5 * math.sin(lt * 4)
-        r_ = (8 + 3 * pulse) * S
+        r_ = 9 * S; rr = (14 + 22 * ((lt * 0.8) % 1)) * S
         dd.ellipse([x - r_, y - r_, x + r_, y + r_], fill=255)
+        dr_.ellipse([x - rr, y - rr, x + rr, y + rr], outline=int(255 * (1 - (lt * 0.8) % 1)), width=max(1, int(3 * S)))
         yr = sh.get("years", {}).get(c, "")
-        dl.text((x + 22 * S, y - 36 * S), c, font=INTERX(32), fill=255)
-        if yr: dl.text((x + 22 * S, y + 2 * S), yr, font=ANTON(38), fill=255)
+        side = -1 if c in sh.get("left", []) else 1
+        if crowded: continue                     # nearby city already labelled: keep only its dot
+        f1, f2 = INTERX(30), ANTON(40)
+        w1 = f1.getbbox(c)[2]; w2 = f2.getbbox(yr)[2] if yr else 0
+        bx = x + side * 26 * S if side > 0 else x - 26 * S - max(w1, w2) - 28 * S
+        dp.rounded_rectangle([bx, y - 40 * S, bx + max(w1, w2) + 28 * S, y + (50 if yr else 6) * S], radius=8 * S, fill=255)
+        dl.text((bx + 14 * S, y - 34 * S), c, font=f1, fill=255)
+        if yr: dl.text((bx + 14 * S, y + 0 * S), yr, font=f2, fill=255)
+    a = fill(a, rings, "solid", tuple(ORANGE), 0.9)
     a = fill(a, dots, "solid", (1, 1, 1))
-    a = shadow(a, labs, 0.6, 5, (0, 3))
-    return fill(a, labs, "solid", (1, 1, 1))
+    a = fill(a, pills, "solid", (0.03, 0.03, 0.04), 0.72)
+    labs_np = np.asarray(labs)
+    a = fill(a, labs, "solid", (1, 1, 1))
+    return a
 
 def shot_frame(sh, t):
     p = clamp((t - sh["t0"]) / max(1e-6, sh["t1"] - sh["t0"]))
