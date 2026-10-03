@@ -124,7 +124,8 @@ def build():
         for (sa, sb, it) in cover:
             ca, cb = abs_t(sa), abs_t(sb)
             cv = item_shot(ca, cb, it); cv["cover"] = True
-            tr(ca, "cross", 0.3, a=mine[0], b=cv); tr(cb, "cross", 0.3, a=cv, b=mine[-1])
+            at_ = lambda tt: next((m for m in mine if m["t0"] - 1e-3 <= tt < m["t1"]), mine[-1])
+            tr(ca, "cross", 0.3, a=at_(ca - 0.01), b=cv); tr(cb, "cross", 0.3, a=cv, b=at_(cb + 0.01))
         for (st, et, it) in titles:
             it = dict(it); ov(abs_t(st), abs_t(et), it.pop("type"), **it)
         if lower: ov(t0 + 0.3, min(t1 - 0.2, t0 + 4.6), "lower", **lower); fx(t0 + 0.35, "ui_click", 0.2)
@@ -347,7 +348,8 @@ def build():
     snap_to_source_cuts(shots)
     for x in trans:
         if "a" in x: continue
-        x["a"] = max((s for s in shots if s["t0"] < x["t"] - 1e-4), key=lambda s: s["t0"], default=shots[0])
+        live = [s for s in shots if s["t0"] < x["t"] - 1e-4 and s["t1"] >= x["t"] - 0.05]   # on screen right before the cut
+        x["a"] = max(live or [s for s in shots if s["t0"] < x["t"] - 1e-4], key=lambda s: s["t0"], default=shots[0])
         x["b"] = min((s for s in shots if s["t0"] >= x["t"] - 1e-4), key=lambda s: s["t0"], default=shots[-1])
     trans[:] = [x for x in trans if x["type"] != "cut"]
     return dict(shots=shots, trans=trans, overlays=ovl, accents=acc, sfx=sfx, segs=segs, dur=dur, sections=sp)
