@@ -1,0 +1,19 @@
+name: Content correction
+description: Report an error in a problem, question, task or source
+labels: [content]
+body:
+  - type: input
+    id: url
+    attributes:
+      label: Page URL
+    validations: { required: true }
+  - type: textarea
+    id: issue
+    attributes:
+      label: What is wrong?
+    validations: { required: true }
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Supporting source
+      description: Link to a primary or authoritative source.

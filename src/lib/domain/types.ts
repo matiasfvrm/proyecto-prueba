@@ -145,6 +145,8 @@ export interface Problem {
   relatedProblemIds: string[];
   createdAt: string;
   updatedAt: string;
+  /** Set when the problem came from an accepted community submission. */
+  origin?: "community";
 }
 
 export interface ResearchQuestion {

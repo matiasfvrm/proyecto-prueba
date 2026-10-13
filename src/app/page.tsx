@@ -13,7 +13,7 @@ import {
   Users,
   ShieldCheck,
 } from "lucide-react";
-import { seedCatalog } from "@/lib/data/seed";
+import { appCatalog } from "@/lib/data/catalog";
 import { problemStats } from "@/lib/domain/discover";
 import { EVIDENCE_STATUS_META } from "@/lib/domain/labels";
 import { EVIDENCE_STATUSES, type Skill } from "@/lib/domain/types";
@@ -35,7 +35,7 @@ const HERO: Array<[string, string]> = [
 ];
 
 function heroItems(): HeroItem[] {
-  const c = seedCatalog;
+  const c = appCatalog;
   const ids = new Set(HERO.map(([id]) => id));
   return HERO.map(([id, short]) => {
     const p = c.problems.find((x) => x.id === id)!;
@@ -70,7 +70,7 @@ const MODES: Array<{ icon: typeof Code2; title: string; body: string; skills: Sk
 ];
 
 export default function HomePage() {
-  const c = seedCatalog;
+  const c = appCatalog;
   const preview = ["p-water", "p-science", "p-heat", "p-edtech"].map((id) => c.problems.find((p) => p.id === id)!);
   const openTasks = c.tasks.filter((t) => t.status === "open");
   const introOpen = openTasks.filter((t) => t.difficulty === "introductory").length;

@@ -15,6 +15,7 @@ function attempt(state: UserState, m: Mutation) {
   return applyMutation(seedCatalog, state, m, ctx());
 }
 const as = (s: UserState, id: string | null): UserState => ({ ...s, currentUserId: id });
+const criteria = seedCatalog.tasks.find((t) => t.id === "t-water-1b")!.acceptanceCriteria;
 
 const contribution = {
   taskId: "t-water-1b",
@@ -46,7 +47,7 @@ describe("task and review workflow", () => {
     s = as(s, "u-amara");
     s = run(s, {
       type: "reviewContribution",
-      payload: { contributionId: c.id, decision: "accept", comment: "Meets every criterion.", criteriaMet: [] },
+      payload: { contributionId: c.id, decision: "accept", comment: "Meets every criterion.", criteriaMet: criteria },
     });
     view = buildView(seedCatalog, s);
     expect(view.contributions.find((x) => x.id === c.id)!.status).toBe("accepted");
@@ -62,10 +63,19 @@ describe("task and review workflow", () => {
     s = run(s, { type: "claimTask", payload: { taskId: "t-water-1b" } });
     s = run(s, { type: "submitContribution", payload: contribution });
     const id = buildView(seedCatalog, s).contributions.find((x) => x.taskId === "t-water-1b")!.id;
-    const review = { type: "reviewContribution" as const, payload: { contributionId: id, decision: "accept" as const, comment: "Looks good to me.", criteriaMet: [] } };
+    const review = { type: "reviewContribution" as const, payload: { contributionId: id, decision: "accept" as const, comment: "Looks good to me.", criteriaMet: criteria } };
     expect(attempt(s, review)).toMatchObject({ ok: false, error: expect.stringMatching(/own/) });
     expect(attempt(as(s, "u-lucas"), review)).toMatchObject({ ok: false, error: expect.stringMatching(/reviewers/) });
     expect(attempt(as(s, "u-mei"), review).ok).toBe(true);
+  });
+
+  it("refuses to accept unless every acceptance criterion is met", () => {
+    let s = as(emptyState(), "u-lucas");
+    s = run(s, { type: "claimTask", payload: { taskId: "t-water-1b" } });
+    s = run(s, { type: "submitContribution", payload: contribution });
+    const id = buildView(seedCatalog, s).contributions.find((x) => x.taskId === "t-water-1b")!.id;
+    const r = attempt(as(s, "u-mei"), { type: "reviewContribution", payload: { contributionId: id, decision: "accept", comment: "Looks good to me.", criteriaMet: criteria.slice(1) } });
+    expect(r).toMatchObject({ ok: false, error: expect.stringMatching(/every acceptance criterion/) });
   });
 
   it("reopens the task when a contribution is rejected", () => {

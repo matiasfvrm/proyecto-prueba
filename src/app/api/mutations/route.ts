@@ -3,6 +3,7 @@ import { fieldErrors, mutationSchema } from "@/lib/domain/schemas";
 import { clientKey, LIMITS, rateLimit } from "@/lib/server/rate-limit";
 import { APP_MODE } from "@/lib/config";
 import { applySupabaseMutation } from "@/lib/supabase/mutations";
+import { bearer } from "@/lib/supabase/server";
 
 const MAX_BODY_BYTES = 32_000;
 
@@ -42,7 +43,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true, mode: "demo", mutation: parsed.data });
   }
 
-  const token = req.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
+  const token = bearer(req);
   if (!token) return NextResponse.json({ ok: false, error: "Sign in to continue." }, { status: 401 });
   const result = await applySupabaseMutation(token, parsed.data);
   return NextResponse.json(result, { status: result.ok ? 200 : result.status ?? 400 });

@@ -10,6 +10,7 @@ import { LinkButton } from "@/components/ui/button";
 import { explain, recommendTasks } from "@/lib/domain/recommend";
 import { categoryLabel } from "@/lib/domain/labels";
 import { problemStats } from "@/lib/domain/discover";
+import { pluralize } from "@/lib/utils";
 
 export function Dashboard() {
   const { view, hydrated } = useStore();
@@ -132,7 +133,7 @@ export function Dashboard() {
                   return (
                     <li key={p.id}>
                       <Link href={`/problems/${p.slug}`} className="block text-sm font-medium text-fg hover:text-accent">{p.title}</Link>
-                      <div className="mt-1 flex items-center gap-2 text-xs text-fg-subtle"><EvidenceBadge status={p.status} /> {s.openTasks} open tasks</div>
+                      <div className="mt-1 flex items-center gap-2 text-xs text-fg-subtle"><EvidenceBadge status={p.status} /> {pluralize(s.openTasks, "open task")}</div>
                     </li>
                   );
                 })}

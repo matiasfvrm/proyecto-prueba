@@ -113,6 +113,7 @@ function problemFromSubmission(s: ProblemSubmission): { problem: Problem; questi
     relatedProblemIds: [],
     createdAt: s.createdAt,
     updatedAt: s.createdAt,
+    origin: "community",
   };
   const questions: ResearchQuestion[] = s.researchQuestions.map((q, i) => ({
     id: `q-${s.id}-${i}`,
@@ -275,6 +276,8 @@ export function applyMutation(seed: Catalog, state: UserState, m: Mutation, ctx:
       const rule = canReview(c, user);
       if (!rule.ok) return fail(rule.reason);
       const task = view.tasks.find((t) => t.id === c.taskId);
+      if (m.payload.decision === "accept" && task && !task.acceptanceCriteria.every((x) => m.payload.criteriaMet.includes(x)))
+        return fail("To accept, confirm that every acceptance criterion is met.");
       s.reviews.push({ id: ctx.newId("r"), ...m.payload, reviewerId: user.id, createdAt: ctx.now });
       s.contributionOverrides[c.id] = contributionAfterReview(m.payload.decision);
       if (task) s.taskOverrides[task.id] = taskAfterReview(task, m.payload.decision);

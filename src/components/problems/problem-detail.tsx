@@ -114,7 +114,7 @@ export function ProblemDetail({ slug, initialTab }: { slug: string; initialTab: 
           <div className="mt-4 flex flex-wrap items-center gap-2">
             <EvidenceBadge status={problem.status} />
             <Badge tone="muted">{DIFFICULTY_META[problem.difficulty].label}</Badge>
-            {problem.id.startsWith("p-ps-") ? <Badge tone="warn">Community submission</Badge> : <Badge tone="muted">Demo content</Badge>}
+            {problem.origin === "community" ? <Badge tone="warn">Community submission</Badge> : <Badge tone="muted">Illustrative content</Badge>}
           </div>
           <h1 className="mt-3 max-w-4xl text-balance text-3xl font-semibold tracking-tight sm:text-4xl">{problem.title}</h1>
           <p className="mt-3 max-w-3xl text-pretty text-[16px] leading-relaxed text-fg-muted">{problem.summary}</p>
