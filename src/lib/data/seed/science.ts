@@ -1,0 +1,127 @@
+import type { ProblemBundle } from "./bundle";
+
+export const science: ProblemBundle = {
+  problem: {
+    id: "p-science",
+    slug: "reproducible-scientific-experiments",
+    title: "Making scientific experiments more reproducible",
+    category: "science",
+    summary:
+      "Researchers report difficulty reproducing published results. Which practical tools and practices make computational and lab work easier to reproduce?",
+    whyItMatters:
+      "When results cannot be reproduced, effort is wasted and confidence in findings declines. Practical, low-friction reproducibility tools help every other problem on this platform, because validated progress depends on repeatable evidence.",
+    definition:
+      "Identify which concrete practices and tools (environment capture, data packaging, protocol templates) measurably increase the share of analyses an independent person can reproduce from published materials.",
+    difficulty: "intermediate",
+    status: "evidence_submitted",
+    skills: ["Python", "Technical writing", "Statistics", "TypeScript"],
+    causes: [
+      { id: "c-sci-1", title: "Missing computational environment", description: "Software versions and dependencies are often not recorded." },
+      { id: "c-sci-2", title: "Incomplete methods", description: "Protocols omit details needed to repeat an experiment." },
+      { id: "c-sci-3", title: "Inaccessible data", description: "Data is not shared, or shared without documentation." },
+    ],
+    claims: [
+      { id: "cl-sci-1", statement: "In a survey of researchers, many reported having tried and failed to reproduce another scientist's experiment.", kind: "documented", sourceIds: ["src-baker-2016"] },
+      { id: "cl-sci-2", statement: "A large replication effort in psychology reproduced fewer results than expected from the original studies.", kind: "documented", sourceIds: ["src-osc-2015"] },
+      { id: "cl-sci-3", statement: "Reproducibility and replicability are distinct concepts with separate definitions.", kind: "documented", sourceIds: ["src-nasem-2019"] },
+      { id: "cl-sci-4", statement: "A one-command environment capture tool would raise the share of notebooks that run unchanged on another machine.", kind: "hypothesis", sourceIds: [] },
+    ],
+    approaches: [
+      { title: "Containers and lockfiles", description: "Capture software environments precisely.", limitations: ["Learning curve", "Large images"] },
+      { title: "FAIR data practices", description: "Make data findable, accessible, interoperable and reusable.", limitations: ["Requires extra documentation effort"] },
+      { title: "Reporting checklists", description: "Journal or community checklists for methods reporting.", limitations: ["Compliance is uneven"] },
+    ],
+    limitations: ["Some lab work is inherently variable.", "Practices that add friction are often skipped."],
+    validationCriteria: [
+      "Reproduction attempts performed by people not involved in the original work.",
+      "Clear definition of a successful reproduction stated before the attempt.",
+      "Failed reproduction attempts published alongside successful ones.",
+    ],
+    sourceIds: ["src-baker-2016", "src-nasem-2019", "src-fair-2016", "src-sandve-2013", "src-osc-2015"],
+    relatedProblemIds: ["p-water", "p-edtech"],
+    createdAt: "2026-02-15T09:00:00Z",
+    updatedAt: "2026-10-10T09:30:00Z",
+  },
+  questions: [
+    {
+      id: "q-sci-1", problemId: "p-science",
+      question: "Which environment-capture approach do researchers actually adopt when given a choice?",
+      whyItMatters: "A tool only helps if people use it.",
+      existingKnowledge: "Guidance recommends recording software versions and environments. Adoption barriers for specific tools are less documented.",
+      uncertainties: ["Differences between disciplines", "Effect of institutional support"],
+      suggestedApproaches: ["Short structured interviews", "Comparative usability test of three approaches"],
+      skills: ["UX research", "Python"], status: "under_investigation", sourceIds: ["src-sandve-2013"],
+    },
+    {
+      id: "q-sci-2", problemId: "p-science",
+      question: "How often do public analysis notebooks run unchanged in a clean environment?",
+      whyItMatters: "A baseline is needed before claiming any tool improves reproducibility.",
+      existingKnowledge: "Concerns about notebook reproducibility are widely discussed; a baseline for the notebooks linked from this platform does not yet exist.",
+      uncertainties: ["Sampling bias", "Definition of 'runs unchanged'"],
+      suggestedApproaches: ["Pre-register the definition of success", "Automated re-execution in containers"],
+      skills: ["Python", "Statistics"], status: "evidence_submitted", sourceIds: ["src-nasem-2019"],
+    },
+    {
+      id: "q-sci-3", problemId: "p-science",
+      question: "What minimal protocol template captures the details needed to repeat a bench experiment?",
+      whyItMatters: "Missing details are a common reason lab experiments cannot be repeated.",
+      existingKnowledge: "Reporting checklists exist in several fields; a minimal cross-disciplinary template is not agreed.",
+      uncertainties: ["Template length versus completion rate"],
+      suggestedApproaches: ["Compare existing checklists", "Pilot with platform experiments"],
+      skills: ["Laboratory methods", "Technical writing"], status: "proposed", sourceIds: [],
+    },
+  ],
+  hypotheses: [
+    { id: "h-sci-1", questionId: "q-sci-2", statement: "Pinning dependencies with a lockfile increases the share of notebooks that re-run unchanged.", status: "evidence_submitted" },
+    { id: "h-sci-2", questionId: "q-sci-1", statement: "Researchers prefer lockfile-based capture over containers for small analyses.", status: "inconclusive" },
+  ],
+  experiments: [
+    { id: "e-sci-1", hypothesisId: "h-sci-1", title: "Re-execution of sampled public notebooks", design: "Re-run a pre-registered sample of notebooks with and without pinned dependencies in clean containers.", status: "evidence_submitted" },
+    { id: "e-sci-2", hypothesisId: "h-sci-2", title: "Preference test with researchers", design: "Ask participants to capture an environment with two tools and record completion and preference.", status: "inconclusive" },
+  ],
+  solutions: [
+    { id: "s-sci-1", problemId: "p-science", title: "Reproducibility starter kit", summary: "Template repository with lockfile, data README and protocol template, used by every UNsolved experiment.", status: "under_investigation", questionIds: ["q-sci-1", "q-sci-2", "q-sci-3"] },
+  ],
+  tasks: [
+    {
+      id: "t-sci-1a", problemId: "p-science", questionId: "q-sci-1",
+      title: "Interview guide for environment-capture adoption",
+      objective: "Prepare a short interview guide on how researchers record software environments.",
+      description: "Draft neutral, non-leading questions and a consent script. Keep interviews under 20 minutes.",
+      deliverable: "Interview guide and consent script.",
+      skills: ["UX research"], difficulty: "introductory", effort: "3–5 hours",
+      acceptanceCriteria: ["Questions are non-leading", "Includes consent script"],
+      status: "completed", assigneeId: "u-sofia", sourceIds: [],
+    },
+    {
+      id: "t-sci-2a", problemId: "p-science", questionId: "q-sci-2",
+      title: "Automated notebook re-execution harness",
+      objective: "Re-run notebooks in clean containers and record outcomes.",
+      description: "Build a harness that fetches notebooks, runs them in isolated containers with a timeout and records success or the failure category. Never execute untrusted code outside isolated sandboxes.",
+      deliverable: "Open-source harness with documentation.",
+      skills: ["Python"], difficulty: "advanced", effort: "15–25 hours",
+      acceptanceCriteria: ["Runs in isolated containers only", "Categorizes failures", "Outputs a machine-readable report"],
+      status: "in_review", assigneeId: "u-mei", sourceIds: ["src-sandve-2013"],
+    },
+    {
+      id: "t-sci-2b", problemId: "p-science", questionId: "q-sci-2",
+      title: "Pre-register the definition of a successful re-run",
+      objective: "Fix the success criteria before results are seen.",
+      description: "Write and timestamp a short pre-registration describing sampling, success definition and analysis plan.",
+      deliverable: "Pre-registration document.",
+      skills: ["Statistics", "Technical writing"], difficulty: "intermediate", effort: "3–4 hours",
+      acceptanceCriteria: ["Timestamped before analysis", "Defines success unambiguously"],
+      status: "completed", assigneeId: "u-amara", sourceIds: ["src-nasem-2019"],
+    },
+    {
+      id: "t-sci-3a", problemId: "p-science", questionId: "q-sci-3",
+      title: "Compare existing reporting checklists",
+      objective: "Find overlap between methods-reporting checklists.",
+      description: "Pick three published checklists, map their items and identify a common core.",
+      deliverable: "Mapping table and proposed minimal template.",
+      skills: ["Literature review", "Laboratory methods"], difficulty: "intermediate", effort: "6–8 hours",
+      acceptanceCriteria: ["Cites each checklist", "Explains every exclusion"],
+      status: "open", assigneeId: null, sourceIds: [],
+    },
+  ],
+};

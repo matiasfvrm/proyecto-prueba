@@ -1,0 +1,167 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
+
+  --color-bg: #07080a;
+  --color-surface: #0c0e11;
+  --color-surface-2: #121519;
+  --color-surface-3: #191d22;
+  --color-line: #1d2228;
+  --color-line-strong: #2a3038;
+  --color-fg: #eceef1;
+  --color-fg-muted: #9ba3ad;
+  --color-fg-subtle: #69717c;
+  --color-accent: #3cc8f5;
+  --color-accent-strong: #12a6dd;
+  --color-accent-soft: #3cc8f51a;
+
+  --color-node-problem: #3cc8f5;
+  --color-node-cause: #7d8794;
+  --color-node-question: #8f9cf5;
+  --color-node-hypothesis: #d9b25e;
+  --color-node-experiment: #c98e58;
+  --color-node-task: #c9ced6;
+  --color-node-contribution: #5fb3a1;
+  --color-node-solution: #5cc28f;
+}
+
+:root {
+  --bg: var(--color-bg);
+  --surface-2: var(--color-surface-2);
+  --fg: var(--color-fg);
+  --fg-muted: var(--color-fg-muted);
+  color-scheme: dark;
+}
+
+html {
+  background: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  scroll-padding-top: 5rem;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01", "cv11";
+}
+
+::selection {
+  background: #3cc8f540;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Subtle dotted backdrop used on graph canvases and the hero. */
+.bg-dots {
+  background-image: radial-gradient(circle at 1px 1px, #ffffff0d 1px, transparent 0);
+  background-size: 22px 22px;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.text-pretty {
+  text-wrap: pretty;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.toast-in {
+  animation: toast-in 180ms ease-out;
+}
+
+@keyframes edge-flow {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+@keyframes node-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .edge-flow {
+    stroke-dasharray: 3 9;
+    animation: edge-flow 1.6s linear infinite;
+  }
+  .node-pulse {
+    animation: node-pulse 3.2s ease-in-out infinite;
+  }
+  .fade-up {
+    animation: fade-up 500ms ease-out both;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #ffffff08, #ffffff12, #ffffff08);
+  background-size: 200% 100%;
+  animation: skeleton 1.4s ease-in-out infinite;
+}
+@keyframes skeleton {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* React Flow dark adjustments */
+.react-flow {
+  --xy-background-color: transparent;
+  --xy-controls-button-background-color: var(--color-surface-2);
+  --xy-controls-button-background-color-hover: var(--color-surface-3);
+  --xy-controls-button-color: var(--color-fg-muted);
+  --xy-controls-button-color-hover: var(--color-fg);
+  --xy-controls-button-border-color: var(--color-line);
+  --xy-minimap-background-color: var(--color-surface);
+  --xy-minimap-mask-background-color: #07080acc;
+  --xy-attribution-background-color: transparent;
+}
+.react-flow__controls {
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: none;
+}
+.react-flow__minimap {
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+  overflow: hidden;
+}
