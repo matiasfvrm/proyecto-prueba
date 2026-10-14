@@ -11,9 +11,9 @@ App web (instalable en el celular) que conecta jóvenes talentos ecuatorianos co
 
 ## Solicitudes por correo
 
-Los formularios de registro y de contacto envían las solicitudes a **figtalenpft@gmail.com** mediante [FormSubmit](https://formsubmit.co) (gratis, sin servidor propio).
+Los formularios de registro y de contacto envían las solicitudes a **figtalentft@gmail.com** mediante [FormSubmit](https://formsubmit.co) (gratis, sin servidor propio).
 
-**Primera vez:** después del primer envío, FormSubmit manda un correo de activación a figtalenpft@gmail.com. Hay que abrirlo y confirmar. Desde ese momento todas las solicitudes llegan a esa bandeja.
+**Primera vez:** después del primer envío, FormSubmit manda un correo de activación a figtalentft@gmail.com. Hay que abrirlo y confirmar. Desde ese momento todas las solicitudes llegan a esa bandeja.
 
 El envío solo funciona con la página publicada en internet (por ejemplo, con GitHub Pages). No funciona si se abre el archivo `index.html` directamente desde la computadora.
 
