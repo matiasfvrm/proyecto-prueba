@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FigTalent — Descubre el Talento del Futuro</title>
+<meta name="description" content="FigTalent conecta jóvenes talentos ecuatorianos con academias, clubes y familias.">
+<meta name="theme-color" content="#030d1a">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="FigTalent">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#030d1a;
+  --surface:#060f1f;
+  --card:rgba(10,22,40,.85);
+  --card-solid:#0a1628;
+  --text:#e2e8f0;
+  --text-muted:#8193ab;
+  --border:rgba(0,102,255,.25);
+  --blue:#0066ff;
+  --blue-electric:#1a8cff;
+  --cyan:#00d4ff;
+  --green:#00ff88;
+  --amber:#fbbf24;
+  --track:rgba(0,102,255,.15);
+  --glow-blue:0 0 20px rgba(0,102,255,.4),0 0 40px rgba(0,102,255,.15);
+  --shadow:0 4px 20px rgba(0,0,0,.4);
+  --shadow-lg:0 12px 40px rgba(0,0,0,.5),0 0 20px rgba(0,212,255,.12);
+  --nav-bg:rgba(3,13,26,.88);
+  --radius:16px;--radius-sm:10px;--nav-h:64px;
+  --tr:.22s cubic-bezier(.4,0,.2,1);
+}
+[data-theme="light"]{
+  --bg:#f0f7ff;
+  --surface:#ffffff;
+  --card:#ffffff;
+  --card-solid:#ffffff;
+  --text:#0a1628;
+  --text-muted:#475569;
+  --border:#c8ddf0;
+  --blue:#0055dd;
+  --blue-electric:#0077ff;
+  --cyan:#0099cc;
+  --green:#00a857;
+  --amber:#d97706;
+  --track:#dce8f5;
+  --glow-blue:0 4px 16px rgba(0,85,221,.2);
+  --shadow:0 2px 12px rgba(0,85,221,.08);
+  --shadow-lg:0 8px 32px rgba(0,85,221,.15);
+  --nav-bg:rgba(240,247,255,.95);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;transition:background var(--tr),color var(--tr)}
+[id]{scroll-margin-top:calc(var(--nav-h) + 8px)}
+body::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(ellipse 80% 50% at 20% 20%,rgba(0,102,255,.08) 0%,transparent 60%),
+             radial-gradient(ellipse 60% 40% at 80% 80%,rgba(0,255,136,.05) 0%,transparent 60%)}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:var(--nav-bg);backdrop-filter:blur(18px);border-bottom:1px solid var(--border)}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-logo-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--blue),var(--cyan));display:flex;align-items:center;justify-content:center;font:900 18px 'Playfair Display',serif;color:#fff;box-shadow:var(--glow-blue)}
+.nav-logo-text{font-size:20px;font-weight:700;color:var(--blue-electric);letter-spacing:-.5px}
+.nav-logo-text span{color:var(--green)}
+.nav-links{display:flex;gap:2px}
+.nav-links a{font-size:13px;font-weight:500;color:var(--text-muted);text-decoration:none;padding:7px 10px;border-radius:8px;transition:all var(--tr)}
+.nav-links a:hover{color:var(--cyan);background:rgba(0,102,255,.1)}
+.nav-right{display:flex;align-items:center;gap:8px}
+.theme-toggle{width:36px;height:36px;border-radius:8px;background:rgba(0,102,255,.1);border:1px solid var(--border);cursor:pointer;font-size:16px;color:var(--text)}
+.nav-cta{font-size:13px;font-weight:600;color:#fff;background:linear-gradient(90deg,var(--blue),var(--blue-electric));padding:8px 16px;border-radius:8px;text-decoration:none;box-shadow:var(--glow-blue)}
+@media(max-width:760px){.nav-links{display:none}}
+
+/* COMMON */
+section{padding:78px 16px}
+.section-inner{max-width:1100px;margin:0 auto}
+.section-label{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--cyan);margin-bottom:10px}
+.section-title{font-family:'Playfair Display',serif;font-size:clamp(26px,4vw,44px);font-weight:700;letter-spacing:-1px;line-height:1.15;margin-bottom:14px}
+.section-sub{font-size:15px;color:var(--text-muted);line-height:1.7;max-width:560px}
+.section-divider{width:48px;height:3px;background:linear-gradient(90deg,var(--blue),var(--cyan),var(--green));border-radius:2px;margin:16px 0 34px}
+.btn{display:inline-flex;align-items:center;gap:8px;font:600 14px 'DM Sans',sans-serif;padding:12px 22px;border-radius:10px;text-decoration:none;cursor:pointer;border:none;transition:all var(--tr)}
+.btn-primary{background:linear-gradient(90deg,var(--blue),var(--blue-electric));color:#fff;box-shadow:var(--glow-blue)}
+.btn-primary:hover{transform:translateY(-1px)}
+.btn-outline{background:transparent;color:var(--cyan);border:1.5px solid var(--cyan)}
+.btn-outline:hover{background:rgba(0,212,255,.1)}
+
+/* HERO */
+#inicio{min-height:88vh;display:flex;align-items:center;padding-top:110px}
+.hero-badge{display:inline-flex;gap:8px;background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.3);color:var(--green);font-size:12px;font-weight:600;padding:5px 14px;border-radius:100px;margin-bottom:22px}
+h1{font-family:'Playfair Display',serif;font-size:clamp(36px,6vw,72px);font-weight:900;line-height:1.07;letter-spacing:-2px;max-width:720px;margin-bottom:18px}
+h1 em{font-style:normal;color:transparent;background:linear-gradient(90deg,var(--blue-electric),var(--cyan),var(--green));-webkit-background-clip:text;background-clip:text}
+.hero-sub{font-size:clamp(15px,2vw,18px);color:var(--text-muted);max-width:540px;line-height:1.7;margin-bottom:30px}
+.hero-actions{display:flex;gap:11px;flex-wrap:wrap}
+.hero-stats{display:flex;gap:32px;margin-top:46px;padding-top:30px;border-top:1px solid var(--border);flex-wrap:wrap}
+.hero-stat-num{font-family:'Playfair Display',serif;font-size:34px;font-weight:700;color:var(--cyan);line-height:1}
+.hero-stat-label{font-size:12px;color:var(--text-muted);margin-top:4px}
+
+/* CONTROLS */
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.search{display:flex;align-items:center;gap:8px;background:var(--card-solid);border:1.5px solid var(--border);border-radius:10px;padding:9px 14px;flex:1;min-width:200px;max-width:320px}
+.search:focus-within{border-color:var(--cyan)}
+.search input{flex:1;border:none;outline:none;background:transparent;font:14px 'DM Sans',sans-serif;color:var(--text);min-width:0}
+.select{font:600 13px 'DM Sans',sans-serif;padding:9px 12px;border-radius:10px;border:1.5px solid var(--border);background:var(--card-solid);color:var(--text);cursor:pointer}
+.filters{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:24px}
+.filter-btn{font:600 13px 'DM Sans',sans-serif;padding:7px 14px;border-radius:100px;border:1.5px solid var(--border);background:var(--card-solid);color:var(--text-muted);cursor:pointer;transition:all var(--tr)}
+.filter-btn:hover,.filter-btn.active{background:linear-gradient(90deg,var(--blue),var(--blue-electric));border-color:var(--cyan);color:#fff}
+.result-count{font-size:13px;color:var(--text-muted);margin-bottom:16px}
+.result-count strong{color:var(--cyan)}
+
+/* CARDS */
+.talent-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
+.talent-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);transition:box-shadow var(--tr),transform var(--tr),border-color var(--tr);display:flex;flex-direction:column}
+.talent-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-3px);border-color:var(--cyan)}
+.card-header{height:96px;position:relative;padding:12px}
+.bg-deporte{background:linear-gradient(135deg,#0f3460,#2563c7)}
+.bg-mente{background:linear-gradient(135deg,#3b1d6e,#7c3aed)}
+.bg-arte{background:linear-gradient(135deg,#065f46,#059669)}
+.card-age{position:absolute;top:12px;right:12px;background:rgba(255,255,255,.18);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.35);border-radius:8px;padding:4px 9px;font-size:11px;font-weight:700;color:#fff}
+.card-avatar{width:60px;height:60px;border-radius:50%;border:3px solid #fff;background:#0a1628;color:#fff;display:flex;align-items:center;justify-content:center;font:700 20px 'DM Sans',sans-serif;position:absolute;bottom:-26px;left:18px;box-shadow:0 2px 10px rgba(0,0,0,.25)}
+.card-body{padding:36px 18px 18px;display:flex;flex-direction:column;flex:1}
+.card-name{font-family:'Playfair Display',serif;font-size:20px;font-weight:700}
+.card-meta{font-size:12.5px;color:var(--text-muted);margin-top:4px}
+.disc-list{display:flex;flex-direction:column;gap:10px;margin:16px 0}
+.disc-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:13px}
+.disc-name{font-weight:600}
+.disc-level{font-size:12px;font-weight:700;color:var(--cyan);text-align:right}
+.level-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:5px}
+.level-bar i{height:6px;border-radius:4px;background:var(--track)}
+.level-bar i.on{background:linear-gradient(90deg,var(--blue),var(--cyan))}
+.level-bar.top i.on{background:linear-gradient(90deg,var(--cyan),var(--green))}
+.card-btn{margin-top:auto;font:600 13px 'DM Sans',sans-serif;padding:10px;border-radius:9px;border:1.5px solid var(--cyan);background:transparent;color:var(--cyan);cursor:pointer;transition:all var(--tr)}
+.card-btn:hover{background:rgba(0,212,255,.1)}
+.empty{grid-column:1/-1;text-align:center;color:var(--text-muted);padding:40px 0}
+
+/* NIVELES */
+#niveles{background:var(--surface)}
+.levels-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.level-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:18px}
+.level-card h3{font-size:15px;margin-bottom:8px}
+.level-card p{font-size:13px;color:var(--text-muted);line-height:1.6;margin-top:8px}
+
+/* CONTACT */
+.contact-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:40px;align-items:start}
+@media(max-width:760px){.contact-grid{grid-template-columns:1fr}}
+.form{display:grid;gap:13px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px}
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-label{font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.3px}
+.form-input{font:14px 'DM Sans',sans-serif;color:var(--text);padding:11px 13px;border:1.5px solid var(--border);border-radius:9px;background:var(--card-solid);outline:none}
+.form-input:focus{border-color:var(--cyan)}
+textarea.form-input{resize:vertical;min-height:100px}
+.form-note{font-size:12px;color:var(--text-muted);line-height:1.6}
+.safety{margin-top:20px;padding:14px 16px;border-left:3px solid var(--green);background:rgba(0,255,136,.05);border-radius:8px;font-size:13px;color:var(--text-muted);line-height:1.6}
+
+/* MODAL */
+.modal{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:16px}
+.modal.open{display:flex}
+.modal-box{background:var(--card-solid);border:1px solid var(--border);border-radius:var(--radius);width:100%;max-width:520px;max-height:90vh;overflow:auto;box-shadow:var(--shadow-lg)}
+.modal-head{position:relative;height:120px}
+.modal-head .card-avatar{width:76px;height:76px;font-size:24px;bottom:-32px;left:24px}
+.modal-close{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:8px;border:none;background:rgba(0,0,0,.3);color:#fff;font-size:18px;cursor:pointer}
+.modal-body{padding:44px 24px 24px}
+.modal-body h2{font-family:'Playfair Display',serif;font-size:26px}
+.info-row{display:flex;gap:16px;flex-wrap:wrap;margin:8px 0 20px;font-size:13px;color:var(--text-muted)}
+.info-row strong{color:var(--text)}
+.subtitle{font-size:12px;font-weight:700;color:var(--text-muted);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:600;background:linear-gradient(90deg,var(--blue),var(--blue-electric));color:#fff;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:600;box-shadow:var(--glow-blue);display:none;max-width:calc(100% - 32px)}
+.toast.show{display:block}
+
+/* REGISTRO */
+.modal-box.wide{max-width:560px}
+.reg-head{padding:22px 24px 0;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.reg-head h2{font-family:'Playfair Display',serif;font-size:26px}
+.reg-head p{font-size:13px;color:var(--text-muted);margin-top:4px;line-height:1.5}
+.reg-head .modal-close{position:static;flex-shrink:0;background:rgba(0,102,255,.15);color:var(--text)}
+.reg-body{padding:18px 24px 24px;display:grid;gap:13px}
+.row-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:520px){.row-2{grid-template-columns:1fr}}
+.phone-row{display:grid;grid-template-columns:minmax(0,150px) 1fr;gap:8px}
+.field-error{font-size:12px;color:#ff6b6b;min-height:0;line-height:1.4}
+[data-theme="light"] .field-error{color:#c62828}
+.field-error:empty{display:none}
+.field-error button{background:none;border:none;color:var(--cyan);font:inherit;font-weight:700;text-decoration:underline;cursor:pointer;padding:0}
+.field-ok{font-size:12px;color:var(--green)}
+.field-ok:empty{display:none}
+.form-input.invalid{border-color:#ff6b6b}
+.form-input.valid{border-color:var(--green)}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--text-muted);line-height:1.5}
+.check input{margin-top:3px;accent-color:var(--blue);width:16px;height:16px;flex-shrink:0}
+.honey{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.btn[disabled]{opacity:.6;cursor:wait;transform:none}
+.form-status{font-size:13px;line-height:1.5;padding:10px 12px;border-radius:8px}
+.form-status:empty{display:none}
+.form-status.error{background:rgba(255,107,107,.1);color:#ff6b6b;border:1px solid rgba(255,107,107,.3)}
+.form-status.ok{background:rgba(0,255,136,.08);color:var(--green);border:1px solid rgba(0,255,136,.25)}
+[data-theme="light"] .form-status.error{color:#c62828}
+.install-btn{display:none}
+.install-btn.show{display:inline-flex}
+
+footer{border-top:1px solid var(--border);padding:28px 16px;text-align:center;font-size:13px;color:var(--text-muted)}
+footer strong{color:var(--blue-electric)}
+footer strong span{color:var(--green)}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#inicio" class="nav-logo">
+    <div class="nav-logo-icon">F</div>
+    <div class="nav-logo-text">Fig<span>Talent</span></div>
+  </a>
+  <div class="nav-links">
+    <a href="#talentos">Talentos</a>
+    <a href="#niveles">Niveles</a>
+    <a href="#contacto">Contacto</a>
+  </div>
+  <div class="nav-right">
+    <button class="theme-toggle" id="theme-toggle" aria-label="Cambiar tema">☀️</button>
+    <button class="theme-toggle install-btn" id="install-btn" aria-label="Instalar app" title="Instalar app">⬇️</button>
+    <button class="nav-cta" data-registro style="border:none;cursor:pointer;font-family:inherit">Registrarse</button>
+  </div>
+</nav>
+
+<section id="inicio">
+  <div class="section-inner">
+    <div class="hero-badge">✦ Talento joven ecuatoriano</div>
+    <h1>Descubre el <em>talento del futuro</em></h1>
+    <p class="hero-sub">FigTalent conecta jóvenes talentos con academias, clubes y familias. Explora perfiles por disciplina, edad y ciudad.</p>
+    <div class="hero-actions">
+      <a href="#talentos" class="btn btn-primary">Ver talentos →</a>
+      <button class="btn btn-outline" data-registro>Registrarme</button>
+    </div>
+    <div class="hero-stats">
+      <div><div class="hero-stat-num" id="stat-talentos">0</div><div class="hero-stat-label">Talentos</div></div>
+      <div><div class="hero-stat-num" id="stat-disciplinas">0</div><div class="hero-stat-label">Disciplinas</div></div>
+      <div><div class="hero-stat-num" id="stat-ciudades">0</div><div class="hero-stat-label">Ubicaciones</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="talentos">
+  <div class="section-inner">
+    <div class="section-label">Perfiles</div>
+    <h2 class="section-title">Nuestros talentos</h2>
+    <div class="section-divider"></div>
+
+    <div class="controls">
+      <label class="search"><span aria-hidden="true">🔍</span>
+        <input id="q" type="search" placeholder="Buscar por nombre, ciudad o disciplina" aria-label="Buscar">
+      </label>
+      <select id="edad" class="select" aria-label="Filtrar por edad">
+        <option value="all">Todas las edades</option>
+        <option value="11-13">11 – 13 años</option>
+        <option value="14-17">14 – 17 años</option>
+      </select>
+      <select id="orden" class="select" aria-label="Ordenar">
+        <option value="nombre">Ordenar: nombre</option>
+        <option value="nivel">Ordenar: mejor nivel</option>
+        <option value="edad">Ordenar: edad</option>
+      </select>
+    </div>
+    <div class="filters" id="filters"></div>
+    <div class="result-count" id="count"></div>
+    <div class="talent-grid" id="grid"></div>
+  </div>
+</section>
+
+<section id="niveles">
+  <div class="section-inner">
+    <div class="section-label">Escala</div>
+    <h2 class="section-title">Cómo leemos los niveles</h2>
+    <div class="section-divider"></div>
+    <div class="levels-grid" id="levels"></div>
+  </div>
+</section>
+
+<section id="contacto">
+  <div class="section-inner contact-grid">
+    <div>
+      <div class="section-label">Contacto</div>
+      <h2 class="section-title">¿Te interesa un talento?</h2>
+      <div class="section-divider"></div>
+      <p class="section-sub">Academias, clubes y familias pueden escribirnos. Toda solicitud pasa primero por los padres o representantes del talento.</p>
+      <div class="safety">🛡️ Por la seguridad de los menores, FigTalent solo muestra la ciudad, nunca direcciones, teléfonos ni colegios.</div>
+    </div>
+    <form class="form" id="contact-form" novalidate>
+      <div class="form-group">
+        <label class="form-label" for="c-nombre">Nombre</label>
+        <input class="form-input" id="c-nombre" required placeholder="Tu nombre o institución">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="c-email">Correo</label>
+        <input class="form-input" id="c-email" type="email" required placeholder="correo@ejemplo.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="c-tel">WhatsApp</label>
+        <div class="phone-row">
+          <select class="form-input" id="c-pais" aria-label="País"></select>
+          <input class="form-input" id="c-tel" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="099 123 4567">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="c-talento">Talento de interés</label>
+        <select class="form-input" id="c-talento"><option value="">General</option></select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="c-msg">Mensaje</label>
+        <textarea class="form-input" id="c-msg" required placeholder="Cuéntanos qué buscas"></textarea>
+      </div>
+      <div class="honey" aria-hidden="true"><input id="c-honey" tabindex="-1" autocomplete="off"></div>
+      <div class="form-status" id="c-status" role="status"></div>
+      <button class="btn btn-primary" type="submit" style="justify-content:center">Enviar solicitud</button>
+      <p class="form-note">Revisamos que el nombre, el correo y el WhatsApp sean reales antes de enviar.</p>
+    </form>
+  </div>
+</section>
+
+<footer>© <span id="year"></span> <strong>Fig<span>Talent</span></strong> · Ecuador</footer>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="m-name">
+  <div class="modal-box">
+    <div class="modal-head" id="m-head">
+      <div class="card-avatar" id="m-avatar"></div>
+      <button class="modal-close" id="m-close" aria-label="Cerrar">✕</button>
+    </div>
+    <div class="modal-body">
+      <h2 id="m-name"></h2>
+      <div class="info-row" id="m-info"></div>
+      <div class="subtitle">Disciplinas</div>
+      <div class="disc-list" id="m-disc"></div>
+      <button class="btn btn-primary" id="m-contact" style="width:100%;justify-content:center">Solicitar contacto</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="registro" role="dialog" aria-modal="true" aria-labelledby="r-title">
+  <div class="modal-box wide">
+    <div class="reg-head">
+      <div>
+        <h2 id="r-title">Solicitud de registro</h2>
+        <p>Tu solicitud llega al equipo de FigTalent, que la revisa antes de darte acceso.</p>
+      </div>
+      <button class="modal-close" data-cerrar aria-label="Cerrar">✕</button>
+    </div>
+    <form class="reg-body" id="registro-form" novalidate>
+      <div class="form-group">
+        <label class="form-label" for="r-tipo">Me registro como</label>
+        <select class="form-input" id="r-tipo" required>
+          <option value="Talento">Talento (deportista, artista…)</option>
+          <option value="Padre/Madre o representante">Padre/Madre o representante</option>
+          <option value="Academia o club">Academia o club</option>
+          <option value="Scout / reclutador">Scout / reclutador</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="r-nombre" id="r-nombre-label">Nombre y apellido</label>
+        <input class="form-input" id="r-nombre" autocomplete="name" placeholder="Ej. Camila Varea" required>
+        <div class="field-error" id="r-nombre-err"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="r-email">Correo electrónico</label>
+        <input class="form-input" id="r-email" type="email" autocomplete="email" placeholder="tucorreo@gmail.com" required>
+        <div class="field-error" id="r-email-err"></div>
+        <div class="field-ok" id="r-email-ok"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="r-tel">WhatsApp</label>
+        <div class="phone-row">
+          <select class="form-input" id="r-pais" aria-label="País del número"></select>
+          <input class="form-input" id="r-tel" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="099 123 4567" required>
+        </div>
+        <div class="field-error" id="r-tel-err"></div>
+        <div class="field-ok" id="r-tel-ok"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="r-ciudad">Ciudad</label>
+        <input class="form-input" id="r-ciudad" autocomplete="address-level2" placeholder="Ej. Quito" required>
+        <div class="field-error" id="r-ciudad-err"></div>
+      </div>
+      <div id="r-talento-campos">
+        <div class="row-2">
+          <div class="form-group">
+            <label class="form-label" for="r-edad">Edad</label>
+            <input class="form-input" id="r-edad" type="number" min="5" max="25" inputmode="numeric" placeholder="Ej. 14">
+            <div class="field-error" id="r-edad-err"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="r-disc">Disciplina</label>
+            <input class="form-input" id="r-disc" list="r-disc-list" placeholder="Ej. Fútbol">
+            <datalist id="r-disc-list"></datalist>
+            <div class="field-error" id="r-disc-err"></div>
+          </div>
+        </div>
+        <div class="form-group" id="r-rep-group" style="margin-top:13px">
+          <label class="form-label" for="r-rep">Nombre del padre, madre o representante</label>
+          <input class="form-input" id="r-rep" placeholder="Obligatorio para menores de 18 años">
+          <div class="field-error" id="r-rep-err"></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="r-msg">Mensaje (opcional)</label>
+        <textarea class="form-input" id="r-msg" maxlength="1000" placeholder="Cuéntanos un poco sobre ti"></textarea>
+      </div>
+      <label class="check"><input type="checkbox" id="r-acepto"> <span>Confirmo que los datos son reales y, si soy menor de edad, que mi representante autoriza este registro.</span></label>
+      <div class="field-error" id="r-acepto-err"></div>
+      <div class="honey" aria-hidden="true"><input id="r-honey" tabindex="-1" autocomplete="off"></div>
+      <div class="form-status" id="r-status" role="status"></div>
+      <button class="btn btn-primary" type="submit" id="r-submit" style="justify-content:center">Enviar solicitud de registro</button>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script src="vendor/libphonenumber-max-1.11.4.js"></script>
+<script src="validacion.js"></script>
+<script>
+// Las solicitudes de registro y contacto llegan a este correo (vía FormSubmit).
+const CORREO_DESTINO = 'figtalenpft@gmail.com';
+const ENDPOINT = 'https://formsubmit.co/ajax/' + CORREO_DESTINO;
+
+// Escala de niveles (1–4). "Bueno" se trata como equivalente a intermedio-avanzado.
+const NIVELES = {
+  'Necesita mejorar':    {v:1, desc:'Está dando sus primeros pasos o trabajando en fundamentos.'},
+  'Intermedio':          {v:2, desc:'Domina lo básico y compite o practica con regularidad.'},
+  'Bueno':               {v:3, desc:'Rendimiento sólido y constante en su disciplina.'},
+  'Intermedio-avanzado': {v:3, desc:'Técnica consolidada, camino hacia el nivel avanzado.'},
+  'Avanzado':            {v:4, desc:'Destaca en su categoría y está listo para academias o clubes.'}
+};
+
+const CATEGORIA = {
+  'Fútbol':'deporte','Básquetbol':'deporte','Atletismo':'deporte','Cheerleading':'deporte',
+  'Ajedrez':'mente','Guitarra':'arte'
+};
+const ICONO = {'Fútbol':'⚽','Básquetbol':'🏀','Atletismo':'🏃','Cheerleading':'📣','Ajedrez':'♟️','Guitarra':'🎸'};
+
+const TALENTOS = [
+  {nombre:'Matías Manzano',  edad:17, ubicacion:['Quito','Colombia'],
+   disciplinas:[{nombre:'Fútbol',nivel:'Necesita mejorar'},{nombre:'Básquetbol',nivel:'Bueno'},{nombre:'Ajedrez',nivel:'Intermedio-avanzado'}]},
+  {nombre:'Michelle Coronel',edad:12, ubicacion:['Riobamba','Quito'],
+   disciplinas:[{nombre:'Cheerleading',nivel:'Avanzado'}]},
+  {nombre:'Camila Varea',    edad:17, ubicacion:['Quito'],
+   disciplinas:[{nombre:'Fútbol',nivel:'Bueno'}]},
+  {nombre:'Andrea Veloz',    edad:12, ubicacion:['Quito'],
+   disciplinas:[{nombre:'Atletismo',nivel:'Intermedio'}]},
+  {nombre:'Daniel Taipe',    edad:17, ubicacion:['Quito'],
+   disciplinas:[{nombre:'Guitarra',nivel:'Avanzado'}]},
+  {nombre:'Stephano Iza',    edad:11, ubicacion:['Quito'],
+   disciplinas:[{nombre:'Fútbol',nivel:'Intermedio'}]},
+  {nombre:'Thomas Hermida',  edad:13, ubicacion:['Ambato'],
+   disciplinas:[{nombre:'Fútbol',nivel:'Avanzado'}]}
+];
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const iniciales = n => n.split(' ').map(p => p[0]).slice(0,2).join('');
+const mejorNivel = t => Math.max(...t.disciplinas.map(d => NIVELES[d.nivel].v));
+const principal = t => t.disciplinas.reduce((a,b) => NIVELES[b.nivel].v > NIVELES[a.nivel].v ? b : a);
+const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+
+function barra(nivel){
+  const v = NIVELES[nivel].v;
+  return `<div class="level-bar${v===4?' top':''}" aria-hidden="true">${[1,2,3,4].map(i=>`<i class="${i<=v?'on':''}"></i>`).join('')}</div>`;
+}
+function discHTML(d){
+  return `<div><div class="disc-top"><span class="disc-name">${ICONO[d.nombre]||''} ${esc(d.nombre)}</span><span class="disc-level">${esc(d.nivel)}</span></div>${barra(d.nivel)}</div>`;
+}
+
+// Estado de filtros
+const state = {disc:'Todas', q:'', edad:'all', orden:'nombre'};
+const disciplinas = [...new Set(TALENTOS.flatMap(t => t.disciplinas.map(d => d.nombre)))].sort((a,b)=>a.localeCompare(b,'es'));
+const ubicaciones = new Set(TALENTOS.flatMap(t => t.ubicacion));
+
+$('filters').innerHTML = ['Todas', ...disciplinas].map(d =>
+  `<button class="filter-btn${d==='Todas'?' active':''}" data-disc="${esc(d)}">${d==='Todas'?'Todas':(ICONO[d]+' '+esc(d))}</button>`).join('');
+
+function render(){
+  const q = norm(state.q.trim());
+  let list = TALENTOS.filter(t => {
+    if (state.disc !== 'Todas' && !t.disciplinas.some(d => d.nombre === state.disc)) return false;
+    if (state.edad !== 'all') { const [a,b] = state.edad.split('-').map(Number); if (t.edad < a || t.edad > b) return false; }
+    if (q) {
+      const hay = norm([t.nombre, ...t.ubicacion, ...t.disciplinas.map(d=>d.nombre+' '+d.nivel)].join(' '));
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+  list.sort((a,b) =>
+    state.orden === 'nivel' ? mejorNivel(b) - mejorNivel(a) || a.nombre.localeCompare(b.nombre,'es') :
+    state.orden === 'edad'  ? a.edad - b.edad || a.nombre.localeCompare(b.nombre,'es') :
+    a.nombre.localeCompare(b.nombre,'es'));
+
+  $('count').innerHTML = `Mostrando <strong>${list.length}</strong> de ${TALENTOS.length} talentos`;
+  $('grid').innerHTML = list.length ? list.map(t => {
+    const i = TALENTOS.indexOf(t);
+    return `<article class="talent-card">
+      <div class="card-header bg-${CATEGORIA[principal(t).nombre]}">
+        <span class="card-age">${t.edad} años</span>
+        <div class="card-avatar">${esc(iniciales(t.nombre))}</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">${esc(t.nombre)}</div>
+        <div class="card-meta">📍 ${esc(t.ubicacion.join(' · '))}</div>
+        <div class="disc-list">${t.disciplinas.map(discHTML).join('')}</div>
+        <button class="card-btn" data-open="${i}">Ver perfil</button>
+      </div>
+    </article>`;
+  }).join('') : '<div class="empty">No hay talentos que coincidan con tu búsqueda.</div>';
+}
+
+$('filters').addEventListener('click', e => {
+  const b = e.target.closest('.filter-btn'); if (!b) return;
+  document.querySelectorAll('.filter-btn').forEach(x => x.classList.toggle('active', x === b));
+  state.disc = b.dataset.disc; render();
+});
+$('q').addEventListener('input', e => { state.q = e.target.value; render(); });
+$('edad').addEventListener('change', e => { state.edad = e.target.value; render(); });
+$('orden').addEventListener('change', e => { state.orden = e.target.value; render(); });
+
+// Modal de perfil
+let actual = null;
+function abrir(i){
+  const t = TALENTOS[i]; actual = i;
+  $('m-head').className = 'modal-head bg-' + CATEGORIA[principal(t).nombre];
+  $('m-avatar').textContent = iniciales(t.nombre);
+  $('m-name').textContent = t.nombre;
+  $('m-info').innerHTML = `<span>🎂 <strong>${t.edad}</strong> años</span><span>📍 <strong>${esc(t.ubicacion.join(' · '))}</strong></span>`;
+  $('m-disc').innerHTML = t.disciplinas.map(discHTML).join('');
+  $('modal').classList.add('open');
+  $('m-close').focus();
+}
+function cerrar(){ $('modal').classList.remove('open'); }
+$('grid').addEventListener('click', e => { const b = e.target.closest('[data-open]'); if (b) abrir(+b.dataset.open); });
+$('m-close').addEventListener('click', cerrar);
+$('modal').addEventListener('click', e => { if (e.target === $('modal')) cerrar(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrar(); });
+$('m-contact').addEventListener('click', () => {
+  $('c-talento').value = TALENTOS[actual].nombre; cerrar();
+  location.hash = 'contacto'; $('c-nombre').focus();
+});
+
+// Escala de niveles
+$('levels').innerHTML = ['Necesita mejorar','Intermedio','Intermedio-avanzado','Bueno','Avanzado'].map(n =>
+  `<div class="level-card"><h3>${esc(n)}</h3>${barra(n)}<p>${esc(NIVELES[n].desc)}</p></div>`).join('');
+
+// Formulario
+$('c-talento').innerHTML += TALENTOS.map(t => `<option>${esc(t.nombre)}</option>`).join('');
+function toast(msg){ const el = $('toast'); el.textContent = msg; el.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(()=>el.classList.remove('show'), 3500); }
+
+// ───── Validación y envío ─────
+const V = window.FigValidacion;
+const LIB = window.libphonenumber;
+
+function llenarPaises(select){
+  let nombres = null;
+  try { nombres = new Intl.DisplayNames(['es'], {type:'region'}); } catch(e) {}
+  const lista = (LIB ? LIB.getCountries() : ['EC']).map(c => ({
+    c, n: nombres ? nombres.of(c) : c, cod: LIB ? LIB.getCountryCallingCode(c) : '593'
+  })).sort((a,b) => a.n.localeCompare(b.n,'es'));
+  select.innerHTML = lista.map(p => `<option value="${p.c}">${esc(p.n)} (+${p.cod})</option>`).join('');
+  select.value = 'EC';
+}
+llenarPaises($('r-pais'));
+llenarPaises($('c-pais'));
+$('r-disc-list').innerHTML = disciplinas.map(d => `<option value="${esc(d)}">`).join('');
+
+function marcar(input, errId, res){
+  const err = $(errId);
+  input.classList.toggle('invalid', !res.ok);
+  input.classList.toggle('valid', !!res.ok);
+  err.textContent = res.ok ? '' : res.error;
+  if (!res.ok && res.sugerencia) {
+    const b = document.createElement('button');
+    b.type = 'button'; b.textContent = 'Usar ' + res.sugerencia;
+    b.addEventListener('click', () => { input.value = res.sugerencia; limpiar(input, errId); input.focus(); });
+    err.append(' ', b);
+  }
+  return res.ok;
+}
+function limpiar(input, errId){ input.classList.remove('invalid','valid'); $(errId).textContent = ''; }
+
+function chequearNombre(input, errId){
+  const r = V.validarNombre(input.value);
+  if (r.ok) input.value = r.valor;
+  return marcar(input, errId, r);
+}
+async function chequearCorreo(input, errId, okId){
+  if (okId) $(okId).textContent = '';
+  const f = V.validarCorreoFormato(input.value);
+  if (!f.ok) return marcar(input, errId, f);
+  input.value = f.valor;
+  $(errId).textContent = 'Comprobando el correo…';
+  const r = await V.validarCorreo(f.valor);
+  if (input.value.trim().toLowerCase() !== f.valor) return false; // el usuario siguió escribiendo
+  marcar(input, errId, r);
+  if (r.ok && okId) $(okId).textContent = '✓ El dominio existe y recibe correos';
+  return r.ok;
+}
+function chequearTel(select, input, errId, okId){
+  const r = V.validarWhatsApp(LIB, select.value, input.value);
+  if (okId) $(okId).textContent = r.ok ? '✓ ' + r.internacional : '';
+  if (r.ok && r.pais && r.pais !== select.value) select.value = r.pais;
+  return marcar(input, errId, r) ? r : null;
+}
+
+async function enviar(datos){
+  const r = await fetch(ENDPOINT, {
+    method:'POST',
+    headers:{'Content-Type':'application/json', Accept:'application/json'},
+    body: JSON.stringify({_template:'table', _captcha:'false', ...datos})
+  });
+  let j = {};
+  try { j = await r.json(); } catch(e) {}
+  if (r.ok && (j.success === true || j.success === 'true')) return;
+  const msg = String(j.message || '');
+  if (/activ/i.test(msg)) throw new Error('El formulario todavía no está activado. Hay que abrir el correo de activación que FormSubmit envió a ' + CORREO_DESTINO + ' y confirmarlo.');
+  if (/web server|file/i.test(msg)) throw new Error('El envío solo funciona cuando la página está publicada en internet (no abriendo el archivo directamente).');
+  throw new Error('No se pudo enviar la solicitud. Inténtalo de nuevo en unos minutos.');
+}
+function estado(id, tipo, texto){ const el = $(id); el.className = 'form-status ' + tipo; el.textContent = texto; }
+const ahora = () => new Date().toLocaleString('es-EC', {dateStyle:'full', timeStyle:'short'});
+
+// Registro
+const R = id => $('r-' + id);
+let ultimoFoco = null;
+function abrirRegistro(){
+  ultimoFoco = document.activeElement;
+  cerrar();
+  $('registro').classList.add('open');
+  actualizarTipo();
+  R('nombre').focus();
+}
+function cerrarRegistro(){
+  $('registro').classList.remove('open');
+  if (ultimoFoco && ultimoFoco.focus) ultimoFoco.focus();
+}
+document.addEventListener('click', e => { if (e.target.closest('[data-registro]')) abrirRegistro(); });
+$('registro').addEventListener('click', e => { if (e.target === $('registro') || e.target.closest('[data-cerrar]')) cerrarRegistro(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarRegistro(); });
+
+function actualizarTipo(){
+  const esTalento = R('tipo').value === 'Talento';
+  R('talento-campos').style.display = esTalento ? '' : 'none';
+  R('nombre-label').textContent = R('tipo').value === 'Academia o club' ? 'Nombre del responsable' : 'Nombre y apellido';
+  const edad = parseInt(R('edad').value, 10);
+  R('rep-group').style.display = esTalento && !(edad >= 18) ? '' : 'none';
+}
+R('tipo').addEventListener('change', actualizarTipo);
+R('edad').addEventListener('input', actualizarTipo);
+
+// Valida al salir del campo (salvo si se sale para pulsar "Enviar": ahí valida el envío y el botón no se mueve).
+function alSalir(el, fn){
+  el.addEventListener('blur', e => {
+    if (e.relatedTarget && e.relatedTarget.type === 'submit') return;
+    if (el.value.trim()) fn();
+  });
+}
+alSalir(R('nombre'), () => chequearNombre(R('nombre'), 'r-nombre-err'));
+alSalir(R('rep'), () => chequearNombre(R('rep'), 'r-rep-err'));
+alSalir(R('email'), () => chequearCorreo(R('email'), 'r-email-err', 'r-email-ok'));
+alSalir(R('tel'), () => chequearTel(R('pais'), R('tel'), 'r-tel-err', 'r-tel-ok'));
+R('pais').addEventListener('change', () => R('tel').value.trim() && chequearTel(R('pais'), R('tel'), 'r-tel-err', 'r-tel-ok'));
+['nombre','email','tel','rep','ciudad','edad','disc'].forEach(k => R(k).addEventListener('input', () => {
+  if (R(k).classList.contains('invalid')) limpiar(R(k), 'r-' + k + '-err');
+}));
+
+$('registro-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  estado('r-status', '', '');
+  const btn = R('submit');
+  const esTalento = R('tipo').value === 'Talento';
+  const edad = parseInt(R('edad').value, 10);
+
+  let ok = chequearNombre(R('nombre'), 'r-nombre-err');
+  const tel = chequearTel(R('pais'), R('tel'), 'r-tel-err', 'r-tel-ok'); ok = !!tel && ok;
+  const ciudad = R('ciudad').value.replace(/\s+/g,' ').trim();
+  ok = marcar(R('ciudad'), 'r-ciudad-err', /^\p{L}[\p{L} .'’-]{1,49}$/u.test(ciudad) ? {ok:true} : {ok:false, error:'Escribe tu ciudad.'}) && ok;
+  if (esTalento) {
+    ok = marcar(R('edad'), 'r-edad-err', edad >= 5 && edad <= 25 ? {ok:true} : {ok:false, error:'Escribe una edad entre 5 y 25 años.'}) && ok;
+    ok = marcar(R('disc'), 'r-disc-err', R('disc').value.trim().length >= 3 ? {ok:true} : {ok:false, error:'Escribe tu disciplina.'}) && ok;
+    if (!(edad >= 18)) ok = (R('rep').value.trim()
+      ? chequearNombre(R('rep'), 'r-rep-err')
+      : marcar(R('rep'), 'r-rep-err', {ok:false, error:'Los menores de 18 años necesitan el nombre de su representante.'})) && ok;
+  }
+  $('r-acepto-err').textContent = R('acepto').checked ? '' : 'Debes confirmar que los datos son reales.';
+  ok = R('acepto').checked && ok;
+
+  btn.disabled = true; btn.textContent = 'Verificando…';
+  try {
+    ok = (await chequearCorreo(R('email'), 'r-email-err', 'r-email-ok')) && ok;
+    if (!ok) {
+      estado('r-status', 'error', 'Revisa los campos marcados en rojo.');
+      const primero = document.querySelector('#registro-form .invalid'); if (primero) primero.focus();
+      return;
+    }
+    if (R('honey').value) { estado('r-status', 'ok', '¡Solicitud enviada!'); return; } // bot
+    btn.textContent = 'Enviando…';
+    const datos = {
+      _subject: `Nueva solicitud de registro — ${R('nombre').value} (${R('tipo').value})`,
+      'Tipo de cuenta': R('tipo').value,
+      'Nombre': R('nombre').value,
+      email: R('email').value,
+      'WhatsApp': tel.internacional,
+      'Abrir chat de WhatsApp': 'https://wa.me/' + tel.e164.replace('+',''),
+      'Ciudad': ciudad
+    };
+    if (esTalento) {
+      datos['Edad'] = edad;
+      datos['Disciplina'] = R('disc').value.trim();
+      if (edad < 18) datos['Representante'] = R('rep').value;
+    }
+    if (R('msg').value.trim()) datos['Mensaje'] = R('msg').value.trim();
+    datos['Fecha'] = ahora();
+    await enviar(datos);
+    estado('r-status', 'ok', '¡Solicitud enviada! Te contactaremos por correo o WhatsApp cuando sea aprobada.');
+    e.target.reset(); R('pais').value = 'EC';
+    e.target.querySelectorAll('.valid').forEach(x => x.classList.remove('valid'));
+    $('r-email-ok').textContent = ''; $('r-tel-ok').textContent = '';
+    actualizarTipo();
+  } catch(err) {
+    estado('r-status', 'error', err.message || 'No se pudo enviar la solicitud.');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Enviar solicitud de registro';
+  }
+});
+
+// Contacto
+const C = id => $('c-' + id);
+['nombre','email','tel'].forEach(k => {
+  const err = document.createElement('div'); err.className = 'field-error'; err.id = 'c-' + k + '-err';
+  C(k).closest('.form-group').append(err);
+  C(k).addEventListener('input', () => { if (C(k).classList.contains('invalid')) limpiar(C(k), 'c-' + k + '-err'); });
+});
+alSalir(C('nombre'), () => chequearNombre(C('nombre'), 'c-nombre-err'));
+alSalir(C('email'), () => chequearCorreo(C('email'), 'c-email-err'));
+alSalir(C('tel'), () => chequearTel(C('pais'), C('tel'), 'c-tel-err'));
+
+$('contact-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  estado('c-status', '', '');
+  const btn = e.target.querySelector('button[type=submit]');
+  let ok = chequearNombre(C('nombre'), 'c-nombre-err');
+  const tel = chequearTel(C('pais'), C('tel'), 'c-tel-err'); ok = !!tel && ok;
+  btn.disabled = true; btn.textContent = 'Verificando…';
+  try {
+    ok = (await chequearCorreo(C('email'), 'c-email-err')) && ok;
+    if (!ok) { estado('c-status', 'error', 'Revisa los campos marcados en rojo.'); return; }
+    if (C('honey').value) { estado('c-status', 'ok', '¡Gracias!'); return; }
+    btn.textContent = 'Enviando…';
+    await enviar({
+      _subject: `Nuevo mensaje de contacto — ${C('nombre').value}`,
+      'Nombre': C('nombre').value,
+      email: C('email').value,
+      'WhatsApp': tel.internacional,
+      'Abrir chat de WhatsApp': 'https://wa.me/' + tel.e164.replace('+',''),
+      'Talento de interés': C('talento').value || 'General',
+      'Mensaje': C('msg').value.trim(),
+      'Fecha': ahora()
+    });
+    estado('c-status', 'ok', '¡Gracias! Recibimos tu solicitud y la revisaremos con los representantes.');
+    e.target.reset(); C('pais').value = 'EC';
+    e.target.querySelectorAll('.valid').forEach(x => x.classList.remove('valid'));
+  } catch(err) {
+    estado('c-status', 'error', err.message || 'No se pudo enviar.');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Enviar solicitud';
+  }
+});
+
+// App instalable (PWA)
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+let promptInstalar = null;
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); promptInstalar = e; $('install-btn').classList.add('show'); });
+$('install-btn').addEventListener('click', async () => {
+  if (!promptInstalar) return;
+  promptInstalar.prompt(); await promptInstalar.userChoice; promptInstalar = null;
+  $('install-btn').classList.remove('show');
+});
+window.addEventListener('appinstalled', () => toast('¡FigTalent quedó instalada en tu dispositivo!'));
+
+// Estadísticas
+$('stat-talentos').textContent = TALENTOS.length;
+$('stat-disciplinas').textContent = disciplinas.length;
+$('stat-ciudades').textContent = ubicaciones.size;
+$('year').textContent = new Date().getFullYear();
+
+// Tema claro/oscuro
+function setTheme(t){
+  document.documentElement.dataset.theme = t;
+  $('theme-toggle').textContent = t === 'dark' ? '☀️' : '🌙';
+  try { localStorage.setItem('figtalent-theme', t); } catch(e) {}
+}
+let saved = null; try { saved = localStorage.getItem('figtalent-theme'); } catch(e) {}
+setTheme(saved || 'dark');
+$('theme-toggle').addEventListener('click', () => setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'));
+
+render();
+</script>
+</body>
+</html>
