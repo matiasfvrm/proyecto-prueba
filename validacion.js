@@ -140,8 +140,8 @@
     if (!f.ok) return f;
     const mx = await dominioRecibeCorreo(f.dominio);
     if (mx === false) return { ok: false, error: `El dominio "${f.dominio}" no existe o no recibe correos.` };
-    if (mx === null) return { ok: false, error: 'No pudimos comprobar tu correo. Revisa tu conexión e inténtalo de nuevo.' };
-    return f;
+    // mx === null: no se pudo consultar el DNS (sin conexión o bloqueado); se aceptan las demás revisiones.
+    return mx === null ? { ...f, sinDNS: true } : f;
   }
 
   /* ───────────── WHATSAPP ───────────── */
