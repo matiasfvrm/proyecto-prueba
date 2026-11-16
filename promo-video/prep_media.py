@@ -34,7 +34,7 @@ for slot in SLOTS:
     os.makedirs(out, exist_ok=True)
     for f in os.listdir(out): os.remove(os.path.join(out, f))
     subprocess.run([FF, '-loglevel', 'error', '-y', '-ss', str(starts.get(slot, 0)), '-i', src, '-t', str(lengths.get(slot, SECONDS)),
-                    '-vf', 'fps=30,scale=1920:1080:force_original_aspect_ratio=increase:flags=lanczos,crop=1920:1080', '-q:v', '2',
+                    '-vf', 'fps=30,scale=1920:1080:force_original_aspect_ratio=increase:flags=lanczos,crop=1920:1080,format=yuvj420p', '-q:v', '2',
                     os.path.join(out, '%05d.jpg')], check=True)
     n = len(os.listdir(out))
     manifest[slot] = {'frames': n}

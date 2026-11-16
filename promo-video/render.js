@@ -15,7 +15,7 @@ const fs = require('fs');
   await page.goto('file://' + path.resolve(__dirname, 'promo.html'));
   await page.evaluate(async () => {
     document.body.classList.add('render');
-    await Promise.all(['100px Anton', '600 100px Mont', '800 100px Mont'].map((f) => document.fonts.load(f)));
+    await Promise.all(['100px Anton', '600 100px Mont', '800 100px Mont', '500 100px ITight', '600 100px ITight', '800 100px ITight', 'italic 400 100px ISerif', '500 100px JMono'].map((f) => document.fonts.load(f)));
   });
   const total = Math.round((await page.evaluate(() => window.DURATION)) * fps);
   const frames = only ? only.map((t) => [t, `t${t}.jpg`]) :

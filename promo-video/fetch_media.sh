@@ -9,10 +9,10 @@ mkdir -p .bin && ln -sf "$FF" .bin/ffmpeg
 # Undertale (Steam store trailer)
 url=$(curl -s "https://store.steampowered.com/api/appdetails?appids=391540&filters=movies" | python3 -c "import sys,json;print(json.load(sys.stdin)['391540']['data']['movies'][0]['hls_h264'])")
 yt-dlp -q --ffmpeg-location .bin -o rpg.mp4 "$url"
-# Hollow Knight + Among Us (Steam store trailers)
-for a in 367520:hk:0 945360:amongus:2; do
-  id=${a%%:*}; rest=${a#*:}; name=${rest%%:*}; idx=${rest##*:}
-  url=$(curl -s "https://store.steampowered.com/api/appdetails?appids=$id" | python3 -c "import sys,json;print(json.load(sys.stdin)['$id']['data']['movies'][$idx]['hls_h264'])")
+# Hollow Knight + Among Us (Steam store trailers, picked by trailer name)
+for a in "367520|hk|Release Trailer" "945360|amongus|Phantom, Tracker, Noisemaker"; do
+  IFS='|' read -r id name title <<< "$a"
+  url=$(curl -s "https://store.steampowered.com/api/appdetails?appids=$id" | TITLE="$title" python3 -c "import sys,json,os;m=json.load(sys.stdin)['$id']['data']['movies'];print(next((x for x in m if x['name']==os.environ['TITLE']),m[0])['hls_h264'])")
   yt-dlp -q --ffmpeg-location .bin -o "$name.mp4" "$url"
 done
 curl -sfL -o br.mkv    https://archive.org/download/youtube-8o4OrKoWMBE/8o4OrKoWMBE.mkv    # Fortnite trailer
@@ -30,3 +30,5 @@ for p in editor:23145:12 gamer:43599:2 party:42286:3 skate:36498:3; do
   curl -sfL -o /tmp/$id.mp4 "https://assets.mixkit.co/videos/$id/$id-1080.mp4" || curl -sfL -o /tmp/$id.mp4 "https://assets.mixkit.co/videos/$id/$id-720.mp4"
   "$FF" -loglevel error -y -ss "$t" -i /tmp/$id.mp4 -frames:v 1 -vf scale=1920:-1:flags=lanczos ../thumb/$n.png
 done
+# Music: "House Vibes" (Mixkit music 129, 120 BPM), then: python3 soundtrack.py media/music/129.mp3 soundtrack.wav
+mkdir -p ../music && curl -sfL -o ../music/129.mp3 https://assets.mixkit.co/music/129/129.mp3

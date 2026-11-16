@@ -5,14 +5,16 @@
 
 | Time | Scene |
 |------|-------|
-| 0–4 s | Rapid glitch montage → "YOUR VIDEOS / NEXT LEVEL" |
-| 4–8 s | "PROFESSIONAL VIDEO EDITING": animated editor (timeline, razor cut, effects) |
-| 8–14 s | "ONE EDITOR. EVERY PLATFORM.": YouTube, TikTok, Instagram and Facebook mockups with whip-pans |
-| 14–22 s | GAMING: RPG, battle royale, tactical FPS and sandbox gameplay, then a montage grid |
-| 22–30 s | ANY STYLE: vlogs, ads, music videos, podcasts |
-| 30–36 s | Captions, color grading before/after, VFX and sound design |
-| 36–41 s | "YOU ASK. I EDIT.": client chat and delivery |
-| 41–48 s | "ORDER NOW ON fiverr." call to action |
+| 0–4 s | Cold open: eight fast cuts, then "Good footage deserves a better edit." |
+| 4–8 s | The edit: timeline whose preview follows the playhead while effects switch on |
+| 8–14 s | "One editor. Every platform.": YouTube, TikTok, Instagram, Facebook |
+| 14–22 s | Gaming: four gameplay edits with speed ramps, then a six-game grid |
+| 22–30 s | Any style: vlogs, ads, music videos, podcasts |
+| 30–36 s | Finishing: captions, colour grade before/after, speed ramps |
+| 36–40 s | "You ask. I edit.": client chat and delivery |
+| 40–48 s | "Let's make your next video." call to action |
+
+Look: Inter Tight + Instrument Serif italic, one accent colour, footage first. Scenes live in `src/reel.js`.
 
 `video-editing-promo-share.mp4` is a lighter copy (<30 MB) of the same video. `video-editing-promo-vertical.mp4` is the first (9:16, 27 s) version.
 
@@ -34,16 +36,19 @@ Without clips, each slot falls back to an animated stand-in.
 
 ## Files
 - `promo.html` + `src/`: the animation (canvas). Open `promo.html` in a browser for a live preview (click to start music).
-- `render.js`: renders frames with Playwright. `music.py`: synthesizes the soundtrack.
+- `render.js`: renders frames with Playwright.
+- `soundtrack.py`: builds `soundtrack.wav` from the music track "House Vibes" (Mixkit music 129, 120 BPM,
+  [Mixkit Stock Music Free License](https://mixkit.co/license/#musicFree)) plus transition sounds; cuts sit on its bar lines.
 - `prep_media.py`: turns real clips into frame sequences.
 
 ## Render
 ```bash
-pip install imageio-ffmpeg numpy scipy
-python3 music.py music.wav
+python3 -m pip install imageio-ffmpeg numpy scipy librosa pillow yt-dlp
+./fetch_media.sh && python3 prep_media.py
+python3 soundtrack.py media/music/129.mp3 soundtrack.wav
 node render.js frames 30            # or split: FROM=0 TO=720 node render.js frames 30 & FROM=720 TO=1440 ...
 FF=$(python3 -c "import imageio_ffmpeg;print(imageio_ffmpeg.get_ffmpeg_exe())")
-$FF -framerate 30 -i frames/f%05d.jpg -i music.wav -c:v libx264 -preset slow -crf 17 -pix_fmt yuv420p \
+$FF -framerate 30 -i frames/f%05d.jpg -i soundtrack.wav -vf scale=in_range=pc:out_range=tv,format=yuv420p -c:v libx264 -preset slow -crf 18 \
     -c:a aac -b:a 256k -shortest -movflags +faststart video-editing-promo.mp4
 ```
 

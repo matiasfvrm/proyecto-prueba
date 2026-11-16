@@ -7,6 +7,11 @@
   @font-face { font-family: Anton; src: url(fonts/Anton.ttf); }
   @font-face { font-family: Mont; font-weight: 600; src: url(fonts/Montserrat-600.ttf); }
   @font-face { font-family: Mont; font-weight: 800; src: url(fonts/Montserrat-800.ttf); }
+  @font-face { font-family: ITight; font-weight: 500; src: url(fonts/InterTight-500.ttf); }
+  @font-face { font-family: ITight; font-weight: 600; src: url(fonts/InterTight-600.ttf); }
+  @font-face { font-family: ITight; font-weight: 800; src: url(fonts/InterTight-800.ttf); }
+  @font-face { font-family: ISerif; font-style: italic; font-weight: 400; src: url(fonts/InstrumentSerif-400i.ttf); }
+  @font-face { font-family: JMono; font-weight: 500; src: url(fonts/JetBrainsMono-500.ttf); }
   html, body { margin: 0; background: #000; }
   canvas { display: block; width: 100vw; max-width: 1920px; aspect-ratio: 16 / 9; margin: 0 auto; }
   .render canvas { width: 1920px; }
@@ -14,11 +19,11 @@
 </head>
 <body>
 <canvas id="c" width="1920" height="1080"></canvas>
-<audio id="music" src="music.wav" preload="auto"></audio>
+<audio id="music" src="soundtrack.wav" preload="auto"></audio>
 <script src="media/manifest.js" onerror="window.MEDIA = {}"></script>
 <script src="src/core.js"></script>
 <script src="src/slots.js"></script>
-<script src="src/scenes.js"></script>
+<script src="src/reel.js"></script>
 <script src="src/main.js"></script>
 </body>
 </html>

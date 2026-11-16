@@ -2,3 +2,5 @@ media/clips/*
 !media/clips/starts.txt
 media/frames/
 media/thumb/
+media/music/
+soundtrack.wav
