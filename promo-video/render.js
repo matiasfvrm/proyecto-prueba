@@ -12,10 +12,10 @@ const fs = require('fs');
   const browser = await chromium.launch({ args: ['--allow-file-access-from-files'] });
   const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
   page.on('pageerror', (e) => { console.error('PAGE ERROR', e.message); process.exit(1); });
-  await page.goto('file://' + path.resolve(__dirname, 'promo.html'));
+  await page.goto('file://' + path.resolve(__dirname, 'promo.html') + (process.env.THEME ? '?theme=' + process.env.THEME : ''));
   await page.evaluate(async () => {
     document.body.classList.add('render');
-    await Promise.all(['100px Anton', '600 100px Mont', '800 100px Mont', '500 100px ITight', '600 100px ITight', '800 100px ITight', 'italic 400 100px ISerif', '500 100px JMono'].map((f) => document.fonts.load(f)));
+    await Promise.all(['100px Anton', '600 100px Mont', '800 100px Mont', '500 100px ITight', '600 100px ITight', '800 100px ITight', 'italic 400 100px ISerif', '500 100px JMono', '100px Bebas', '100px PMarker', '100px ArchivoBlack', '600 100px Archivo'].map((f) => document.fonts.load(f)));
   });
   const total = Math.round((await page.evaluate(() => window.DURATION)) * fps);
   const frames = only ? only.map((t) => [t, `t${t}.jpg`]) :

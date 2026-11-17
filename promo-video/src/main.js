@@ -73,21 +73,6 @@ function beatPunch(t) {
   return 0;
 }
 
-// small corner labels, like the burn-in on an editor's export
-function chrome(c, t) {
-  const a = prog(t, 0.2, 0.6) * (1 - prog(t, 39.8, 0.3));
-  if (a <= 0) return;
-  let i = SCENES.findIndex((s) => t >= s.a && t < s.b); if (i < 0) i = SCENES.length - 1;
-  const o = { font: 'ITight', weight: 600, size: 20, ls: 4.5, base: 'alphabetic', color: '#fff' };
-  c.save(); c.globalAlpha = a * 0.8; c.globalCompositeOperation = 'difference';
-  text(c, 'VIDEO EDITING  —  SHOWREEL', 56, 62, { ...o, align: 'left' });
-  text(c, SCENES[i].name, W - 56, 62, { ...o, align: 'right' });
-  const s = Math.floor(t), f = Math.floor((t - s) * FPS);
-  text(c, `00:${String(s).padStart(2, '0')}:${String(f).padStart(2, '0')}`, 56, H - 44, { ...o, font: 'JMono', weight: 500, ls: 2, align: 'left' });
-  text(c, 'AVAILABLE ON FIVERR', W - 56, H - 44, { ...o, align: 'right' });
-  c.restore();
-}
-
 function renderFrame(t) {
   const cut = cutNear(t);
   if (cut) {
@@ -107,7 +92,6 @@ function renderFrame(t) {
   if (acc > 0.3) chroma(octx, post, acc * 7); else octx.drawImage(post, 0, 0);
   vignette(octx, 0.38);
   grain(octx, t, 0.03);
-  chrome(octx, t);
   const fade = Math.min(prog(t, 0, 0.2), 1 - prog(t, DURATION - 0.7, 0.7));
   if (fade < 1) { octx.fillStyle = `rgba(0,0,0,${1 - fade})`; octx.fillRect(0, 0, W, H); }
 }

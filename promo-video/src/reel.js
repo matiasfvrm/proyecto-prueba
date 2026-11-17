@@ -1,17 +1,33 @@
 // Showreel scenes. One typeface pair, one accent colour, footage first.
 // Each scene draw(c, lt) gets local time lt (can be slightly < 0 or > duration during transitions).
 
-const P = {
-  bg: '#0b0b0d', ink: '#f4f1ea', mute: 'rgba(244,241,234,.62)', faint: 'rgba(244,241,234,.14)',
-  acc: '#ff5a36', green: '#1dbf73', paper: '#efece4', panel: '#141417', row: 'rgba(255,255,255,.045)',
+// Art direction. Pick with promo.html?theme=<name> (render.js: THEME=<name>).
+const THEMES = {
+  editorial: { bg: '#0b0b0d', ink: '#f4f1ea', acc: '#ff5a36', paper: '#efece4', paperInk: '#111114', paperAcc: '#ff5a36',
+    head: { font: 'ITight', weight: 800, scale: 1, ls: -0.03 }, alt: { font: 'ISerif', weight: 'italic 400', scale: 1.1, ls: 0 }, label: 'ITight' },
+  marker: { bg: '#0e0e0e', ink: '#ffffff', acc: '#ffe100', paper: '#ffe100', paperInk: '#0e0e0e', paperAcc: '#0e0e0e', upper: true, scribble: true,
+    head: { font: 'Anton', weight: '', scale: 1.1, ls: 0.005 }, alt: { font: 'PMarker', weight: '', scale: 0.9, ls: 0 }, label: 'Archivo' },
+  cinema: { bg: '#000000', ink: '#ffffff', acc: '#ff2b2b', paper: '#ffffff', paperInk: '#000000', paperAcc: '#ff2b2b', upper: true,
+    head: { font: 'Bebas', weight: '', scale: 1.22, ls: 0.012 }, alt: { font: 'Bebas', weight: '', scale: 1.22, ls: 0.012 }, label: 'Archivo' },
+  blocks: { bg: '#1a2cff', ink: '#ffffff', acc: '#c8ff2e', paper: '#c8ff2e', paperInk: '#10134a', paperAcc: '#1a2cff',
+    head: { font: 'ArchivoBlack', weight: '', scale: 0.9, ls: -0.045 }, alt: { font: 'ArchivoBlack', weight: '', scale: 0.9, ls: -0.045 }, label: 'Archivo' },
 };
-const SANS = 'ITight', SERIF = 'ISerif', MONO = 'JMono';
+const THEME = new URLSearchParams(location.search).get('theme') || 'marker';
+const TH = THEMES[THEME] || THEMES.marker;
+const ON_ACC = THEME === 'marker' || THEME === 'blocks' ? '#0e0e0e' : '#ffffff'; // text colour on top of the accent
+const P = {
+  bg: TH.bg, ink: TH.ink, mute: 'rgba(255,255,255,.62)', faint: 'rgba(255,255,255,.14)',
+  acc: TH.acc, green: '#1dbf73', paper: TH.paper, panel: '#141417', row: 'rgba(255,255,255,.045)',
+};
+const SANS = TH.label, SERIF = TH.alt.font, MONO = 'JMono';
 
 // ---------- type helpers
 function partFont(st, size) {
-  return st === 'i' ? { font: SERIF, weight: 'italic 400', size: size * 1.1, ls: 0 } : { font: SANS, weight: 800, size, ls: -size * 0.03 };
+  const f = st === 'i' ? TH.alt : TH.head;
+  return { font: f.font, weight: f.weight, size: size * f.scale, ls: size * f.scale * f.ls };
 }
-function lineW(c, parts, size) { return parts.reduce((w, [s, st]) => w + measure(c, s, partFont(st, size)), 0); }
+const up = (s, st) => (TH.upper ? s.toUpperCase() : s);
+function lineW(c, parts, size) { return parts.reduce((w, [s, st]) => w + measure(c, up(s, st), partFont(st, size)), 0); }
 // One line of mixed sans / serif-italic text that slides up from behind a mask.
 function line(c, parts, x, y, size, o = {}) {
   const w = lineW(c, parts, size);
@@ -22,9 +38,15 @@ function line(c, parts, x, y, size, o = {}) {
   c.beginPath(); c.rect(x0 - 60, y - size * 1.02, w + 120, size * 1.36); c.clip();
   c.translate(0, (1 - p) * size * 1.3);
   for (const [s, st, col] of parts) {
-    const f = partFont(st, size);
-    text(c, s, x0, y, { ...f, align: 'left', base: 'alphabetic', color: col || o.color || P.ink, glow: o.glow, blur: o.blur });
-    x0 += measure(c, s, f);
+    const f = partFont(st, size), str = up(s, st), pw = measure(c, str, f);
+    text(c, str, x0, y, { ...f, align: 'left', base: 'alphabetic', color: col || o.color || P.ink, glow: o.glow, blur: o.blur });
+    if (TH.scribble && st === 'i') { // hand-drawn underline
+      const tw = pw - f.size * 0.25;
+      c.save(); c.strokeStyle = col || o.color || P.acc; c.lineWidth = size * 0.055; c.lineCap = 'round'; c.beginPath();
+      for (let k = 0; k <= 24; k++) { const u = k / 24; c[k ? 'lineTo' : 'moveTo'](x0 + u * tw, y + size * 0.17 + Math.sin(u * 9 + s.length) * size * 0.018 - u * size * 0.03); }
+      c.stroke(); c.restore();
+    }
+    x0 += pw;
   }
   c.restore();
   return w;
@@ -231,7 +253,7 @@ function platformMock(c, p, lt) {
   const lp = E.expo(prog(lt, 0.08, 0.6));
   c.save(); c.globalAlpha *= lp; c.translate((1 - lp) * 90, 0);
   platformIcon(c, p.id, 372, -230, 132);
-  text(c, p.name, 300, -40, { font: SANS, weight: 800, size: 138, ls: -4, align: 'left', base: 'alphabetic' });
+  text(c, up(p.name), 300, -40, { ...partFont('s', 138), align: 'left', base: 'alphabetic' });
   const fw = measure(c, p.fmt, { font: MONO, weight: 500, size: 28 }) + 44;
   c.strokeStyle = P.ink; c.lineWidth = 2.5; rr(c, 306, 20, fw, 58, 29); c.stroke();
   mono(c, p.fmt, 328, 59, { size: 28, color: P.ink });
@@ -276,8 +298,6 @@ function sGaming(c, lt) {
     const ft = 0.4 + (l < 0.5 ? l * 2.6 : 1.3 + (l - 0.5) * 0.45);
     foot(c, id, ft, 1.1 - 0.05 * E.out(clamp(l * 2)) + 0.045 * hit(l, 0.5, 0.14));
     shade(c, 0.78, 0.5);
-    c.fillStyle = P.acc; c.fillRect(92, 846, 14, 14);
-    mono(c, 'GAMEPLAY EDIT  0' + (i + 1) + ' / 04', 122, 860, { color: P.ink });
     line(c, [[slotName(id), 's']], 88, 984, 116, { t: l, at: 0.04, dur: 0.5 });
     c.fillStyle = `rgba(255,255,255,${hit(l, 0, 0.04) * 0.35})`; c.fillRect(0, 0, W, H);
     return;
@@ -311,14 +331,12 @@ function styleShot(c, i, l) {
   const s = STY[i];
   foot(c, s.id, 0.5 + l * 0.9, 1.09 - 0.03 * l);
   shade(c, 0.82, 0.45);
-  mono(c, '0' + (i + 1) + ' / 04', 92, 838, { color: P.ink, size: 24 });
-  c.fillStyle = P.faint; c.fillRect(226, 829, 220, 3); c.fillStyle = P.ink; c.fillRect(226, 829, 220 * clamp(l / 1.8), 3);
   line(c, [[s.a, 's'], [s.b, 'i', P.acc]], 86, 984, 150, { t: l, at: 0.1, dur: 0.6 });
 }
 function sStyles(c, lt) {
   if (lt < 0.8) {
     c.fillStyle = P.paper; c.fillRect(0, 0, W, H);
-    line(c, [['Any ', 's', '#111114'], ['style.', 'i', P.acc]], W / 2, 610, 300, { align: 'center', t: lt, at: 0, dur: 0.5 });
+    line(c, [['Any ', 's', TH.paperInk], ['style.', 'i', TH.paperAcc]], W / 2, 610, 300, { align: 'center', t: lt, at: 0, dur: 0.5 });
     lab(c, 'VLOGS  ·  ADS  ·  MUSIC VIDEOS  ·  PODCASTS', W / 2, 750, { align: 'center', color: 'rgba(17,17,20,.6)', alpha: E.expo(prog(lt, 0.25, 0.4)) });
     return;
   }
@@ -362,13 +380,11 @@ function sGrade(c, l) {
   if (bOut < 1) {
     c.save(); c.globalAlpha = 1 - bOut;
     line(c, [['Before', 's']], 86, 360, 180, { t: l, at: 0.05, dur: 0.5, glow: 'rgba(0,0,0,.45)', blur: 30 });
-    mono(c, 'RAW FOOTAGE', 94, 420, { color: P.ink, alpha: E.expo(prog(l, 0.25, 0.4)) });
     c.restore();
   }
   if (l > 1.2 && l < 1.6) mono(c, 'GRADING  ' + String(Math.round(g * 100)).padStart(3, ' ') + '%', 94, 330, { size: 40, color: P.ink, glow: 'rgba(0,0,0,.6)', blur: 16 });
   if (l >= 1.6) {
     line(c, [['After', 'i']], 86, 360, 210, { t: l, at: 1.6, dur: 0.5, glow: 'rgba(0,0,0,.5)', blur: 34 });
-    mono(c, 'COLOR GRADED', 94, 420, { color: P.ink, alpha: E.expo(prog(l, 1.8, 0.4)) });
   }
   // grading panel
   const pIn = E.expo(prog(l, 0.3, 0.5)), pOut = E.in(prog(l, 1.65, 0.35));
@@ -417,8 +433,8 @@ function sCaptions(c, lt) {
   marker(c, 'CAPTIONS & SUBTITLES', 90, 150, lt, 0.05);
   const words = ['This', 'is', 'how', 'your', 'video', 'should', 'look.'], size = 132;
   [[0, 1, 2, 3], [4, 5, 6]].forEach((ln, row) => {
-    const f = { font: SANS, weight: 800, size, ls: -3 };
-    const ws = ln.map((k) => measure(c, words[k], f) + 44);
+    const f = partFont('s', size);
+    const ws = ln.map((k) => measure(c, up(words[k]), f) + 44);
     let x = W / 2 - ws.reduce((a, b) => a + b, 0) / 2;
     ln.forEach((k, j) => {
       const a = 0.1 + k * 0.17, p = prog(lt, a, 0.16);
@@ -426,7 +442,7 @@ function sCaptions(c, lt) {
         const s = 0.82 + 0.18 * E.expo(p), active = (lt >= a && lt < a + 0.17) || (k === 6 && lt > a);
         c.save(); c.globalAlpha *= clamp(p * 2); c.translate(x + ws[j] / 2, 540 + row * 170); c.scale(s, s);
         if (active) { c.fillStyle = P.acc; rr(c, -ws[j] / 2 + 8, -size * 0.56, ws[j] - 16, size * 1.08, 18); c.fill(); }
-        text(c, words[k], 0, size * 0.34, { ...f, base: 'alphabetic', color: '#fff', glow: active ? null : 'rgba(0,0,0,.7)', blur: 26 });
+        text(c, up(words[k]), 0, size * 0.34, { ...f, base: 'alphabetic', color: active ? ON_ACC : '#fff', glow: active ? null : 'rgba(0,0,0,.7)', blur: 26 });
         c.restore();
       }
       x += ws[j];
@@ -516,7 +532,6 @@ function sCta(c, lt) {
   c.restore();
   const g = c.createRadialGradient(W / 2, H / 2, 100, W / 2, H / 2, 1100); g.addColorStop(0, 'rgba(11,11,13,.78)'); g.addColorStop(1, 'rgba(11,11,13,.96)');
   c.fillStyle = g; c.fillRect(0, 0, W, H);
-  lab(c, 'READY WHEN YOU ARE', W / 2, 176, { align: 'center', alpha: E.expo(prog(lt, 0.15, 0.5)) });
   line(c, [["Let's make your ", 's'], ['next video.', 'i', P.acc]], W / 2, 330, 124, { align: 'center', t: lt, at: 0.25 });
   // wordmark
   const fp = E.expo(prog(lt, 0.9, 0.7));

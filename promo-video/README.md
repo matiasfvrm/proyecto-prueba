@@ -14,7 +14,8 @@
 | 36–40 s | "You ask. I edit.": client chat and delivery |
 | 40–48 s | "Let's make your next video." call to action |
 
-Look: Inter Tight + Instrument Serif italic, one accent colour, footage first. Scenes live in `src/reel.js`.
+Look: condensed white capitals (Anton) with yellow marker lettering and hand-drawn underlines (Permanent Marker), footage first.
+Scenes and the theme table live in `src/reel.js`; other looks: `promo.html?theme=cinema|blocks|editorial` (render with `THEME=...`).
 
 `video-editing-promo-share.mp4` is a lighter copy (<30 MB) of the same video. `video-editing-promo-vertical.mp4` is the first (9:16, 27 s) version.
 
